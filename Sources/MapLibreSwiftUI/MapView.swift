@@ -80,6 +80,7 @@ public struct MapView: UIViewRepresentable {
 
         func addLayers(to mglStyle: MGLStyle) {
             for var layerSpec in userLayers {
+                // DISCUSS: What should we do if a layer with this ID already exists? Double entry via programmer is clearly an error, but maybe this function can be called multiple times?
                 if var specWithSource = layerSpec as? SourceBoundStyleLayer {
                     let mglSource: MGLSource
 
@@ -176,6 +177,7 @@ public struct MapView: UIViewRepresentable {
         }
 
         // TODO: Verify that sources and layers get updated as expected
+        // DISCUSS: I'm not totally sure the best way to do dynamic updates of a source, for example. Layers we can *probably* remove and re-add? Does MapLibre handle this gracefully?
     }
 
     // MARK: Modifiers
