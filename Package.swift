@@ -3,6 +3,7 @@
 
 import PackageDescription
 
+// TODO: Split out SwiftUI and generic DSL into separate targets and products.
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
