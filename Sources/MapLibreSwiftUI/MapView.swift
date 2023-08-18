@@ -188,7 +188,7 @@ public struct MapView: UIViewRepresentable {
 }
 
 @resultBuilder
-enum MapViewContentBuilder {
+public enum MapViewContentBuilder {
     public static func buildBlock(_ sources: Source..., layers: StyleLayer...) -> ([Source], [StyleLayer]) {
         return (sources, layers)
     }
