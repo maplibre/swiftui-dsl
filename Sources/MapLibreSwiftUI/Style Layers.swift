@@ -159,12 +159,12 @@ public struct LineStyleLayer: SourceBoundStyleLayer {
     private var lineJoin: NSExpression? = nil
     private var lineWidth: NSExpression? = nil
 
-    init(identifier: String, source: Source) {
+    public init(identifier: String, source: Source) {
         self.identifier = identifier
         self.source = .source(source)
     }
 
-    init(identifier: String, source: MGLSource) {
+    public init(identifier: String, source: MGLSource) {
         self.identifier = identifier
         self.source = .mglSource(source)
     }
