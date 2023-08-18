@@ -46,7 +46,7 @@ public struct ShapeSource: Source {
 
 @resultBuilder
 enum ShapeDataBuilder {
-    static func buildBlock(_ components: MGLShape...) -> ShapeData {
+    public static func buildBlock(_ components: MGLShape...) -> ShapeData {
         let features = components.compactMap({ $0 as? MGLShape & MGLFeature })
 
         if features.count == components.count {

@@ -189,11 +189,11 @@ public struct MapView: UIViewRepresentable {
 
 @resultBuilder
 enum MapViewContentBuilder {
-    static func buildBlock(_ sources: Source..., layers: StyleLayer...) -> ([Source], [StyleLayer]) {
+    public static func buildBlock(_ sources: Source..., layers: StyleLayer...) -> ([Source], [StyleLayer]) {
         return (sources, layers)
     }
 
-    static func buildBlock(_ layers: StyleLayer...) -> ([Source], [StyleLayer]) {
+    public static func buildBlock(_ layers: StyleLayer...) -> ([Source], [StyleLayer]) {
         return ([], layers)
     }
 }
