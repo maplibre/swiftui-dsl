@@ -61,11 +61,30 @@ public struct MapView: UIViewRepresentable {
         func updateLayers(_ newLayers: [StyleLayer], mapView: MGLMapView) {
             // Remove old layers.
             // DISCUSS: Inefficient, but probably robust on the *layers* side.
-            // TODO: does NOT clean up old *sources* and that is probably bad.
             if let style = mapView.style {
+                var sourcesToRemove = Set<String>()
                 for layer in userLayers {
                     if let oldLayer = style.layer(withIdentifier: layer.identifier) {
                         style.removeLayer(oldLayer)
+                    }
+
+                    if let specWithSource = layer as? SourceBoundStyleLayer {
+                        switch specWithSource.source {
+                        case .mglSource(_):
+                            // Do Nothing
+                            // DISCUSS: The idea is to exclude "unmanaged" sources and only manage the ones specified via the DSL and attached to a layer.
+                            // This is a really hackish design and I don't particularly like it.
+                            continue
+                        case .source(_):
+                            sourcesToRemove.insert(specWithSource.identifier)
+                        }
+                    }
+                }
+
+                // Remove sources that were added by layers specified in the DSL
+                for sourceID in sourcesToRemove {
+                    if let source = style.source(withIdentifier: sourceID) {
+                        style.removeSource(source)
                     }
                 }
             }
