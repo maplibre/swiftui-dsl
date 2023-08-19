@@ -22,15 +22,12 @@ public struct MapView: UIViewRepresentable {
     var initialCamera: InitialCamera? = nil
 
     let styleSource: MapStyleSource
-    let userSources: [Source]
     let userLayers: [StyleLayer]
 
-    public init(styleURL: URL, @MapViewContentBuilder _ makeMapContent: () -> ([Source], [StyleLayer])) {
+    public init(styleURL: URL, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayer]) {
         self.styleSource = .url(styleURL)
 
-        let (sources, layers) = makeMapContent()
-        userSources = sources
-        userLayers = layers
+        userLayers = makeMapContent()
     }
 
     public init(styleURL: URL) {
@@ -41,17 +38,14 @@ public struct MapView: UIViewRepresentable {
 
     public class Coordinator: NSObject, MGLMapViewDelegate {
         private var styleSource: MapStyleSource
-        private var userSources: [Source]
         private var userLayers: [StyleLayer]
 
-        init(styleSource: MapStyleSource, userSources: [Source], userLayers: [StyleLayer]) {
+        init(styleSource: MapStyleSource, userLayers: [StyleLayer]) {
             self.styleSource = styleSource
-            self.userSources = userSources
             self.userLayers = userLayers
         }
 
         public func mapView(_ mapView: MGLMapView, didFinishLoading mglStyle: MGLStyle) {
-            addSources(to: mglStyle)
             addLayers(to: mglStyle)
         }
 
@@ -64,13 +58,10 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
-        func updateSources(_ newSources: [Source], mapView: MGLMapView) {
-            // TODO
-        }
-
         func updateLayers(_ newLayers: [StyleLayer], mapView: MGLMapView) {
             // Remove old layers.
-            // TODO: Inefficient, but probably robust.
+            // DISCUSS: Inefficient, but probably robust on the *layers* side.
+            // TODO: does NOT clean up old *sources* and that is probably bad.
             if let style = mapView.style {
                 for layer in userLayers {
                     if let oldLayer = style.layer(withIdentifier: layer.identifier) {
@@ -89,24 +80,16 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
+        // TODO: Figure out if this is what we want behavior-wise.
+        /// Adds a source to the style if a source with the given
+        /// ID does not already exist. Returns the source
+        /// on the map for the given ID.
         private func addSource(_ source: MGLSource, to mglStyle: MGLStyle) -> MGLSource {
             if let existingSource = mglStyle.source(withIdentifier: source.identifier) {
                 return existingSource
             } else {
                 mglStyle.addSource(source)
                 return source
-            }
-        }
-
-        func addSources(to mglStyle: MGLStyle) {
-            for source in userSources {
-                // It should be safe to invoke
-                // makeMGLSource in the loop.
-                // It is a clear programming error
-                // to have two sources with the same ID,
-                // and the result builder should keep
-                // us safe from most dumb mistakes.
-                _ = addSource(source.makeMGLSource(), to: mglStyle)
             }
         }
 
@@ -198,7 +181,6 @@ public struct MapView: UIViewRepresentable {
     public func makeCoordinator() -> Coordinator {
         Coordinator(
             styleSource: styleSource,
-            userSources: userSources,
             userLayers: userLayers
         )
     }
@@ -206,7 +188,6 @@ public struct MapView: UIViewRepresentable {
     public func updateUIView(_ mapView: MGLMapView, context: Context) {
         // FIXME: This probably has some bugs, but is *probably* good enough styles specified by URL.
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
-        context.coordinator.updateSources(userSources, mapView: mapView)
         context.coordinator.updateLayers(userLayers, mapView: mapView)
         // DISCUSS: I'm not totally sure the best way to do dynamic updates of a source, for example. Layers we can *probably* remove and re-add? Does MapLibre handle this gracefully?
     }
@@ -220,12 +201,8 @@ public struct MapView: UIViewRepresentable {
 
 @resultBuilder
 public enum MapViewContentBuilder {
-    public static func buildBlock(_ sources: Source..., layers: StyleLayer...) -> ([Source], [StyleLayer]) {
-        return (sources, layers)
-    }
-
-    public static func buildBlock(_ layers: StyleLayer...) -> ([Source], [StyleLayer]) {
-        return ([], layers)
+    public static func buildBlock(_ layers: StyleLayer...) -> [StyleLayer] {
+        return layers
     }
 }
 
@@ -247,6 +224,9 @@ struct SwiftUIView_Previews: PreviewProvider {
         .previewDisplayName("Rose Tint")
 
         MapView(styleURL: demoTilesURL) {
+            // Note: This line does not add the source to the style as if it
+            // were a statement in an imperative programming language.
+            // The source is added automatically if a layer references it.
             let polylineSource = ShapeSource(identifier: "pedestrian-polyline") {
                 MGLPolylineFeature(coordinates: samplePedestrianWaypoints)
             }
