@@ -40,10 +40,12 @@ public struct MapView: UIViewRepresentable {
     }
 
     public class Coordinator: NSObject, MGLMapViewDelegate {
+        private var styleSource: MapStyleSource
         private var userSources: [Source]
         private var userLayers: [StyleLayer]
 
-        init(userSources: [Source], userLayers: [StyleLayer]) {
+        init(styleSource: MapStyleSource, userSources: [Source], userLayers: [StyleLayer]) {
+            self.styleSource = styleSource
             self.userSources = userSources
             self.userLayers = userLayers
         }
@@ -53,8 +55,38 @@ public struct MapView: UIViewRepresentable {
             addLayers(to: mglStyle)
         }
 
-        func updateStyleURL(_ url: URL, mapView: MGLMapView) {
-            mapView.styleURL = url
+        func updateStyleSource(_ source: MapStyleSource, mapView: MGLMapView) {
+            switch (source, self.styleSource) {
+            case (.url(let newURL), .url(let oldURL)):
+                if newURL != oldURL {
+                    mapView.styleURL = newURL
+                }
+            }
+        }
+
+        func updateSources(_ newSources: [Source], mapView: MGLMapView) {
+            // TODO
+        }
+
+        func updateLayers(_ newLayers: [StyleLayer], mapView: MGLMapView) {
+            // Remove old layers.
+            // TODO: Inefficient, but probably robust.
+            if let style = mapView.style {
+                for layer in userLayers {
+                    if let oldLayer = style.layer(withIdentifier: layer.identifier) {
+                        style.removeLayer(oldLayer)
+                    }
+                }
+            }
+
+            // Set the new user-defined layers
+            self.userLayers = newLayers
+
+            // If the style is loaded, add the new layers to it.
+            // Otherwise, this will get invoked automatically by the style didFinishLoading callback
+            if let style = mapView.style {
+                addLayers(to: style)
+            }
         }
 
         private func addSource(_ source: MGLSource, to mglStyle: MGLStyle) -> MGLSource {
@@ -80,7 +112,7 @@ public struct MapView: UIViewRepresentable {
 
         func addLayers(to mglStyle: MGLStyle) {
             for var layerSpec in userLayers {
-                // DISCUSS: What should we do if a layer with this ID already exists? Double entry via programmer is clearly an error, but maybe this function can be called multiple times?
+                // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
                 if var specWithSource = layerSpec as? SourceBoundStyleLayer {
                     let mglSource: MGLSource
 
@@ -138,13 +170,13 @@ public struct MapView: UIViewRepresentable {
 
     public func makeUIView(context: Context) -> MGLMapView {
         // Create the map view
-        let mapView: MGLMapView
+        let mapView = MGLMapView(frame: .zero)
+        mapView.delegate = context.coordinator
 
         switch styleSource {
         case .url(let styleURL):
-            mapView = MGLMapView(frame: .zero, styleURL: styleURL)
+            mapView.styleURL = styleURL
         }
-        mapView.delegate = context.coordinator
 
         if let camera = initialCamera {
             switch camera {
@@ -165,18 +197,17 @@ public struct MapView: UIViewRepresentable {
 
     public func makeCoordinator() -> Coordinator {
         Coordinator(
+            styleSource: styleSource,
             userSources: userSources,
             userLayers: userLayers
         )
     }
 
     public func updateUIView(_ mapView: MGLMapView, context: Context) {
-        switch styleSource {
-        case .url(let styleURL):
-            context.coordinator.updateStyleURL(styleURL, mapView: mapView)
-        }
-
-        // TODO: Verify that sources and layers get updated as expected
+        // FIXME: This probably has some bugs, but is *probably* good enough styles specified by URL.
+        context.coordinator.updateStyleSource(styleSource, mapView: mapView)
+        context.coordinator.updateSources(userSources, mapView: mapView)
+        context.coordinator.updateLayers(userLayers, mapView: mapView)
         // DISCUSS: I'm not totally sure the best way to do dynamic updates of a source, for example. Layers we can *probably* remove and re-add? Does MapLibre handle this gracefully?
     }
 
