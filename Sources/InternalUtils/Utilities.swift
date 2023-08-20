@@ -5,7 +5,7 @@ import Foundation
 ///
 /// Declarative DSLs frequently use this pattern in Swift (think Views in SwiftUI), but there is no
 /// generic way to do this at the language level.
-func modified<T>(_ value: T, using modifier: (inout T) -> Void) -> T {
+public func modified<T>(_ value: T, using modifier: (inout T) -> Void) -> T {
     var copy = value
     modifier(&copy)
     return copy

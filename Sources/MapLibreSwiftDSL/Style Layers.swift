@@ -1,3 +1,4 @@
+import InternalUtils
 import Mapbox
 
 /// Specifies a preference for where the layer should be inserted in the hierarchy.
@@ -19,13 +20,13 @@ public enum LayerInsertionPosition {
 /// Internal style enum that wraps a source reference.
 ///
 /// We need to hold on to this so that the coordinator can add the source to the style if necessary.
-enum StyleLayerSource {
+public enum StyleLayerSource {
     case source(Source)
     case mglSource(MGLSource)
 }
 
 extension StyleLayerSource {
-    var identifier: String {
+    public var identifier: String {
         switch self {
         case .mglSource(let s): return s.identifier
         case .source(let s): return s.identifier
@@ -69,7 +70,7 @@ public protocol StyleLayer {
     func makeMGLStyleLayer() -> MGLStyleLayer
 }
 
-protocol SourceBoundStyleLayer: StyleLayer {
+public protocol SourceBoundStyleLayer: StyleLayer {
     var source: StyleLayerSource { get set }
 }
 
@@ -118,7 +119,7 @@ public struct BackgroundLayer: StyleLayer {
     private var backgroundOpacity: NSExpression = NSExpression(forConstantValue: 1.0)
 
 
-    init(identifier: String) {
+    public init(identifier: String) {
         self.identifier = identifier
     }
 
@@ -151,7 +152,7 @@ public struct LineStyleLayer: SourceBoundStyleLayer {
     public var maximumZoomLevel: Float? = nil
     public var minimumZoomLevel: Float? = nil
 
-    var source: StyleLayerSource
+    public var source: StyleLayerSource
 
     // TODO: Other properties and their modifiers
     private var lineColor: NSExpression = NSExpression(forConstantValue: UIColor.black)

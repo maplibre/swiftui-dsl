@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Mapbox
+import MapLibreSwiftDSL
 
 
 public struct MapView: UIViewRepresentable {
@@ -61,6 +62,8 @@ public struct MapView: UIViewRepresentable {
         func updateLayers(_ newLayers: [StyleLayer], mapView: MGLMapView) {
             // Remove old layers.
             // DISCUSS: Inefficient, but probably robust on the *layers* side.
+            // TODO: Extract this out into a separate function or three...
+            // Try to reuse DSL-defined sources if possible (they are the same type)!
             if let style = mapView.style {
                 var sourcesToRemove = Set<String>()
                 for layer in userLayers {
@@ -76,7 +79,9 @@ public struct MapView: UIViewRepresentable {
                             // This is a really hackish design and I don't particularly like it.
                             continue
                         case .source(_):
-                            sourcesToRemove.insert(specWithSource.identifier)
+                            // Mark sources for removal after all user layers have been removed.
+                            // Sources specified in this way should be used by a layer already in the style.
+                            sourcesToRemove.insert(specWithSource.source.identifier)
                         }
                     }
                 }
@@ -209,12 +214,6 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(userLayers, mapView: mapView)
         // DISCUSS: I'm not totally sure the best way to do dynamic updates of a source, for example. Layers we can *probably* remove and re-add? Does MapLibre handle this gracefully?
-    }
-
-    // MARK: Modifiers
-
-    public func initialCenter(center: CLLocationCoordinate2D, zoom: Double? = nil) -> Self {
-        return modified(self, using: { $0.initialCamera = .centerAndZoom(center, zoom) })
     }
 }
 

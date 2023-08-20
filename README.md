@@ -23,6 +23,24 @@ a separate package initially so we can move fast without breaking too many thing
 2. Prevent most common classes of mistakes that users make with the lower level APIs (ex: adding the same source twice)
 3. Deeper SwiftUI integration (ex: SwiftUI callout views)
 
+## Quick start
+
+Add the following to the main dependencies section of your `Package.swift`.
+
+```swift
+        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+```
+
+Then, for each target add either the DSL (for just the DSL) or both (for the SwiftUI view):
+
+```swift
+                .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
+                .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
+```
+
+Check out the [previews at the bottom of the map view](Sources/MapLibreSwiftUI/MapView.swift) for
+usage examples.
+
 ## How can you help?
 
 The first thing you can do is try out the library! Check out the [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)

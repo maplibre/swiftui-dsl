@@ -14,6 +14,9 @@ let package = Package(
         .library(
             name: "MapLibreSwiftUI",
             targets: ["MapLibreSwiftUI"]),
+        .library(
+            name: "MapLibreSwiftDSL",
+            targets: ["MapLibreSwiftDSL"]),
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
@@ -22,10 +25,19 @@ let package = Package(
         .target(
             name: "MapLibreSwiftUI",
             dependencies: [
+                .target(name: "InternalUtils"),
+                .target(name: "MapLibreSwiftDSL"),
                 .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
             ]),
+        .target(
+            name: "MapLibreSwiftDSL",
+            dependencies: [
+                .target(name: "InternalUtils"),
+                .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
+            ]),
+        .target(name: "InternalUtils"),
         .testTarget(
-            name: "MapLibreSwiftUITests",
-            dependencies: ["MapLibreSwiftUI"]),
+            name: "MapLibreSwiftDSLTests",
+            dependencies: ["MapLibreSwiftDSL"]),
     ]
 )
