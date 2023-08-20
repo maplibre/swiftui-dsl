@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import InternalUtils
 import Mapbox
 import MapLibreSwiftDSL
 
@@ -23,9 +24,9 @@ public struct MapView: UIViewRepresentable {
     var initialCamera: InitialCamera? = nil
 
     let styleSource: MapStyleSource
-    let userLayers: [StyleLayer]
+    let userLayers: [StyleLayerDefinition]
 
-    public init(styleURL: URL, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayer]) {
+    public init(styleURL: URL, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition]) {
         self.styleSource = .url(styleURL)
 
         userLayers = makeMapContent()
@@ -39,9 +40,9 @@ public struct MapView: UIViewRepresentable {
 
     public class Coordinator: NSObject, MGLMapViewDelegate {
         private var styleSource: MapStyleSource
-        private var userLayers: [StyleLayer]
+        private var userLayers: [StyleLayerDefinition]
 
-        init(styleSource: MapStyleSource, userLayers: [StyleLayer]) {
+        init(styleSource: MapStyleSource, userLayers: [StyleLayerDefinition]) {
             self.styleSource = styleSource
             self.userLayers = userLayers
         }
@@ -59,7 +60,7 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
-        func updateLayers(_ newLayers: [StyleLayer], mapView: MGLMapView) {
+        func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MGLMapView) {
             // Remove old layers.
             // DISCUSS: Inefficient, but probably robust on the *layers* side.
             // TODO: Extract this out into a separate function or three...
@@ -71,7 +72,7 @@ public struct MapView: UIViewRepresentable {
                         style.removeLayer(oldLayer)
                     }
 
-                    if let specWithSource = layer as? SourceBoundStyleLayer {
+                    if let specWithSource = layer as? SourceBoundStyleLayerDefinition {
                         switch specWithSource.source {
                         case .mglSource(_):
                             // Do Nothing
@@ -104,41 +105,10 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
-        // TODO: Figure out if this is what we want behavior-wise.
-        /// Adds a source to the style if a source with the given
-        /// ID does not already exist. Returns the source
-        /// on the map for the given ID.
-        private func addSource(_ source: MGLSource, to mglStyle: MGLStyle) -> MGLSource {
-            if let existingSource = mglStyle.source(withIdentifier: source.identifier) {
-                return existingSource
-            } else {
-                mglStyle.addSource(source)
-                return source
-            }
-        }
-
         func addLayers(to mglStyle: MGLStyle) {
-            for var layerSpec in userLayers {
+            for layerSpec in userLayers {
                 // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
-                if var specWithSource = layerSpec as? SourceBoundStyleLayer {
-                    let mglSource: MGLSource
-
-                    switch specWithSource.source {
-                    case .source(let s):
-                        let source = s.makeMGLSource()
-                        mglSource = source
-                    case .mglSource(let s):
-                        mglSource = s
-                    }
-
-                    let styleSource = addSource(mglSource, to: mglStyle)
-
-                    specWithSource.source = .mglSource(styleSource)
-                    layerSpec = specWithSource
-
-                }
-
-                let newLayer = layerSpec.makeMGLStyleLayer()
+                let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMGLStyleLayer()
 
                 // Unconditionally transfer the common properties
                 newLayer.isVisible = layerSpec.isVisible
@@ -219,7 +189,7 @@ public struct MapView: UIViewRepresentable {
 
 @resultBuilder
 public enum MapViewContentBuilder {
-    public static func buildBlock(_ layers: StyleLayer...) -> [StyleLayer] {
+    public static func buildBlock(_ layers: StyleLayerDefinition...) -> [StyleLayerDefinition] {
         return layers
     }
 }

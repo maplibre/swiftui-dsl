@@ -1,6 +1,7 @@
 import XCTest
+@testable import MapLibreSwiftDSL
 import Mapbox
-@testable import MapLibreSwiftUI
+import InternalUtils
 
 final class ShapeSourceTests: XCTestCase {
     func testShapeSourcePolylineShapeBuilder() throws {

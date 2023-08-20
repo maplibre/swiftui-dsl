@@ -39,7 +39,7 @@ extension StyleLayerSource {
 /// If you think this looks very similar to ``MGLStyleLayer``, you're spot on. While the final result objects
 /// built here eventually are such, introducing a separate protocol helps keep things Swifty (in particular,
 /// it removes the requirement to use classes; idiomatic DSL builders use structs).
-public protocol StyleLayer {
+public protocol StyleLayerDefinition {
     /// A string that uniquely identifies the style layer in the style to which it is added.
     var identifier: String { get }
 
@@ -65,13 +65,30 @@ public protocol StyleLayer {
     // TODO: Figure out the best way to add layers idiomatically so that they show up beneath label layers, as this is probably desirable in many use cases.
     var insertionPosition: LayerInsertionPosition { get set }
 
+    /// Converts a layer definition into a concrete layer which can be added to a style.
+    ///
+    /// FIXME: Terrible abstraction alert... This currelntly assumes that any referenced source definitions
+    /// have been materialized and added to the style (in the method body if necessary) so that the returned
+    /// style layer is able to be turned into a MapLibre style layer and added to the view fairly quickly. This
+    /// is a halfway finished abstraction which seems most likely to be fully implemented as an
+    /// `addLayerToStyle` or similar method once the implications are all worked out.
+    func makeStyleLayer(style: MGLStyle) -> StyleLayer
+}
+
+public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
+    var source: StyleLayerSource { get set }
+}
+
+public protocol StyleLayer: StyleLayerDefinition {
     /// Builds an ``MGLStyleLayer`` using the layer definition.
     // DISCUSS: Potential leaky abstraction alert! We don't necessarily (TBD?) need this method public, but we do want the protocol conformance. This should be revisited.
     func makeMGLStyleLayer() -> MGLStyleLayer
 }
 
-public protocol SourceBoundStyleLayer: StyleLayer {
-    var source: StyleLayerSource { get set }
+extension StyleLayer {
+    public func makeStyleLayer(style: MGLStyle) -> StyleLayer {
+        return self
+    }
 }
 
 
@@ -104,116 +121,5 @@ extension StyleLayer {
 
     public func renderBelowOthers() -> Self {
         return modified(self) { $0.insertionPosition = .belowOthers }
-    }
-}
-
-public struct BackgroundLayer: StyleLayer {
-    public let identifier: String
-    public var insertionPosition: LayerInsertionPosition = .belowOthers
-    public var isVisible: Bool = true
-    public var maximumZoomLevel: Float? = nil
-    public var minimumZoomLevel: Float? = nil
-
-    // TODO: Other properties and their modifiers
-    private var backgroundColor: NSExpression = NSExpression(forConstantValue: UIColor.black)
-    private var backgroundOpacity: NSExpression = NSExpression(forConstantValue: 1.0)
-
-
-    public init(identifier: String) {
-        self.identifier = identifier
-    }
-
-    // MARK: Modifiers
-
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
-    public func backgroundColor(_ color: UIColor) -> Self {
-        return modified(self) { $0.backgroundColor = NSExpression(forConstantValue: color) }
-    }
-
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
-    public func backgroundOpacity(_ opacity: Float) -> Self {
-        return modified(self) { $0.backgroundOpacity = NSExpression(forConstantValue: opacity) }
-    }
-
-    // MARK: Internal helpers
-
-    public func makeMGLStyleLayer() -> MGLStyleLayer {
-        let result = MGLBackgroundStyleLayer(identifier: identifier)
-
-        result.backgroundColor = backgroundColor
-        result.backgroundOpacity = backgroundOpacity
-
-        return result
-    }
-}
-
-public struct LineStyleLayer: SourceBoundStyleLayer {
-    public let identifier: String
-    public var insertionPosition: LayerInsertionPosition = .aboveOthers
-    public var isVisible: Bool = true
-    public var maximumZoomLevel: Float? = nil
-    public var minimumZoomLevel: Float? = nil
-
-    public var source: StyleLayerSource
-
-    // TODO: Other properties and their modifiers
-    private var lineColor: NSExpression = NSExpression(forConstantValue: UIColor.black)
-    private var lineCap: NSExpression? = nil
-    private var lineJoin: NSExpression? = nil
-    private var lineWidth: NSExpression? = nil
-
-    public init(identifier: String, source: Source) {
-        self.identifier = identifier
-        self.source = .source(source)
-    }
-
-    public init(identifier: String, source: MGLSource) {
-        self.identifier = identifier
-        self.source = .mglSource(source)
-    }
-
-
-    // MARK: Modifiers
-
-    public func lineColor(constant color: UIColor) -> Self {
-        return modified(self) { $0.lineColor = NSExpression(forConstantValue: color) }
-    }
-
-    public func lineCap(constant cap: LineCap) -> Self {
-        return modified(self) { $0.lineCap = NSExpression(forConstantValue: cap.mglLineCapValue.rawValue) }
-    }
-
-    public func lineJoin(constant cap: LineJoin) -> Self {
-        return modified(self) { $0.lineJoin = NSExpression(forConstantValue: cap.mglLineJoinValue.rawValue) }
-    }
-
-    public func lineWidth(constant constantWidth: Float) -> Self {
-        return modified(self) { $0.lineWidth = NSExpression(forConstantValue: constantWidth) }
-    }
-
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
-    public func lineWidth(interpolatedBy expression: MGLVariableExpression, curveType: MGLExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> Self {
-        return modified(self) { $0.lineWidth = interpolatingExpression(expression: expression, curveType: curveType, parameters: parameters, stops: stops) }
-    }
-
-    // MARK: Internal helpers
-
-    public func makeMGLStyleLayer() -> MGLStyleLayer {
-        let mglSource: MGLSource
-        switch source {
-        case .source(_):
-            fatalError("Programming error: Callers must ensure that the source has been generated exactly once, added to the style, and the original type updated with a reference to the source.")
-        case .mglSource(let s):
-            mglSource = s
-        }
-
-        let result = MGLLineStyleLayer(identifier: identifier, source: mglSource)
-
-        result.lineColor = lineColor
-        result.lineCap = lineCap
-        result.lineWidth = lineWidth
-        result.lineJoin = lineJoin
-
-        return result
     }
 }

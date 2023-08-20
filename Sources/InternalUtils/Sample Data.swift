@@ -1,7 +1,7 @@
 // Sample data
 import CoreLocation
 
-let samplePedestrianWaypoints = [
+public let samplePedestrianWaypoints = [
     CLLocationCoordinate2D(latitude: 37.807770999999995, longitude: -122.41970699999999),
     CLLocationCoordinate2D(latitude: 37.807680999999995, longitude: -122.42041599999999),
     CLLocationCoordinate2D(latitude: 37.807623, longitude: -122.42040399999999),

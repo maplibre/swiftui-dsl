@@ -1,6 +1,6 @@
 import XCTest
 import Mapbox
-@testable import MapLibreSwiftUI
+import MapLibreSwiftDSL
 
 final class StyleLayerTest: XCTestCase {
     func testBackgroundStyleLayer() throws {
