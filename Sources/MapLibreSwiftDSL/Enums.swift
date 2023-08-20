@@ -1,6 +1,6 @@
 import Mapbox
 
-// This file exists almost for convenience until / unless
+// This file exists for convenience until / unless
 // this is merged into the MapLibre Native Swift module OR Swift gains the
 // ability to re-export types from dependencies.
 
@@ -32,6 +32,37 @@ extension LineJoin {
         case .bevel: return .bevel
         case .miter: return .miter
         case .round: return .round
+        }
+    }
+}
+
+public enum MGLVariableExpression {
+    case featureAccumulated
+    case featureAttributes
+    case featureIdentifier
+    case geometryType
+    case heatmapDensity
+    case lineProgress
+    case zoomLevel
+}
+
+extension MGLVariableExpression {
+    var nsExpression: NSExpression {
+        switch self {
+        case .featureAccumulated:
+            return .featureAccumulatedVariable
+        case .featureAttributes:
+            return .featureAttributesVariable
+        case .featureIdentifier:
+            return .featureIdentifierVariable
+        case .geometryType:
+            return .geometryTypeVariable
+        case .heatmapDensity:
+            return .heatmapDensityVariable
+        case .lineProgress:
+            return .lineProgressVariable
+        case .zoomLevel:
+            return .zoomLevelVariable
         }
     }
 }

@@ -253,15 +253,21 @@ struct SwiftUIView_Previews: PreviewProvider {
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
                 .lineColor(constant: .white)
-                .lineWidth(constant: 8)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
 
             LineStyleLayer(identifier: "route-line-inner", source: polylineSource)
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
                 .lineColor(constant: .systemBlue)
-                .lineWidth(constant: 5)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
         }
-        .initialCenter(center: samplePedestrianWaypoints.first!, zoom: 13)
+        .initialCenter(center: samplePedestrianWaypoints.first!, zoom: 14)
         .edgesIgnoringSafeArea(.all)
         .previewDisplayName("Polyline")
     }

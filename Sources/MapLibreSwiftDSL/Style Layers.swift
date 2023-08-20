@@ -125,10 +125,12 @@ public struct BackgroundLayer: StyleLayer {
 
     // MARK: Modifiers
 
+    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
     public func backgroundColor(_ color: UIColor) -> Self {
         return modified(self) { $0.backgroundColor = NSExpression(forConstantValue: color) }
     }
 
+    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
     public func backgroundOpacity(_ opacity: Float) -> Self {
         return modified(self) { $0.backgroundOpacity = NSExpression(forConstantValue: opacity) }
     }
@@ -187,6 +189,11 @@ public struct LineStyleLayer: SourceBoundStyleLayer {
 
     public func lineWidth(constant constantWidth: Float) -> Self {
         return modified(self) { $0.lineWidth = NSExpression(forConstantValue: constantWidth) }
+    }
+
+    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
+    public func lineWidth(interpolatedBy expression: MGLVariableExpression, curveType: MGLExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> Self {
+        return modified(self) { $0.lineWidth = interpolatingExpression(expression: expression, curveType: curveType, parameters: parameters, stops: stops) }
     }
 
     // MARK: Internal helpers
