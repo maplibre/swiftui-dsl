@@ -42,7 +42,7 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
 ```
 
 Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
-or more detailed [Examples](Sources/Examples) to see how it works in practice.
+or more detailed [Examples](Sources/MapLibreSwiftUI/Examples) to see how it works in practice.
 
 ## Structure
 
@@ -62,7 +62,7 @@ TDD as we build out functionality.
 
 ## How can you help?
 
-The first thing you can do is try out the library! Check out the detailed [Examples](Sources/Examples)
+The first thing you can do is try out the library! Check out the detailed [Examples](Sources/MapLibreSwiftUI/Examples)
 for inspiration. Putting it "through the paces" is the best way for us to converge on the "right" APIs as a community.
 Your use case probably isn't supported today, in which case you can either open an issue or contribute a PR.
 
