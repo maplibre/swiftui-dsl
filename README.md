@@ -41,8 +41,8 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
 ```
 
-Check out the [Examples](Sources/Examples) for full usage examples in the form of
-SwiftUI previews.
+Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
+or more detailed [Examples](Sources/Examples) to see how it works in practice.
 
 ## Structure
 
@@ -62,16 +62,19 @@ TDD as we build out functionality.
 
 ## How can you help?
 
-The first thing you can do is try out the library! Check out the [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
-for inspiration. Putting it "through the paces" is the best way for us to converge on the "right" DSL as a community.
+The first thing you can do is try out the library! Check out the detailed [Examples](Sources/Examples)
+for inspiration. Putting it "through the paces" is the best way for us to converge on the "right" APIs as a community.
 Your use case probably isn't supported today, in which case you can either open an issue or contribute a PR.
 
-The code has a number of TODOs, most of which can be tackled by any intermediate Swift programmer.
-DISCUSS comments (should migrate to GitHub issues/discussions) are deeper questions. Input welcome.
+The code has a number of TODOs, most of which can be tackled by any intermediate Swift programmer. The important
+issues should all be tracked in GitHub. DISCUSS comments (should migrate to GitHub issues/discussions) are deeper
+questions. Input welcome.
 
-A skeleton is already in place for several of the core concepts, including style layers and sources, but
+The skeleton is already in place for several of the core concepts, including style layers and sources, but
 these are incomplete. You can help by opening a PR that fills these in. For example, if you wanted to fill out the
 API for the line style layer, head over to [the docs](https://maplibre.org/maplibre-native/ios/api/Classes/MGLLineStyleLayer.html)
-and get to work filling out the remaining properties and modifiers. However, note that some Swift 5.9 improvements
-like macros will make things a bit easier, so it may make sense to punt on things like fleshing out the expresison
-API helpers (which will be highly repetitive) till that lands.
+and get to work filling out the remaining properties and modifiers.
+
+Note that some Swift 5.9 improvements like macros will make things a bit easier, so it may make sense to punt on
+things like fleshing out the expresison API helpers (which will be highly repetitive) till that lands. When in doubt,
+check out the issue tracker, as these sholud be noted there.

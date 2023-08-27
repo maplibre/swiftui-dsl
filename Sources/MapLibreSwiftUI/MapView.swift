@@ -216,7 +216,7 @@ struct MapView_Previews: PreviewProvider {
             .previewDisplayName("Vanilla Map")
 
         // For a larger selection of previews,
-        // check out the Examples target, which
+        // check out the Examples directory, which
         // has a wide variety of previews,
         // organized into (hopefully) useful groups
     }

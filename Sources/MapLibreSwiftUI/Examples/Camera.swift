@@ -1,6 +1,5 @@
 import CoreLocation
 import SwiftUI
-import MapLibreSwiftUI
 
 private let switzerland = CLLocationCoordinate2D(latitude: 46.801111, longitude: 8.226667)
 

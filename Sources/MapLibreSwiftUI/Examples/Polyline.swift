@@ -1,5 +1,4 @@
 import SwiftUI
-import MapLibreSwiftUI
 import MapLibreSwiftDSL
 import Mapbox
 import InternalUtils

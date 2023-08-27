@@ -35,13 +35,6 @@ let package = Package(
                 .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
             ]),
         .target(name: "InternalUtils"),
-        .target(
-            name: "Examples",
-            dependencies: [
-                .target(name: "MapLibreSwiftDSL"),
-                .target(name: "MapLibreSwiftUI"),
-            ]
-        ),
         .testTarget(
             name: "MapLibreSwiftDSLTests",
             dependencies: ["MapLibreSwiftDSL"]),
