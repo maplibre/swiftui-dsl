@@ -11,11 +11,9 @@ struct CameraDirectManipulationPreview: View {
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
         .task {
-            // TODO: Decide on a strategy for animation.
             try! await Task.sleep(for: .seconds(3))
 
             camera = MapView.Camera.centerAndZoom(switzerland, 6)
-
         }
     }
 }

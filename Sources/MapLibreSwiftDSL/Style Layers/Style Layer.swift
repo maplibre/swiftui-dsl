@@ -62,7 +62,6 @@ public protocol StyleLayerDefinition {
     var maximumZoomLevel: Float? { get set }
 
     /// Specifies a preference for where the layer should be inserted in the hierarchy.
-    // TODO: Figure out the best way to add layers idiomatically so that they show up beneath label layers, as this is probably desirable in many (most?) use cases.
     var insertionPosition: LayerInsertionPosition { get set }
 
     /// Converts a layer definition into a concrete layer which can be added to a style.

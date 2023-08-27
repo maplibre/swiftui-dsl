@@ -1,10 +1,3 @@
-//
-//  SwiftUIView.swift
-//  
-//
-//  Created by Ian Wagner on 2023-08-15.
-//
-
 import SwiftUI
 import InternalUtils
 import Mapbox
@@ -40,10 +33,14 @@ public struct MapView: UIViewRepresentable {
     public class Coordinator: NSObject, MGLMapViewDelegate {
         private var styleSource: MapStyleSource
         private var userLayers: [StyleLayerDefinition]
+        private var camera: Binding<Camera>?
 
-        init(styleSource: MapStyleSource, userLayers: [StyleLayerDefinition]) {
+
+        init(styleSource: MapStyleSource, userLayers: [StyleLayerDefinition],
+             camera: Binding<Camera>?) {
             self.styleSource = styleSource
             self.userLayers = userLayers
+            self.camera = camera
         }
 
         // MARK: MGLMapViewDelegate
@@ -62,7 +59,7 @@ public struct MapView: UIViewRepresentable {
         }
 
         public func mapView(_ mapView: MGLMapView, regionDidChangeAnimated animated: Bool) {
-            // TODO: Two-way camera binding
+            self.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
         }
 
         // MARK: Coordinator API
@@ -175,7 +172,8 @@ public struct MapView: UIViewRepresentable {
     public func makeCoordinator() -> Coordinator {
         Coordinator(
             styleSource: styleSource,
-            userLayers: userLayers
+            userLayers: userLayers,
+            camera: self.camera
         )
     }
 
@@ -183,13 +181,17 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(userLayers, mapView: mapView)
 
-        updateMapCamera(mapView, animated: true)
+        // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
+        let isStyleLoaded = mapView.style != nil
+
+        updateMapCamera(mapView, animated: isStyleLoaded)
     }
 
     private func updateMapCamera(_ mapView: MGLMapView, animated: Bool) {
         if let camera = self.camera {
             switch camera.wrappedValue {
             case .centerAndZoom(let center, let zoom):
+                // TODO: Determine if MapLibre is smart enough to keep animating to the same place multiple times; if not, add a check here to prevent suprious updates.
                 if let z = zoom {
                     mapView.setCenter(center, zoomLevel: z, animated: animated)
                 } else {
