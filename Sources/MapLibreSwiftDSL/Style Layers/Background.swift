@@ -29,12 +29,12 @@ public struct BackgroundLayer: StyleLayer {
 
     // MARK: Modifiers
 
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
+    // TODO: Generalize complex expression variants using macros? Revisit once Swift 5.9 lands
     public func backgroundColor(_ color: UIColor) -> Self {
         return modified(self) { $0.backgroundColor = NSExpression(forConstantValue: color) }
     }
 
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
+    // TODO: Generalize complex expression variants using macros? Revisit once Swift 5.9 lands
     public func backgroundOpacity(_ opacity: Float) -> Self {
         return modified(self) { $0.backgroundOpacity = NSExpression(forConstantValue: opacity) }
     }

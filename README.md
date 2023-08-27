@@ -3,13 +3,16 @@
 Swift DSLs for [MapLibre Native](https://github.com/maplibre/maplibre-native), a free open-source renderer
 for interactive vector maps, to enable better integration with SwiftUI and generally enable easier use of MapLibre.
 
+![A screen recording demonstrating the declarative SwiftUI DSL reacting to changes live](demo.gif)
+
 This package is a playground (read: not yet stable) to experiment with Swift DSLs and SwiftUI without constraints.
 As more people try this out with their own use cases, the community should eventuallly stabilize on a
 reasonably optimal DSL for working with MapLibre in Swift. The package name is currently MapLibreSwiftUI, but it's
 possible that the SwiftUI and DSL layers are separable.
 
-If successful, some version this project should eventually get merged into MapLibre Native. It is being developed as
-a separate package initially so we can move fast without breaking too many things ;)
+If successful, some version this project should eventually either get merged into MapLibre Native or at the least
+merged into the MapLibre organization more formally. It is being developed as a separate package initially so we
+can move fast without breaking anything important.
 
 ## Goals
 
@@ -38,19 +41,24 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
 ```
 
-Check out the [previews at the bottom of the map view](Sources/MapLibreSwiftUI/MapView.swift) for
-usage examples.
+Check out the [Examples](Sources/Examples) for full usage examples in the form of
+SwiftUI previews.
 
-## Architecture
+## Structure
 
 This package is structured into a few targets. `InternalUtils` is pretty much what it says. `MapLibreSwiftDSL` and
-`MapLibreSwiftUI` are published products, and make up the bulk of the project.
+`MapLibreSwiftUI` are published products, and make up the bulk of the project. Finally, `Examples` is a collection of
+SwiftUI previews. 
 
 The DSL provides a more Swift-y layer on top of the lower level MapLibre APIs, and features a number of
 result builders which enable more modern expressive APIs.
 
 The SwiftUI layer publishes a SwiftUI view with the end goal of being a universal view that can be adapted to a wide
 variety of use cases, much like MapKit's SwiftUI views. 
+
+The `Examples` should serve as a rough indication of development progress. While much of the code in the UI layer
+isn't formally tested, this acts as our test, and for all intents and purposes, we're following a practical variant of
+TDD as we build out functionality.
 
 ## How can you help?
 

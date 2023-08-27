@@ -17,25 +17,24 @@ public struct MapView: UIViewRepresentable {
         case url(URL)
     }
 
-    enum InitialCamera {
+    public enum Camera {
         case centerAndZoom(CLLocationCoordinate2D, Double?)
     }
 
-    var initialCamera: InitialCamera? = nil
+    var camera: Binding<Camera>?
 
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
-    public init(styleURL: URL, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition]) {
+    public init(styleURL: URL, camera: Binding<Camera>? = nil, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
         self.styleSource = .url(styleURL)
+        self.camera = camera
 
         userLayers = makeMapContent()
     }
 
-    public init(styleURL: URL) {
-        self.init(styleURL: styleURL) {
-            // Convenience; intentionally left blank
-        }
+    public init(styleURL: URL, initialCamera: Camera, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
+        self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
     }
 
     public class Coordinator: NSObject, MGLMapViewDelegate {
@@ -46,6 +45,8 @@ public struct MapView: UIViewRepresentable {
             self.styleSource = styleSource
             self.userLayers = userLayers
         }
+
+        // MARK: MGLMapViewDelegate
 
         public func mapView(_ mapView: MGLMapView, didFinishLoading mglStyle: MGLStyle) {
             addLayers(to: mglStyle)
@@ -59,6 +60,12 @@ public struct MapView: UIViewRepresentable {
                 }
             }
         }
+
+        public func mapView(_ mapView: MGLMapView, regionDidChangeAnimated animated: Bool) {
+            // TODO: Two-way camera binding
+        }
+
+        // MARK: Coordinator API
 
         func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MGLMapView) {
             // Remove old layers.
@@ -143,6 +150,8 @@ public struct MapView: UIViewRepresentable {
                 }
             }
         }
+
+
     }
 
     public func makeUIView(context: Context) -> MGLMapView {
@@ -155,16 +164,7 @@ public struct MapView: UIViewRepresentable {
             mapView.styleURL = styleURL
         }
 
-        if let camera = initialCamera {
-            switch camera {
-            case .centerAndZoom(let center, let zoom):
-                if let z = zoom {
-                    mapView.setCenter(center, zoomLevel: z, animated: false)
-                } else {
-                    mapView.setCenter(center, animated: false)
-                }
-            }
-        }
+        updateMapCamera(mapView, animated: false)
 
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
@@ -180,10 +180,23 @@ public struct MapView: UIViewRepresentable {
     }
 
     public func updateUIView(_ mapView: MGLMapView, context: Context) {
-        // FIXME: This probably has some bugs, but is *probably* good enough styles specified by URL.
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(userLayers, mapView: mapView)
-        // DISCUSS: I'm not totally sure the best way to do dynamic updates of a source, for example. Layers we can *probably* remove and re-add? Does MapLibre handle this gracefully?
+
+        updateMapCamera(mapView, animated: true)
+    }
+
+    private func updateMapCamera(_ mapView: MGLMapView, animated: Bool) {
+        if let camera = self.camera {
+            switch camera.wrappedValue {
+            case .centerAndZoom(let center, let zoom):
+                if let z = zoom {
+                    mapView.setCenter(center, zoomLevel: z, animated: animated)
+                } else {
+                    mapView.setCenter(center, animated: animated)
+                }
+            }
+        }
     }
 }
 
@@ -194,51 +207,17 @@ public enum MapViewContentBuilder {
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
         MapView(styleURL: demoTilesURL)
             .edgesIgnoringSafeArea(.all)
-            .previewDisplayName("Vanilla Demo Tiles")
+            .previewDisplayName("Vanilla Map")
 
-        MapView(styleURL: demoTilesURL) {
-            // Silly example: a background layer on top to create a global tint
-            BackgroundLayer(identifier: "rose-colored-glasses")
-                .backgroundColor(.systemPink.withAlphaComponent(0.3))
-                .renderAboveOthers()
-        }
-        .edgesIgnoringSafeArea(.all)
-        .previewDisplayName("Rose Tint")
-
-        MapView(styleURL: demoTilesURL) {
-            // Note: This line does not add the source to the style as if it
-            // were a statement in an imperative programming language.
-            // The source is added automatically if a layer references it.
-            let polylineSource = ShapeSource(identifier: "pedestrian-polyline") {
-                MGLPolylineFeature(coordinates: samplePedestrianWaypoints)
-            }
-
-            LineStyleLayer(identifier: "route-line-casing", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
-
-            LineStyleLayer(identifier: "route-line-inner", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .systemBlue)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-        }
-        .initialCenter(center: samplePedestrianWaypoints.first!, zoom: 14)
-        .edgesIgnoringSafeArea(.all)
-        .previewDisplayName("Polyline")
+        // For a larger selection of previews,
+        // check out the Examples target, which
+        // has a wide variety of previews,
+        // organized into (hopefully) useful groups
     }
 }

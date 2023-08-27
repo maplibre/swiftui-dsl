@@ -62,7 +62,7 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
         return modified(self) { $0.lineWidth = NSExpression(forConstantValue: constantWidth) }
     }
 
-    // TODO: Generalize complex expression variants using macros once Swift 5.9 lands
+    // TODO: Generalize complex expression variants using macros? Revisit once Swift 5.9 lands
     public func lineWidth(interpolatedBy expression: MGLVariableExpression, curveType: MGLExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> Self {
         return modified(self) { $0.lineWidth = interpolatingExpression(expression: expression, curveType: curveType, parameters: parameters, stops: stops) }
     }
