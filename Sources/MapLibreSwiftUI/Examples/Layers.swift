@@ -39,6 +39,15 @@ struct Layer_Previews: PreviewProvider {
             .edgesIgnoringSafeArea(.all)
             .previewDisplayName("Simple Symbol")
 
+        MapView(styleURL: demoTilesURL) {
+            // Simple symbol layer demonstration with an icon
+            SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
+                .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
+                .iconRotation(constant: 45)
+        }
+            .edgesIgnoringSafeArea(.all)
+            .previewDisplayName("Rotated Symbols (Const)")
+
         // FIXME: This appears to be broken upstream; waiting for a new release
 //        MapView(styleURL: demoTilesURL) {
 //            // Simple symbol layer demonstration with an icon

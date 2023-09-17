@@ -33,6 +33,8 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 
     // TODO: Other properties and their modifiers
     fileprivate var iconImageName: NSExpression?
+    fileprivate var iconRotation: NSExpression?
+
     private var iconImages = [UIImage]()
 
     // MARK: Modifiers
@@ -43,6 +45,13 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
             it.iconImages = [image]
         }
     }
+
+    public func iconRotation(constant rotation: Double) -> Self {
+        return modified(self) { it in
+            it.iconRotation = NSExpression(forConstantValue: rotation)
+        }
+    }
+
 
     // FIXME: This appears to be broken upstream; waiting for a new release
 //    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self {
@@ -89,6 +98,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         let result = MGLSymbolStyleLayer(identifier: identifier, source: mglSource)
 
         result.iconImageName = definition.iconImageName
+        result.iconRotation = definition.iconRotation
 
         return result
     }
