@@ -1,30 +1,56 @@
 import CoreLocation
+import Mapbox
 import MapLibreSwiftDSL
 import SwiftUI
-
-private let switzerland = CLLocationCoordinate2D(latitude: 46.801111, longitude: 8.226667)
-
-struct BackgroundLayerPreview: View {
-    @State private var camera = MapView.Camera.centerAndZoom(switzerland, 4)
-
-    let styleURL: URL
-
-    var body: some View {
-        MapView(styleURL: styleURL) {
-            // Silly example: a background layer on top of everything to create a tint effect
-            BackgroundLayer(identifier: "rose-colored-glasses")
-                .backgroundColor(.systemPink.withAlphaComponent(0.3))
-                .renderAboveOthers()
-        }
-    }
-}
 
 struct Layer_Previews: PreviewProvider {
     static var previews: some View {
         let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
-        BackgroundLayerPreview(styleURL: demoTilesURL)
+        // A collection of points with various
+        // attributes
+        let pointSource = ShapeSource(identifier: "points") {
+            // Uses the DSL to quickly construct point features inline
+            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139))
+
+            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { feature in
+                feature.attributes["icon"] = "missing"
+            }
+
+            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
+                feature.attributes["icon"] = "club"
+            }
+        }
+
+        MapView(styleURL: demoTilesURL) {
+            // Silly example: a background layer on top of everything to create a tint effect
+            BackgroundLayer(identifier: "rose-colored-glasses")
+                .backgroundColor(.systemPink.withAlphaComponent(0.3))
+                .renderAboveOthers()
+        }
             .edgesIgnoringSafeArea(.all)
             .previewDisplayName("Rose Tint")
+
+        MapView(styleURL: demoTilesURL) {
+            // Simple symbol layer demonstration with an icon
+            SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
+                .iconImage(constant: UIImage(systemName: "mappin")!)
+        }
+            .edgesIgnoringSafeArea(.all)
+            .previewDisplayName("Simple Symbol")
+
+        // FIXME: This appears to be broken upstream; waiting for a new release
+//        MapView(styleURL: demoTilesURL) {
+//            // Simple symbol layer demonstration with an icon
+//            SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
+//                .iconImage(attribute: "icon",
+//                           mappings: [
+//                            "missing": UIImage(systemName: "mappin.slash")!,
+//                            "club": UIImage(systemName: "figure.dance")!
+//                           ],
+//                           default: UIImage(systemName: "mappin")!)
+//        }
+//            .edgesIgnoringSafeArea(.all)
+//            .previewDisplayName("Multiple Symbol Icons")
     }
 }

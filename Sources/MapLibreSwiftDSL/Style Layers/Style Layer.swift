@@ -78,6 +78,22 @@ public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
     var source: StyleLayerSource { get set }
 }
 
+extension SourceBoundStyleLayerDefinition {
+    func addSource(to style: MGLStyle) -> MGLSource {
+        let tmpSource: MGLSource
+
+        switch source {
+        case .source(let s):
+            let source = s.makeMGLSource()
+            tmpSource = source
+        case .mglSource(let s):
+            tmpSource = s
+        }
+
+        return addSourceIfNecessary(tmpSource, to: style)
+    }
+}
+
 public protocol StyleLayer: StyleLayerDefinition {
     /// Builds an ``MGLStyleLayer`` using the layer definition.
     // DISCUSS: Potential leaky abstraction alert! We don't necessarily (TBD?) need this method public, but we do want the protocol conformance. This should be revisited.

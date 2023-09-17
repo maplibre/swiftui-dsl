@@ -9,3 +9,12 @@ extension MGLPolyline {
         self.init(coordinates: coordinates, count: UInt(coordinates.count))
     }
 }
+
+extension MGLPointFeature {
+    public convenience init(coordinate: CLLocationCoordinate2D, configure: ((MGLPointFeature) -> Void)? = nil) {
+        self.init()
+        self.coordinate = coordinate
+
+        configure?(self)
+    }
+}

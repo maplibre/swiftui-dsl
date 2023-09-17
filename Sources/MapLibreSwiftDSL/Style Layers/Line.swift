@@ -28,17 +28,7 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     }
 
     public func makeStyleLayer(style: MGLStyle) -> StyleLayer {
-        let tmpSource: MGLSource
-
-        switch source {
-        case .source(let s):
-            let source = s.makeMGLSource()
-            tmpSource = source
-        case .mglSource(let s):
-            tmpSource = s
-        }
-
-        let styleSource = addSource(tmpSource, to: style)
+        let styleSource = addSource(to: style)
 
         return LineStyleLayerInternal(definition: self, mglSource: styleSource)
     }
@@ -68,7 +58,7 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     }
 }
 
-struct LineStyleLayerInternal: StyleLayer {
+private struct LineStyleLayerInternal: StyleLayer {
     private var definition: LineStyleLayer
     private let mglSource: MGLSource
 
@@ -76,12 +66,10 @@ struct LineStyleLayerInternal: StyleLayer {
     public var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }
-
     }
     public var isVisible: Bool {
         get { definition.isVisible }
         set { definition.isVisible = newValue }
-
     }
     public var maximumZoomLevel: Float? {
         get { definition.maximumZoomLevel }
