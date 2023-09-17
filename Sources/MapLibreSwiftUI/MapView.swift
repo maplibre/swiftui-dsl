@@ -43,7 +43,7 @@ public struct MapView: UIViewRepresentable {
             self.camera = camera
         }
 
-        // MARK: MGLMapViewDelegate
+        // MARK: - MGLMapViewDelegate
 
         public func mapView(_ mapView: MGLMapView, didFinishLoading mglStyle: MGLStyle) {
             addLayers(to: mglStyle)
@@ -62,7 +62,7 @@ public struct MapView: UIViewRepresentable {
             self.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
         }
 
-        // MARK: Coordinator API
+        // MARK: - Coordinator API
 
         func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MGLMapView) {
             // Remove old layers.

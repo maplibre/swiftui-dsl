@@ -15,10 +15,12 @@ struct Layer_Previews: PreviewProvider {
 
             MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { feature in
                 feature.attributes["icon"] = "missing"
+                feature.attributes["heading"] = 45
             }
 
             MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
                 feature.attributes["icon"] = "club"
+                feature.attributes["heading"] = 135
             }
         }
 
@@ -47,6 +49,15 @@ struct Layer_Previews: PreviewProvider {
         }
             .edgesIgnoringSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Const)")
+
+        MapView(styleURL: demoTilesURL) {
+            // Simple symbol layer demonstration with an icon
+            SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
+                .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
+                .iconRotation(fieldKeyPath: "heading")
+        }
+            .edgesIgnoringSafeArea(.all)
+            .previewDisplayName("Rotated Symbols (Dynamic)")
 
         // FIXME: This appears to be broken upstream; waiting for a new release
 //        MapView(styleURL: demoTilesURL) {

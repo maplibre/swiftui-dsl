@@ -34,7 +34,7 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     }
 
 
-    // MARK: Modifiers
+    // MARK: - Modifiers
 
     public func lineColor(constant color: UIColor) -> Self {
         return modified(self) { $0.lineColor = NSExpression(forConstantValue: color) }

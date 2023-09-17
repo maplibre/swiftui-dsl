@@ -27,7 +27,7 @@ public struct BackgroundLayer: StyleLayer {
         return result
     }
 
-    // MARK: Modifiers
+    // MARK: - Modifiers
 
     // TODO: Generalize complex expression variants using macros? Revisit once Swift 5.9 lands
     public func backgroundColor(_ color: UIColor) -> Self {

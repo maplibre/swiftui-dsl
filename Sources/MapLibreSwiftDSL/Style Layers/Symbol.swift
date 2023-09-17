@@ -37,7 +37,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 
     private var iconImages = [UIImage]()
 
-    // MARK: Modifiers
+    // MARK: - Modifiers
 
     public func iconImage(constant image: UIImage) -> Self {
         return modified(self) { it in
@@ -49,6 +49,12 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public func iconRotation(constant rotation: Double) -> Self {
         return modified(self) { it in
             it.iconRotation = NSExpression(forConstantValue: rotation)
+        }
+    }
+
+    public func iconRotation(fieldKeyPath keyPath: String) -> Self {
+        return modified(self) { it in
+            it.iconRotation = NSExpression(forKeyPath: keyPath)
         }
     }
 
@@ -64,6 +70,12 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 //            it.iconImages = mappings.values + [defaultImage]
 //        }
 //    }
+
+    public func iconRotation(expression: NSExpression) -> Self {
+        return modified(self) { it in
+            it.iconRotation = expression
+        }
+    }
 }
 
 private struct SymbolStyleLayerInternal: StyleLayer {

@@ -108,7 +108,7 @@ extension StyleLayer {
 
 
 extension StyleLayer {
-    // MARK: Common modifiers
+    // MARK: - Common modifiers
 
     public func visible(_ value: Bool) -> Self {
         return modified(self) { $0.isVisible = value }
