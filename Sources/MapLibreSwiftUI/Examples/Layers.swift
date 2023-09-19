@@ -30,7 +30,7 @@ struct Layer_Previews: PreviewProvider {
                 .backgroundColor(.systemPink.withAlphaComponent(0.3))
                 .renderAboveOthers()
         }
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
             .previewDisplayName("Rose Tint")
 
         MapView(styleURL: demoTilesURL) {
@@ -38,7 +38,7 @@ struct Layer_Previews: PreviewProvider {
             SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
                 .iconImage(constant: UIImage(systemName: "mappin")!)
         }
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
             .previewDisplayName("Simple Symbol")
 
         MapView(styleURL: demoTilesURL) {
@@ -47,7 +47,7 @@ struct Layer_Previews: PreviewProvider {
                 .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
                 .iconRotation(constant: 45)
         }
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Const)")
 
         MapView(styleURL: demoTilesURL) {
@@ -56,7 +56,7 @@ struct Layer_Previews: PreviewProvider {
                 .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
                 .iconRotation(fieldKeyPath: "heading")
         }
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Dynamic)")
 
         // FIXME: This appears to be broken upstream; waiting for a new release

@@ -44,6 +44,6 @@ struct Polyline_Previews: PreviewProvider {
         let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
         PolylinePreview(styleURL: demoTilesURL)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
     }
 }

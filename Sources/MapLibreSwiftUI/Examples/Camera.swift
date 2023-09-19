@@ -23,7 +23,7 @@ struct Camera_Previews: PreviewProvider {
         let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
         CameraDirectManipulationPreview(styleURL: demoTilesURL)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
             .previewDisplayName("Camera Binding")
     }
 }
