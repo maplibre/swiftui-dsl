@@ -1,6 +1,6 @@
 import Foundation
 import InternalUtils
-import Mapbox
+import MapLibre
 
 public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
@@ -16,12 +16,12 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
         self.source = .source(source)
     }
 
-    public init(identifier: String, source: MGLSource) {
+    public init(identifier: String, source: MLNSource) {
         self.identifier = identifier
         self.source = .mglSource(source)
     }
 
-    public func makeStyleLayer(style: MGLStyle) -> StyleLayer {
+    public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
         let styleSource = addSource(to: style)
 
         // Register the images with the map style
@@ -62,7 +62,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     // FIXME: This appears to be broken upstream; waiting for a new release
 //    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self {
 //        return modified(self) { it in
-//            it.iconImageName = NSExpression(forMGLMatchingKey: NSExpression(forConstantValue: attribute),
+//            it.iconImageName = NSExpression(forMLNMatchingKey: NSExpression(forConstantValue: attribute),
 //                                            in: Dictionary(uniqueKeysWithValues: mappings.map({ (k, v) in
 //                (NSExpression(forConstantValue: k), NSExpression(forConstantValue: v.sha256()))
 //            })),
@@ -80,7 +80,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 
 private struct SymbolStyleLayerInternal: StyleLayer {
     private var definition: SymbolStyleLayer
-    private let mglSource: MGLSource
+    private let mglSource: MLNSource
 
     public var identifier: String { definition.identifier }
     public var insertionPosition: LayerInsertionPosition {
@@ -101,13 +101,13 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         set { definition.minimumZoomLevel = newValue }
     }
 
-    init(definition: SymbolStyleLayer, mglSource: MGLSource) {
+    init(definition: SymbolStyleLayer, mglSource: MLNSource) {
         self.definition = definition
         self.mglSource = mglSource
     }
 
-    public func makeMGLStyleLayer() -> MGLStyleLayer {
-        let result = MGLSymbolStyleLayer(identifier: identifier, source: mglSource)
+    public func makeMGLStyleLayer() -> MLNStyleLayer {
+        let result = MLNSymbolStyleLayer(identifier: identifier, source: mglSource)
 
         result.iconImageName = definition.iconImageName
         result.iconRotation = definition.iconRotation

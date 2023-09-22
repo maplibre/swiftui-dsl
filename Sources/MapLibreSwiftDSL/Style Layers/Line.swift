@@ -1,5 +1,5 @@
 import Foundation
-import Mapbox
+import MapLibre
 import InternalUtils
 
 public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
@@ -22,12 +22,12 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
         self.source = .source(source)
     }
 
-    public init(identifier: String, source: MGLSource) {
+    public init(identifier: String, source: MLNSource) {
         self.identifier = identifier
         self.source = .mglSource(source)
     }
 
-    public func makeStyleLayer(style: MGLStyle) -> StyleLayer {
+    public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
         let styleSource = addSource(to: style)
 
         return LineStyleLayerInternal(definition: self, mglSource: styleSource)
@@ -53,14 +53,14 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     }
 
     // TODO: Generalize complex expression variants using macros? Revisit once Swift 5.9 lands
-    public func lineWidth(interpolatedBy expression: MGLVariableExpression, curveType: MGLExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> Self {
+    public func lineWidth(interpolatedBy expression: MLNVariableExpression, curveType: MLNExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> Self {
         return modified(self) { $0.lineWidth = interpolatingExpression(expression: expression, curveType: curveType, parameters: parameters, stops: stops) }
     }
 }
 
 private struct LineStyleLayerInternal: StyleLayer {
     private var definition: LineStyleLayer
-    private let mglSource: MGLSource
+    private let mglSource: MLNSource
 
     public var identifier: String { definition.identifier }
     public var insertionPosition: LayerInsertionPosition {
@@ -80,13 +80,13 @@ private struct LineStyleLayerInternal: StyleLayer {
         set { definition.minimumZoomLevel = newValue }
     }
 
-    init(definition: LineStyleLayer, mglSource: MGLSource) {
+    init(definition: LineStyleLayer, mglSource: MLNSource) {
         self.definition = definition
         self.mglSource = mglSource
     }
 
-    public func makeMGLStyleLayer() -> MGLStyleLayer {
-        let result = MGLLineStyleLayer(identifier: identifier, source: mglSource)
+    public func makeMGLStyleLayer() -> MLNStyleLayer {
+        let result = MLNLineStyleLayer(identifier: identifier, source: mglSource)
 
         result.lineColor = definition.lineColor
         result.lineCap = definition.lineCap

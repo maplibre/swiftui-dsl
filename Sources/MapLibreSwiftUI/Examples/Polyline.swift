@@ -1,6 +1,6 @@
 import SwiftUI
 import MapLibreSwiftDSL
-import Mapbox
+import MapLibre
 import InternalUtils
 
 struct PolylinePreview: View {
@@ -12,7 +12,7 @@ struct PolylinePreview: View {
             // were a statement in an imperative programming language.
             // The source is added automatically if a layer references it.
             let polylineSource = ShapeSource(identifier: "pedestrian-polyline") {
-                MGLPolylineFeature(coordinates: samplePedestrianWaypoints)
+                MLNPolylineFeature(coordinates: samplePedestrianWaypoints)
             }
 
             // Add a polyline casing for a stroke effect

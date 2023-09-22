@@ -1,4 +1,4 @@
-import Mapbox
+import MapLibre
 
 // This file exists for convenience until / unless
 // this is merged into the MapLibre Native Swift module OR Swift gains the
@@ -11,7 +11,7 @@ public enum LineCap {
 }
 
 extension LineCap {
-    var mglLineCapValue: MGLLineCap {
+    var mglLineCapValue: MLNLineCap {
         switch self {
         case .butt: return .butt
         case .round: return .round
@@ -27,7 +27,7 @@ public enum LineJoin {
 }
 
 extension LineJoin {
-    var mglLineJoinValue: MGLLineJoin {
+    var mglLineJoinValue: MLNLineJoin {
         switch self {
         case .bevel: return .bevel
         case .miter: return .miter
@@ -36,7 +36,7 @@ extension LineJoin {
     }
 }
 
-public enum MGLVariableExpression {
+public enum MLNVariableExpression {
     case featureAccumulated
     case featureAttributes
     case featureIdentifier
@@ -46,7 +46,7 @@ public enum MGLVariableExpression {
     case zoomLevel
 }
 
-extension MGLVariableExpression {
+extension MLNVariableExpression {
     var nsExpression: NSExpression {
         switch self {
         case .featureAccumulated:

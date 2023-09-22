@@ -1,5 +1,5 @@
 import CoreLocation
-import Mapbox
+import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
@@ -11,14 +11,14 @@ struct Layer_Previews: PreviewProvider {
         // attributes
         let pointSource = ShapeSource(identifier: "points") {
             // Uses the DSL to quickly construct point features inline
-            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139))
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139))
 
-            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { feature in
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { feature in
                 feature.attributes["icon"] = "missing"
                 feature.attributes["heading"] = 45
             }
 
-            MGLPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
                 feature.attributes["icon"] = "club"
                 feature.attributes["heading"] = 135
             }

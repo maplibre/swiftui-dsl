@@ -1,5 +1,5 @@
 import XCTest
-import Mapbox
+import MapLibre
 import MapLibreSwiftDSL
 
 final class StyleLayerTest: XCTestCase {
@@ -8,7 +8,7 @@ final class StyleLayerTest: XCTestCase {
             .backgroundColor(.cyan)
             .backgroundOpacity(0.4)
 
-        let mglStyleLayer = styleLayer.makeMGLStyleLayer() as! MGLBackgroundStyleLayer
+        let mglStyleLayer = styleLayer.makeMGLStyleLayer() as! MLNBackgroundStyleLayer
 
         XCTAssertEqual(mglStyleLayer.backgroundColor, NSExpression(forConstantValue: UIColor.cyan))
         XCTAssertEqual(mglStyleLayer.backgroundOpacity.constantValue as! Double, 0.4, accuracy: 0.000001)

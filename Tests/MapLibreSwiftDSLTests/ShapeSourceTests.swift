@@ -1,6 +1,6 @@
 import XCTest
 @testable import MapLibreSwiftDSL
-import Mapbox
+import MapLibre
 import InternalUtils
 
 final class ShapeSourceTests: XCTestCase {
@@ -8,7 +8,7 @@ final class ShapeSourceTests: XCTestCase {
         // Ideally in a style context, these colud be tested at compile time to
         // ensure there are no duplicate IDs.
         let shapeSource = ShapeSource(identifier: "foo") {
-            MGLPolyline(coordinates: samplePedestrianWaypoints)
+            MLNPolyline(coordinates: samplePedestrianWaypoints)
         }
 
         XCTAssertEqual(shapeSource.identifier, "foo")
@@ -23,7 +23,7 @@ final class ShapeSourceTests: XCTestCase {
 
     func testShapeSourcePolylineFeatureBuilder() throws {
         let shapeSource = ShapeSource(identifier: "foo") {
-            MGLPolylineFeature(coordinates: samplePedestrianWaypoints)
+            MLNPolylineFeature(coordinates: samplePedestrianWaypoints)
         }
 
         XCTAssertEqual(shapeSource.identifier, "foo")

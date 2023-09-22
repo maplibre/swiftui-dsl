@@ -70,6 +70,9 @@ The code has a number of TODOs, most of which can be tackled by any intermediate
 issues should all be tracked in GitHub. DISCUSS comments (should migrate to GitHub issues/discussions) are deeper
 questions. Input welcome.
 
+WARNING: This section is slightly out of date. We are targeting MapLibre 6.0 pre-releases, so the docs are not totally
+up to date.
+
 The skeleton is already in place for several of the core concepts, including style layers and sources, but
 these are incomplete. You can help by opening a PR that fills these in. For example, if you wanted to fill out the
 API for the line style layer, head over to [the docs](https://maplibre.org/maplibre-native/ios/api/Classes/MGLLineStyleLayer.html)

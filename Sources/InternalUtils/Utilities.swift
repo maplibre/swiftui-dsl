@@ -1,6 +1,6 @@
 import CommonCrypto
 import Foundation
-import Mapbox
+import MapLibre
 
 // DISCUSS: Is this the best way to do this?
 /// Generic function that copies a struct and operates on the modified value.
@@ -16,11 +16,11 @@ public func modified<T>(_ value: T, using modifier: (inout T) -> Void) -> T {
 /// Adds a source to the style if a source with the given
 /// ID does not already exist. Returns the source
 /// on the map for the given ID.
-public func addSourceIfNecessary(_ source: MGLSource, to mglStyle: MGLStyle) -> MGLSource {
-    if let existingSource = mglStyle.source(withIdentifier: source.identifier) {
+public func addSourceIfNecessary(_ source: MLNSource, to mlnStyle: MLNStyle) -> MLNSource {
+    if let existingSource = mlnStyle.source(withIdentifier: source.identifier) {
         return existingSource
     } else {
-        mglStyle.addSource(source)
+        mlnStyle.addSource(source)
         return source
     }
 }

@@ -1,5 +1,5 @@
 import Foundation
-import Mapbox
+import MapLibre
 import InternalUtils
 
 public struct BackgroundLayer: StyleLayer {
@@ -18,8 +18,8 @@ public struct BackgroundLayer: StyleLayer {
         self.identifier = identifier
     }
 
-    public func makeMGLStyleLayer() -> MGLStyleLayer {
-        let result = MGLBackgroundStyleLayer(identifier: identifier)
+    public func makeMGLStyleLayer() -> MLNStyleLayer {
+        let result = MLNBackgroundStyleLayer(identifier: identifier)
 
         result.backgroundColor = backgroundColor
         result.backgroundOpacity = backgroundOpacity

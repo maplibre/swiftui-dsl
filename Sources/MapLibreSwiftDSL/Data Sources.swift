@@ -1,22 +1,22 @@
 import Foundation
-import Mapbox
+import MapLibre
 
 /// A description of a data source for layers in a MapLibre style.
 public protocol Source {
     /// A string that uniquely identifies the source in the style to which it is added.
     var identifier: String { get }
 
-    func makeMGLSource() -> MGLSource
+    func makeMGLSource() -> MLNSource
 }
 
-/// A description of the data underlying an ``MGLShapeSource``.
+/// A description of the data underlying an ``MLNShapeSource``.
 public enum ShapeData {
     /// A URL from which to load GeoJSON.
     case geoJSONURL(URL)
     /// Generic shapes. These will NOT preserve any attributes.
-    case shapes([MGLShape])
+    case shapes([MLNShape])
     // Features which retain attributes when styled, filtered via a predicate, etc.
-    case features([MGLShape & MGLFeature])
+    case features([MLNShape & MLNFeature])
 }
 
 
@@ -30,15 +30,15 @@ public struct ShapeSource: Source {
         self.data = makeShapeDate()
     }
 
-    public func makeMGLSource() -> MGLSource {
+    public func makeMGLSource() -> MLNSource {
         // TODO: Options! These should be represented via modifiers like .clustered()
         switch data {
         case .geoJSONURL(let url):
-            return MGLShapeSource(identifier: identifier, url: url)
+            return MLNShapeSource(identifier: identifier, url: url)
         case .shapes(let shapes):
-            return MGLShapeSource(identifier: identifier, shapes: shapes)
+            return MLNShapeSource(identifier: identifier, shapes: shapes)
         case .features(let features):
-            return MGLShapeSource(identifier: identifier, features: features)
+            return MLNShapeSource(identifier: identifier, features: features)
         }
     }
 }
@@ -46,8 +46,8 @@ public struct ShapeSource: Source {
 
 @resultBuilder
 public enum ShapeDataBuilder {
-    public static func buildBlock(_ components: MGLShape...) -> ShapeData {
-        let features = components.compactMap({ $0 as? MGLShape & MGLFeature })
+    public static func buildBlock(_ components: MLNShape...) -> ShapeData {
+        let features = components.compactMap({ $0 as? MLNShape & MLNFeature })
 
         if features.count == components.count {
             return .features(features)

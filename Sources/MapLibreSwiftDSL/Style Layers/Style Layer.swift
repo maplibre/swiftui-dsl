@@ -1,5 +1,5 @@
 import InternalUtils
-import Mapbox
+import MapLibre
 
 /// Specifies a preference for where the layer should be inserted in the hierarchy.
 public enum LayerInsertionPosition {
@@ -22,7 +22,7 @@ public enum LayerInsertionPosition {
 /// We need to hold on to this so that the coordinator can add the source to the style if necessary.
 public enum StyleLayerSource {
     case source(Source)
-    case mglSource(MGLSource)
+    case mglSource(MLNSource)
 }
 
 extension StyleLayerSource {
@@ -36,7 +36,7 @@ extension StyleLayerSource {
 
 /// A description of layer in a MapLibre style.
 ///
-/// If you think this looks very similar to ``MGLStyleLayer``, you're spot on. While the final result objects
+/// If you think this looks very similar to ``MLNStyleLayer``, you're spot on. While the final result objects
 /// built here eventually are such, introducing a separate protocol helps keep things Swifty (in particular,
 /// it removes the requirement to use classes; idiomatic DSL builders use structs).
 public protocol StyleLayerDefinition {
@@ -71,7 +71,7 @@ public protocol StyleLayerDefinition {
     /// style layer is able to be turned into a MapLibre style layer and added to the view fairly quickly. This
     /// is a halfway finished abstraction which seems most likely to be fully implemented as an
     /// `addLayerToStyle` or similar method once the implications are all worked out.
-    func makeStyleLayer(style: MGLStyle) -> StyleLayer
+    func makeStyleLayer(style: MLNStyle) -> StyleLayer
 }
 
 public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
@@ -79,8 +79,8 @@ public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
 }
 
 extension SourceBoundStyleLayerDefinition {
-    func addSource(to style: MGLStyle) -> MGLSource {
-        let tmpSource: MGLSource
+    func addSource(to style: MLNStyle) -> MLNSource {
+        let tmpSource: MLNSource
 
         switch source {
         case .source(let s):
@@ -95,13 +95,13 @@ extension SourceBoundStyleLayerDefinition {
 }
 
 public protocol StyleLayer: StyleLayerDefinition {
-    /// Builds an ``MGLStyleLayer`` using the layer definition.
+    /// Builds an ``MLNStyleLayer`` using the layer definition.
     // DISCUSS: Potential leaky abstraction alert! We don't necessarily (TBD?) need this method public, but we do want the protocol conformance. This should be revisited.
-    func makeMGLStyleLayer() -> MGLStyleLayer
+    func makeMGLStyleLayer() -> MLNStyleLayer
 }
 
 extension StyleLayer {
-    public func makeStyleLayer(style: MGLStyle) -> StyleLayer {
+    public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
         return self
     }
 }

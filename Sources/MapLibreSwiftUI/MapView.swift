@@ -1,11 +1,11 @@
 import SwiftUI
 import InternalUtils
-import Mapbox
+import MapLibre
 import MapLibreSwiftDSL
 
 
 public struct MapView: UIViewRepresentable {
-    // TODO: Support MGLStyle as well; having a DSL for that would be nice
+    // TODO: Support MLNStyle as well; having a DSL for that would be nice
     enum MapStyleSource {
         case url(URL)
     }
@@ -30,7 +30,7 @@ public struct MapView: UIViewRepresentable {
         self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
     }
 
-    public class Coordinator: NSObject, MGLMapViewDelegate {
+    public class Coordinator: NSObject, MLNMapViewDelegate {
         private var styleSource: MapStyleSource
         private var userLayers: [StyleLayerDefinition]
         private var camera: Binding<Camera>?
@@ -43,13 +43,13 @@ public struct MapView: UIViewRepresentable {
             self.camera = camera
         }
 
-        // MARK: - MGLMapViewDelegate
+        // MARK: - MLNMapViewDelegate
 
-        public func mapView(_ mapView: MGLMapView, didFinishLoading mglStyle: MGLStyle) {
+        public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
             addLayers(to: mglStyle)
         }
 
-        func updateStyleSource(_ source: MapStyleSource, mapView: MGLMapView) {
+        func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
             switch (source, self.styleSource) {
             case (.url(let newURL), .url(let oldURL)):
                 if newURL != oldURL {
@@ -58,13 +58,13 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
-        public func mapView(_ mapView: MGLMapView, regionDidChangeAnimated animated: Bool) {
+        public func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             self.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
         }
 
         // MARK: - Coordinator API
 
-        func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MGLMapView) {
+        func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MLNMapView) {
             // Remove old layers.
             // DISCUSS: Inefficient, but probably robust on the *layers* side.
             // TODO: Extract this out into a separate function or three...
@@ -95,6 +95,8 @@ public struct MapView: UIViewRepresentable {
                 for sourceID in sourcesToRemove {
                     if let source = style.source(withIdentifier: sourceID) {
                         style.removeSource(source)
+                    } else {
+                        print("That's funny... couldn't find identifier \(sourceID)")
                     }
                 }
             }
@@ -109,7 +111,7 @@ public struct MapView: UIViewRepresentable {
             }
         }
 
-        func addLayers(to mglStyle: MGLStyle) {
+        func addLayers(to mglStyle: MLNStyle) {
             for layerSpec in userLayers {
                 // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
                 let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMGLStyleLayer()
@@ -151,9 +153,9 @@ public struct MapView: UIViewRepresentable {
 
     }
 
-    public func makeUIView(context: Context) -> MGLMapView {
+    public func makeUIView(context: Context) -> MLNMapView {
         // Create the map view
-        let mapView = MGLMapView(frame: .zero)
+        let mapView = MLNMapView(frame: .zero)
         mapView.delegate = context.coordinator
 
         switch styleSource {
@@ -177,7 +179,8 @@ public struct MapView: UIViewRepresentable {
         )
     }
 
-    public func updateUIView(_ mapView: MGLMapView, context: Context) {
+    public func updateUIView(_ mapView: MLNMapView, context: Context) {
+        // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(userLayers, mapView: mapView)
 
@@ -187,7 +190,7 @@ public struct MapView: UIViewRepresentable {
         updateMapCamera(mapView, animated: isStyleLoaded)
     }
 
-    private func updateMapCamera(_ mapView: MGLMapView, animated: Bool) {
+    private func updateMapCamera(_ mapView: MLNMapView, animated: Bool) {
         if let camera = self.camera {
             switch camera.wrappedValue {
             case .centerAndZoom(let center, let zoom):
