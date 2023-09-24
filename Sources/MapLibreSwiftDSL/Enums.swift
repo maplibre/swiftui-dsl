@@ -1,4 +1,5 @@
 import MapLibre
+import InternalUtils
 
 // This file exists for convenience until / unless
 // this is merged into the MapLibre Native Swift module OR Swift gains the
@@ -10,8 +11,9 @@ public enum LineCap {
     case square
 }
 
-extension LineCap {
-    var mglLineCapValue: MLNLineCap {
+
+extension LineCap: MLNRawRepresentable {
+    public var mlnRawValue: MLNLineCap {
         switch self {
         case .butt: return .butt
         case .round: return .round
@@ -26,8 +28,8 @@ public enum LineJoin {
     case round
 }
 
-extension LineJoin {
-    var mglLineJoinValue: MLNLineJoin {
+extension LineJoin: MLNRawRepresentable {
+    public var mlnRawValue: MLNLineJoin {
         switch self {
         case .bevel: return .bevel
         case .miter: return .miter

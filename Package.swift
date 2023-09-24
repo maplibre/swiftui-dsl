@@ -8,7 +8,7 @@ let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
         // DISCUSS: Determine minimum support target; iOS 16 and 17 bring significant improvements to SwiftUI, but it's still TBD what we can get away with supporting.
-        .iOS(.v17), .macOS(.v10_15)
+        .iOS(.v17), .macOS(.v13),
     ],
     products: [
         .library(
@@ -21,6 +21,7 @@ let package = Package(
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
         .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMajor(from: "509.0.0")),
+        .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.1.0")),
 
     ],
     targets: [
@@ -59,6 +60,7 @@ let package = Package(
                 "MapLibreSwiftDSL",
                 "MapLibreSwiftMacrosImpl",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                .product(name: "MacroTesting", package: "swift-macro-testing"),
             ]),
     ]
 )

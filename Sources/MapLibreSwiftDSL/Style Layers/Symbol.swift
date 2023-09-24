@@ -1,7 +1,9 @@
 import Foundation
 import InternalUtils
 import MapLibre
+import MapLibreSwiftMacros
 
+@StyleExpression<Double>(named: "iconRotation", supportsInterpolation: true)
 public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
@@ -33,7 +35,6 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 
     // TODO: Other properties and their modifiers
     fileprivate var iconImageName: NSExpression?
-    fileprivate var iconRotation: NSExpression?
 
     private var iconImages = [UIImage]()
 
@@ -45,19 +46,6 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
             it.iconImages = [image]
         }
     }
-
-    public func iconRotation(constant rotation: Double) -> Self {
-        return modified(self) { it in
-            it.iconRotation = NSExpression(forConstantValue: rotation)
-        }
-    }
-
-    public func iconRotation(fieldKeyPath keyPath: String) -> Self {
-        return modified(self) { it in
-            it.iconRotation = NSExpression(forKeyPath: keyPath)
-        }
-    }
-
 
     // FIXME: This appears to be broken upstream; waiting for a new release
 //    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self {

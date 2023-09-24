@@ -27,7 +27,7 @@ struct Layer_Previews: PreviewProvider {
         MapView(styleURL: demoTilesURL) {
             // Silly example: a background layer on top of everything to create a tint effect
             BackgroundLayer(identifier: "rose-colored-glasses")
-                .backgroundColor(.systemPink.withAlphaComponent(0.3))
+                .backgroundColor(constant: .systemPink.withAlphaComponent(0.3))
                 .renderAboveOthers()
         }
             .ignoresSafeArea(.all)
@@ -54,7 +54,7 @@ struct Layer_Previews: PreviewProvider {
             // Simple symbol layer demonstration with an icon
             SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
                 .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                .iconRotation(fieldKeyPath: "heading")
+                .iconRotation(featurePropertyNamed: "heading")
         }
             .ignoresSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Dynamic)")
