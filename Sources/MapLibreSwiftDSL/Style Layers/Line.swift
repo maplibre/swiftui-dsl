@@ -4,10 +4,10 @@ import InternalUtils
 import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
-@StyleExpression<UIColor>("lineColor", supportsInterpolation: true)
-@StyleRawRepresentableExpression<LineCap>("lineCap")
-@StyleRawRepresentableExpression<LineJoin>("lineJoin")
-@StyleExpression<Float>("lineWidth", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
+@MLNRawRepresentableStyleProperty<LineCap>("lineCap")
+@MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
+@MLNStyleProperty<Float>("lineWidth", supportsInterpolation: true)
 public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers

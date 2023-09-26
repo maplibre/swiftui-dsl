@@ -3,9 +3,8 @@ import MapLibre
 import InternalUtils
 import MapLibreSwiftMacros
 
-// TODO: Other properties and their modifiers
-@StyleExpression<UIColor>("backgroundColor", supportsInterpolation: true)
-@StyleExpression<Float>("backgroundOpacity", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("backgroundColor", supportsInterpolation: true)
+@MLNStyleProperty<Float>("backgroundOpacity", supportsInterpolation: true)
 public struct BackgroundLayer: StyleLayer {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .belowOthers

@@ -9,8 +9,8 @@ import XCTest
 final class ExpressionTests: XCTestCase {
     override func invokeTest() {
         withMacroTesting(macros: [
-            StyleExpressionMacro.self,
-            StyleRawRepresentableExpressionMacro.self,
+            MLNStylePropertyMacro.self,
+            MLNRawRepresentableStylePropertyMacro.self,
         ]) {
             super.invokeTest()
         }
@@ -18,10 +18,10 @@ final class ExpressionTests: XCTestCase {
 
     // TODO: Non-enum attachment
 
-    func testStyleExpressionValid() {
+    func testMLNStylePropertyValid() {
         assertMacro {
             """
-            @StyleExpression<UIColor>("backgroundColor")
+            @MLNStyleProperty<UIColor>("backgroundColor")
             struct Layer {
             }
             """
@@ -48,7 +48,7 @@ final class ExpressionTests: XCTestCase {
 
         assertMacro {
             """
-            @StyleExpression<UIColor>("backgroundColor", supportsInterpolation: false)
+            @MLNStyleProperty<UIColor>("backgroundColor", supportsInterpolation: false)
             struct Layer {
             }
             """
@@ -74,10 +74,10 @@ final class ExpressionTests: XCTestCase {
         }
     }
 
-    func testStyleExpressionValidWithSupportedExpressions() {
+    func testMLNStylePropertyValidWithSupportedExpressions() {
         assertMacro {
             """
-            @StyleExpression<UIColor>("backgroundColor", supportsInterpolation: true)
+            @MLNStyleProperty<UIColor>("backgroundColor", supportsInterpolation: true)
             struct Layer {
             }
             """
@@ -112,7 +112,7 @@ final class ExpressionTests: XCTestCase {
     func testStyleRawExpressionValid() {
         assertMacro {
             """
-            @StyleRawRepresentableExpression<UIColor>("backgroundColor")
+            @MLNRawRepresentableStyleProperty<UIColor>("backgroundColor")
             struct Layer {
             }
             """

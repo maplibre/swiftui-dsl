@@ -3,7 +3,7 @@ import InternalUtils
 import MapLibre
 import MapLibreSwiftMacros
 
-@StyleExpression<Double>("iconRotation", supportsInterpolation: true)
+@MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers

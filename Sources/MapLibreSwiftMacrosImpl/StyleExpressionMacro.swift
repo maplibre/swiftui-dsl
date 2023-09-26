@@ -5,7 +5,7 @@ import SwiftSyntaxBuilder
 
 private let allowedKeys = Set(["supportsInterpolation"])
 
-private func generateStyleExpression(for attributes: AttributeSyntax, valueType: TypeSyntax, isRawRepresentable: Bool) throws -> [DeclSyntax] {
+private func generateStyleProperty(for attributes: AttributeSyntax, valueType: TypeSyntax, isRawRepresentable: Bool) throws -> [DeclSyntax] {
     guard let args = attributes.arguments, let exprs = args.as(LabeledExprListSyntax.self), exprs.count >= 1, let identifierString = exprs.first?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue else {
         fatalError("Compiler bug: this macro did not receive arguments per its public signature.")
     }
@@ -69,7 +69,7 @@ private func generateFunctionDeclSyntax(identifier: TokenSyntax, valueType: Type
     }
 }
 
-public struct StyleExpressionMacro: MemberMacro {
+public struct MLNStylePropertyMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [DeclSyntax] {
         guard let genericArgument = node
             .attributeName.as(IdentifierTypeSyntax.self)?
@@ -79,11 +79,11 @@ public struct StyleExpressionMacro: MemberMacro {
             fatalError("Compiler bug: this macro is missing a generic type constraint.")
         }
 
-        return try generateStyleExpression(for: node, valueType: genericArgument, isRawRepresentable: false)
+        return try generateStyleProperty(for: node, valueType: genericArgument, isRawRepresentable: false)
     }
 }
 
-public struct StyleRawRepresentableExpressionMacro: MemberMacro {
+public struct MLNRawRepresentableStylePropertyMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [DeclSyntax] {
         guard let genericArgument = node
             .attributeName.as(IdentifierTypeSyntax.self)?
@@ -93,6 +93,6 @@ public struct StyleRawRepresentableExpressionMacro: MemberMacro {
             fatalError("Compiler bug: this macro is missing a generic type constraint.")
         }
 
-        return try generateStyleExpression(for: node, valueType: genericArgument, isRawRepresentable: true)
+        return try generateStyleProperty(for: node, valueType: genericArgument, isRawRepresentable: true)
     }
 }
