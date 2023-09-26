@@ -4,8 +4,8 @@ import InternalUtils
 import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
-@StyleExpression<UIColor>(named: "backgroundColor", supportsInterpolation: true)
-@StyleExpression<Float>(named: "backgroundOpacity", supportsInterpolation: true)
+@StyleExpression<UIColor>("backgroundColor", supportsInterpolation: true)
+@StyleExpression<Float>("backgroundOpacity", supportsInterpolation: true)
 public struct BackgroundLayer: StyleLayer {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .belowOthers

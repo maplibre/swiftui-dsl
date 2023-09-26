@@ -3,45 +3,25 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxBuilder
 
-enum StyleExpressionMacroError: CustomStringConvertible, Error {
-    case invalidArguments
-    case missingGenericType
-
-    var description: String {
-        switch self {
-        case .invalidArguments: return "@StyleExpression must have arguments of the form @StyleExpression<T>(named: \"identifier\")"
-        case .missingGenericType: return "@StyleExpression must have a generic type constraint"
-        }
-    }
-}
-
 private let allowedKeys = Set(["supportsInterpolation"])
 
-private func generateStyleExpression(for attributes: AttributeSyntax, isRawRepresentable: Bool) throws -> [DeclSyntax] {
+private func generateStyleExpression(for attributes: AttributeSyntax, valueType: TypeSyntax, isRawRepresentable: Bool) throws -> [DeclSyntax] {
     guard let args = attributes.arguments, let exprs = args.as(LabeledExprListSyntax.self), exprs.count >= 1, let identifierString = exprs.first?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue else {
-        throw StyleExpressionMacroError.invalidArguments
+        fatalError("Compiler bug: this macro did not receive arguments per its public signature.")
     }
 
-    let flags = Dictionary(uniqueKeysWithValues: try exprs.dropFirst().map { expr in
+    let flags = Dictionary(uniqueKeysWithValues: exprs.dropFirst().map { expr in
         guard let key = expr.label?.text, allowedKeys.contains(key), let tokenKind = expr.expression.as(BooleanLiteralExprSyntax.self)?.literal.tokenKind else {
-            throw StyleExpressionMacroError.invalidArguments
+            fatalError("Compiler bug: this macro did not receive arguments per its public signature.")
         }
         return (key, tokenKind == TokenKind.keyword(.true))
     })
-
-    guard let genericArgument = attributes
-        .attributeName.as(IdentifierTypeSyntax.self)?
-        .genericArgumentClause?
-        .arguments.first?
-        .argument else {
-        throw StyleExpressionMacroError.missingGenericType
-    }
 
     let identifier = TokenSyntax(stringLiteral: identifierString)
 
     let varDeclSyntax = DeclSyntax("fileprivate var \(identifier): NSExpression? = nil")
 
-    let constantFuncDecl = try generateFunctionDeclSyntax(identifier: identifier, genericArgument: genericArgument, isRawRepresentable: isRawRepresentable)
+    let constantFuncDecl = try generateFunctionDeclSyntax(identifier: identifier, valueType: valueType, isRawRepresentable: isRawRepresentable)
 
     let getPropFuncDecl = try FunctionDeclSyntax("public func \(identifier)(featurePropertyNamed keyPath: String) -> Self") {
         "var copy = self"
@@ -51,7 +31,7 @@ private func generateStyleExpression(for attributes: AttributeSyntax, isRawRepre
 
     guard let constFuncDeclSyntax = DeclSyntax(constantFuncDecl),
           let getPropFuncDeclSyntax = DeclSyntax(getPropFuncDecl) else {
-        throw StyleExpressionMacroError.invalidArguments
+        fatalError("SwiftSyntax bug or implementation error: unable to construct DeclSyntax")
     }
 
     var extra: [DeclSyntax] = []
@@ -64,7 +44,7 @@ private func generateStyleExpression(for attributes: AttributeSyntax, isRawRepre
         }
 
         guard let interpolationFuncDeclSyntax = DeclSyntax(interpolationFuncDecl) else {
-            throw StyleExpressionMacroError.invalidArguments
+            fatalError("SwiftSyntax bug or implementation error: unable to construct DeclSyntax")
         }
 
         extra.append(interpolationFuncDeclSyntax)
@@ -73,15 +53,15 @@ private func generateStyleExpression(for attributes: AttributeSyntax, isRawRepre
     return [varDeclSyntax, constFuncDeclSyntax, getPropFuncDeclSyntax] + extra
 }
 
-private func generateFunctionDeclSyntax(identifier: TokenSyntax, genericArgument: TypeSyntax, isRawRepresentable: Bool) throws -> FunctionDeclSyntax {
+private func generateFunctionDeclSyntax(identifier: TokenSyntax, valueType: TypeSyntax, isRawRepresentable: Bool) throws -> FunctionDeclSyntax {
     if (isRawRepresentable) {
-        return try FunctionDeclSyntax("public func \(identifier)(constant value: \(genericArgument)) -> Self") {
+        return try FunctionDeclSyntax("public func \(identifier)(constant value: \(valueType)) -> Self") {
             "var copy = self"
             "copy.\(identifier) = NSExpression(forConstantValue: value.mlnRawValue.rawValue)"
             "return copy"
         }
     } else {
-        return try FunctionDeclSyntax("public func \(identifier)(constant value: \(genericArgument)) -> Self") {
+        return try FunctionDeclSyntax("public func \(identifier)(constant value: \(valueType)) -> Self") {
             "var copy = self"
             "copy.\(identifier) = NSExpression(forConstantValue: value)"
             "return copy"
@@ -91,12 +71,28 @@ private func generateFunctionDeclSyntax(identifier: TokenSyntax, genericArgument
 
 public struct StyleExpressionMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [DeclSyntax] {
-        return try generateStyleExpression(for: node, isRawRepresentable: false)
+        guard let genericArgument = node
+            .attributeName.as(IdentifierTypeSyntax.self)?
+            .genericArgumentClause?
+            .arguments.first?
+            .argument else {
+            fatalError("Compiler bug: this macro is missing a generic type constraint.")
+        }
+
+        return try generateStyleExpression(for: node, valueType: genericArgument, isRawRepresentable: false)
     }
 }
 
 public struct StyleRawRepresentableExpressionMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [DeclSyntax] {
-        return try generateStyleExpression(for: node, isRawRepresentable: true)
+        guard let genericArgument = node
+            .attributeName.as(IdentifierTypeSyntax.self)?
+            .genericArgumentClause?
+            .arguments.first?
+            .argument else {
+            fatalError("Compiler bug: this macro is missing a generic type constraint.")
+        }
+
+        return try generateStyleExpression(for: node, valueType: genericArgument, isRawRepresentable: true)
     }
 }

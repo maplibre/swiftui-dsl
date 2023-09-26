@@ -3,7 +3,8 @@ import Foundation
 import MapLibre
 
 
-// TODO: Generalize this into a macro? Revisit once Swift 5.9 lands
+// TODO: Parameters and stops need nicer interfaces
+// TODO: Expression should be able to accept other expressions like variable getters. Probably should be a protocol?
 public func interpolatingExpression(expression: MLNVariableExpression, curveType: MLNExpressionInterpolationMode, parameters: NSExpression?, stops: NSExpression) -> NSExpression {
     return NSExpression(forMLNInterpolating: expression.nsExpression,
                         curveType: curveType,

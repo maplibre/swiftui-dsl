@@ -9,75 +9,19 @@ import XCTest
 final class ExpressionTests: XCTestCase {
     override func invokeTest() {
         withMacroTesting(macros: [
-            "StyleExpression" : StyleExpressionMacro.self,
-            "StyleRawRepresentableExpression" : StyleRawRepresentableExpressionMacro.self,
+            StyleExpressionMacro.self,
+            StyleRawRepresentableExpressionMacro.self,
         ]) {
             super.invokeTest()
         }
     }
 
-    // TODO: Invalid test cases
-    // @StyleExpression()
-    // Non-enum attachment
-
-    func testStyleExpressionMissingArgument() {
-        assertMacro {
-            """
-            @StyleExpression<UIColor>()
-            struct Layer {
-            }
-            """
-        } matches: {
-            """
-            @StyleExpression<UIColor>()
-            ┬──────────────────────────
-            ╰─ 🛑 @StyleExpression must have arguments of the form @StyleExpression<T>(named: "identifier")
-            struct Layer {
-            }
-            """
-        }
-    }
-
-    func testStyleExpressionExtraArgument() {
-        assertMacro {
-            """
-            @StyleExpression<UIColor>(named: "backgroundColor", foo: bar)
-            struct Layer {
-            }
-            """
-        } matches: {
-            """
-            @StyleExpression<UIColor>(named: "backgroundColor", foo: bar)
-            ┬────────────────────────────────────────────────────────────
-            ╰─ 🛑 @StyleExpression must have arguments of the form @StyleExpression<T>(named: "identifier")
-            struct Layer {
-            }
-            """
-        }
-    }
-
-    func testStyleExpressionMissingGeneric() {
-        assertMacro {
-            """
-            @StyleExpression(named: "backgroundColor")
-            struct Layer {
-            }
-            """
-        } matches: {
-            """
-            @StyleExpression(named: "backgroundColor")
-            ┬─────────────────────────────────────────
-            ╰─ 🛑 @StyleExpression must have a generic type constraint
-            struct Layer {
-            }
-            """
-        }
-    }
+    // TODO: Non-enum attachment
 
     func testStyleExpressionValid() {
         assertMacro {
             """
-            @StyleExpression<UIColor>(named: "backgroundColor")
+            @StyleExpression<UIColor>("backgroundColor")
             struct Layer {
             }
             """
@@ -104,7 +48,7 @@ final class ExpressionTests: XCTestCase {
 
         assertMacro {
             """
-            @StyleExpression<UIColor>(named: "backgroundColor", supportsInterpolation: false)
+            @StyleExpression<UIColor>("backgroundColor", supportsInterpolation: false)
             struct Layer {
             }
             """
@@ -133,7 +77,7 @@ final class ExpressionTests: XCTestCase {
     func testStyleExpressionValidWithSupportedExpressions() {
         assertMacro {
             """
-            @StyleExpression<UIColor>(named: "backgroundColor", supportsInterpolation: true)
+            @StyleExpression<UIColor>("backgroundColor", supportsInterpolation: true)
             struct Layer {
             }
             """
@@ -168,7 +112,7 @@ final class ExpressionTests: XCTestCase {
     func testStyleRawExpressionValid() {
         assertMacro {
             """
-            @StyleRawRepresentableExpression<UIColor>(named: "backgroundColor")
+            @StyleRawRepresentableExpression<UIColor>("backgroundColor")
             struct Layer {
             }
             """
