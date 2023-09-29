@@ -17,6 +17,7 @@ let package = Package(
         .library(
             name: "MapLibreSwiftDSL",
             targets: ["MapLibreSwiftDSL"]),
+        .library(name: "MapLibre", targets: ["MapLibre"])
     ],
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
