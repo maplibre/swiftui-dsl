@@ -6,6 +6,7 @@ import InternalUtils
 /// Layout and paint properties may be specified using expresisons.
 /// Some expressions may suppeort more types of expressions than others (ex: interpolated).
 /// TODO: Figure out where these edges are.
+/// TODO: Document different types
 @attached(member, names: arbitrary)
 public macro MLNStyleProperty<T>(_ named: String, supportsInterpolation: Bool = false) = #externalMacro(module: "MapLibreSwiftMacrosImpl", type: "MLNStylePropertyMacro")
 
