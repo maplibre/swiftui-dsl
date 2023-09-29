@@ -97,7 +97,7 @@ extension SourceBoundStyleLayerDefinition {
 public protocol StyleLayer: StyleLayerDefinition {
     /// Builds an ``MLNStyleLayer`` using the layer definition.
     // DISCUSS: Potential leaky abstraction alert! We don't necessarily (TBD?) need this method public, but we do want the protocol conformance. This should be revisited.
-    func makeMGLStyleLayer() -> MLNStyleLayer
+    func makeMLNStyleLayer() -> MLNStyleLayer
 }
 
 extension StyleLayer {

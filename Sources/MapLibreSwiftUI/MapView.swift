@@ -114,7 +114,7 @@ public struct MapView: UIViewRepresentable {
         func addLayers(to mglStyle: MLNStyle) {
             for layerSpec in userLayers {
                 // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
-                let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMGLStyleLayer()
+                let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMLNStyleLayer()
 
                 // Unconditionally transfer the common properties
                 newLayer.isVisible = layerSpec.isVisible

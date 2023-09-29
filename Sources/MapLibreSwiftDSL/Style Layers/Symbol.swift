@@ -94,7 +94,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         self.mglSource = mglSource
     }
 
-    public func makeMGLStyleLayer() -> MLNStyleLayer {
+    public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNSymbolStyleLayer(identifier: identifier, source: mglSource)
 
         result.iconImageName = definition.iconImageName

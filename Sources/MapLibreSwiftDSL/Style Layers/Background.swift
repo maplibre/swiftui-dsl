@@ -16,7 +16,7 @@ public struct BackgroundLayer: StyleLayer {
         self.identifier = identifier
     }
 
-    public func makeMGLStyleLayer() -> MLNStyleLayer {
+    public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNBackgroundStyleLayer(identifier: identifier)
 
         result.backgroundColor = backgroundColor

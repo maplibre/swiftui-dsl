@@ -61,7 +61,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         self.mglSource = mglSource
     }
 
-    public func makeMGLStyleLayer() -> MLNStyleLayer {
+    public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNLineStyleLayer(identifier: identifier, source: mglSource)
 
         result.lineColor = definition.lineColor
