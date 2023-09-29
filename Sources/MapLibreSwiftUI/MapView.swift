@@ -31,16 +31,14 @@ public struct MapView: UIViewRepresentable {
     }
 
     public class Coordinator: NSObject, MLNMapViewDelegate {
-        private var styleSource: MapStyleSource
-        private var userLayers: [StyleLayerDefinition]
-        private var camera: Binding<Camera>?
+        var parent:  MapView
 
+        // Storage of variables as they were previously; these are snapshot
+        // every update cycle so we can avoid unnecessary updates
+        private var snapshotUserLayers: [StyleLayerDefinition] = []
 
-        init(styleSource: MapStyleSource, userLayers: [StyleLayerDefinition],
-             camera: Binding<Camera>?) {
-            self.styleSource = styleSource
-            self.userLayers = userLayers
-            self.camera = camera
+        init(parent: MapView) {
+            self.parent = parent
         }
 
         // MARK: - MLNMapViewDelegate
@@ -50,7 +48,7 @@ public struct MapView: UIViewRepresentable {
         }
 
         func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
-            switch (source, self.styleSource) {
+            switch (source, parent.styleSource) {
             case (.url(let newURL), .url(let oldURL)):
                 if newURL != oldURL {
                     mapView.styleURL = newURL
@@ -59,19 +57,21 @@ public struct MapView: UIViewRepresentable {
         }
 
         public func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
-            self.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
+            DispatchQueue.main.async {
+                self.parent.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
+            }
         }
 
         // MARK: - Coordinator API
 
-        func updateLayers(_ newLayers: [StyleLayerDefinition], mapView: MLNMapView) {
-            // Remove old layers.
-            // DISCUSS: Inefficient, but probably robust on the *layers* side.
+        func updateLayers(mapView: MLNMapView) {
+            // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
+
             // TODO: Extract this out into a separate function or three...
             // Try to reuse DSL-defined sources if possible (they are the same type)!
             if let style = mapView.style {
                 var sourcesToRemove = Set<String>()
-                for layer in userLayers {
+                for layer in snapshotUserLayers {
                     if let oldLayer = style.layer(withIdentifier: layer.identifier) {
                         style.removeLayer(oldLayer)
                     }
@@ -101,8 +101,8 @@ public struct MapView: UIViewRepresentable {
                 }
             }
 
-            // Set the new user-defined layers
-            self.userLayers = newLayers
+            // Snapshot the new user-defined layers
+            snapshotUserLayers = parent.userLayers
 
             // If the style is loaded, add the new layers to it.
             // Otherwise, this will get invoked automatically by the style didFinishLoading callback
@@ -112,7 +112,7 @@ public struct MapView: UIViewRepresentable {
         }
 
         func addLayers(to mglStyle: MLNStyle) {
-            for layerSpec in userLayers {
+            for layerSpec in parent.userLayers {
                 // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
                 let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMLNStyleLayer()
 
@@ -149,8 +149,6 @@ public struct MapView: UIViewRepresentable {
                 }
             }
         }
-
-
     }
 
     public func makeUIView(context: Context) -> MLNMapView {
@@ -172,17 +170,14 @@ public struct MapView: UIViewRepresentable {
     }
 
     public func makeCoordinator() -> Coordinator {
-        Coordinator(
-            styleSource: styleSource,
-            userLayers: userLayers,
-            camera: self.camera
-        )
+        Coordinator(parent: self)
     }
 
     public func updateUIView(_ mapView: MLNMapView, context: Context) {
+        context.coordinator.parent = self
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
-        context.coordinator.updateLayers(userLayers, mapView: mapView)
+        context.coordinator.updateLayers(mapView: mapView)
 
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
         let isStyleLoaded = mapView.style != nil

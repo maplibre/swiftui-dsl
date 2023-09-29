@@ -2,7 +2,7 @@ import InternalUtils
 import MapLibre
 
 /// Specifies a preference for where the layer should be inserted in the hierarchy.
-public enum LayerInsertionPosition {
+public enum LayerInsertionPosition: Equatable {
     /// The layer should be inserted above the layer with ID ``layerID``.
     ///
     /// If no such layer exists, the layer will be added above others and an error will be logged.
