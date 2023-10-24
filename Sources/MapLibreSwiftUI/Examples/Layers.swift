@@ -20,7 +20,7 @@ struct Layer_Previews: PreviewProvider {
 
             MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
                 feature.attributes["icon"] = "club"
-                feature.attributes["heading"] = 135
+                feature.attributes["heading"] = 145
             }
         }
 

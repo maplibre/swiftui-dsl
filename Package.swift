@@ -7,7 +7,6 @@ import CompilerPluginSupport
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
-        // DISCUSS: Determine minimum support target; iOS 16 and 17 bring significant improvements to SwiftUI, but it's still TBD what we can get away with supporting.
         .iOS(.v17), .macOS(.v13),
     ],
     products: [
@@ -38,8 +37,8 @@ let package = Package(
             dependencies: [.target(name: "MapLibreSwiftMacrosImpl")]
         ),
         .binaryTarget(name: "MapLibre",
-                      url: "https://github.com/maplibre/maplibre-native/releases/download/ios-v6.0.0-predd74d1e84a781a41691cfd0de592d153c8795b65/MapLibre.dynamic.xcframework.zip",
-                      checksum: "0a9c5a898f699e4acaa1650761f8908213fb5d638c389ed714a2f784349dd3b8"),
+                      url: "https://github.com/maplibre/maplibre-native/releases/download/ios-v6.0.0-preda45706601c7ccc6d922a8fcddfc62ff7c8f480d/MapLibre.dynamic.xcframework.zip",
+                      checksum: "37e621c0c7c1f589f0a125816155ba443000d78b80649d85a9b8b3d19144836c"),
         .target(
             name: "MapLibreSwiftUI",
             dependencies: [
