@@ -27,4 +27,5 @@ jobs:
       uses: actions/checkout@v3
     
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+      # run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+      run: xcodebuild -scheme ${{ matrix.scheme }} test -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
