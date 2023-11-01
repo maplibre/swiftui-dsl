@@ -15,19 +15,13 @@ struct CameraDirectManipulationPreview: View {
                 case .centerAndZoom(let coord, let zoom):
                     Text("\(coord.latitude), \(coord.longitude) z \(zoom ?? 0)")
                         .padding()
-                        .background(
-                            in: .rect(cornerRadii: .init(
-                                topLeading: 8,
-                                bottomLeading: 8,
-                                bottomTrailing: 8,
-                                topTrailing: 8)),
-                            fillStyle: .init()
-                        )
+                        .background(in: RoundedRectangle(cornerRadius: 8), 
+                                    fillStyle: .init())
                         .padding(.bottom, 42)
                 }
             })
         .task {
-            try! await Task.sleep(for: .seconds(3))
+            try! await Task.sleep(nanoseconds: 3_000_000_000)
 
             camera = MapView.Camera.centerAndZoom(switzerland, 6)
         }
