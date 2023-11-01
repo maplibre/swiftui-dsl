@@ -7,7 +7,8 @@ import CompilerPluginSupport
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
-        .iOS(.v17), .macOS(.v13),
+        .iOS(.v15),
+        .macOS(.v11),
     ],
     products: [
         .library(
