@@ -10,13 +10,20 @@ struct CameraDirectManipulationPreview: View {
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
-            .overlay(alignment: .bottomLeading, content: {
+            .overlay(alignment: .bottom, content: {
                 switch camera {
                 case .centerAndZoom(let coord, let zoom):
-                    Text("\(coord.latitude), \(coord.longitude) z\(zoom ?? 0)")
-                        .padding(.all, 8)
-                        .background(in: .rect(cornerRadii: .init(topLeading: 8,bottomLeading: 8,bottomTrailing: 8,topTrailing: 8)), fillStyle: .init())
-                        .safeAreaPadding(.all)
+                    Text("\(coord.latitude), \(coord.longitude) z \(zoom ?? 0)")
+                        .padding()
+                        .background(
+                            in: .rect(cornerRadii: .init(
+                                topLeading: 8,
+                                bottomLeading: 8,
+                                bottomTrailing: 8,
+                                topTrailing: 8)),
+                            fillStyle: .init()
+                        )
+                        .padding(.bottom, 42)
                 }
             })
         .task {
