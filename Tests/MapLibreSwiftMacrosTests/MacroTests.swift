@@ -18,10 +18,6 @@ final class ExpressionTests: XCTestCase {
 
     // TODO: Non-enum attachment
 
-    func testFail() {
-        XCTAssert(false)
-    }
-
     func testMLNStylePropertyValid() {
         assertMacro {
             """
