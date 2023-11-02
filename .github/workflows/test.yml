@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         scheme: [
-          MapLibreSwiftDSL
+          MapLibreSwiftUI-Package
         ]
         destination: [
           'platform=iOS Simulator,name=iPhone 14,OS=16.2',
