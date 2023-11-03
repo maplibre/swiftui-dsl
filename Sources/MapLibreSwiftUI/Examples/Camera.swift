@@ -21,7 +21,7 @@ struct CameraDirectManipulationPreview: View {
                 }
             })
         .task {
-            try! await Task.sleep(nanoseconds: 3_000_000_000)
+            try! await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
 
             camera = MapView.Camera.centerAndZoom(switzerland, 6)
         }
