@@ -67,6 +67,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "MapLibreSwiftMacrosTests"
+               BuildableName = "MapLibreSwiftMacrosTests"
+               BlueprintName = "MapLibreSwiftMacrosTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

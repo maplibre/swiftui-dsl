@@ -6,7 +6,6 @@ import MapLibreSwiftUI
 
 public struct MapView: UIViewRepresentable {
     
-    @State private var lastCamera: MapViewCamera?
     public private(set) var camera: Binding<MapViewCamera>?
 
     public let styleSource: MapStyleSource
@@ -37,7 +36,8 @@ public struct MapView: UIViewRepresentable {
         // Storage of variables as they were previously; these are snapshot
         // every update cycle so we can avoid unnecessary updates
         private var snapshotUserLayers: [StyleLayerDefinition] = []
-
+        var snapshotCamera: MapViewCamera?
+        
         init(parent: MapView) {
             self.parent = parent
         }
@@ -163,7 +163,7 @@ public struct MapView: UIViewRepresentable {
             mapView.styleURL = styleURL
         }
 
-        updateMapCamera(mapView, animated: false)
+        updateMapCamera(mapView, context: context, animated: false)
 
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
@@ -184,12 +184,12 @@ public struct MapView: UIViewRepresentable {
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
         let isStyleLoaded = mapView.style != nil
 
-        updateMapCamera(mapView, animated: isStyleLoaded)
+        updateMapCamera(mapView, context: context, animated: isStyleLoaded)
     }
 
-    private func updateMapCamera(_ mapView: MLNMapView, animated: Bool) {
+    private func updateMapCamera(_ mapView: MLNMapView, context: Context, animated: Bool) {
         guard let newCamera = self.camera?.wrappedValue,
-              lastCamera != newCamera else {
+              context.coordinator.snapshotCamera != newCamera else {
             // Exit early - the camera has not changed.
             return
         }
@@ -199,7 +199,7 @@ public struct MapView: UIViewRepresentable {
                           direction: newCamera.course,
                           animated: animated)
         
-        self.lastCamera = newCamera
+        context.coordinator.snapshotCamera = newCamera
     }
 }
 
