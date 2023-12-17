@@ -7,7 +7,7 @@ struct PolylinePreview: View {
     let styleURL: URL
 
     var body: some View {
-        MapView(styleURL: styleURL, initialCamera: MapView.Camera.centerAndZoom(samplePedestrianWaypoints.first!, 14)) {
+        MapView(styleURL: styleURL, initialCamera: MapViewCamera.center(samplePedestrianWaypoints.first!, zoom: 14)) {
             // Note: This line does not add the source to the style as if it
             // were a statement in an imperative programming language.
             // The source is added automatically if a layer references it.

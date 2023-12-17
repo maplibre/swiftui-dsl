@@ -2,31 +2,32 @@ import SwiftUI
 import InternalUtils
 import MapLibre
 import MapLibreSwiftDSL
-
+import MapLibreSwiftUI
 
 public struct MapView: UIViewRepresentable {
-    // TODO: Support MLNStyle as well; having a DSL for that would be nice
-    enum MapStyleSource {
-        case url(URL)
-    }
+    
+    @State private var lastCamera: MapViewCamera?
+    public private(set) var camera: Binding<MapViewCamera>?
 
-    public enum Camera {
-        case centerAndZoom(CLLocationCoordinate2D, Double?)
-    }
-
-    var camera: Binding<Camera>?
-
-    let styleSource: MapStyleSource
+    public let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
-    public init(styleURL: URL, camera: Binding<Camera>? = nil, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
+    public init(
+        styleURL: URL,
+        camera: Binding<MapViewCamera>? = nil,
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
         self.styleSource = .url(styleURL)
         self.camera = camera
 
         userLayers = makeMapContent()
     }
 
-    public init(styleURL: URL, initialCamera: Camera, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
+    public init(
+        styleURL: URL,
+        initialCamera: MapViewCamera,
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
         self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
     }
 
@@ -58,7 +59,8 @@ public struct MapView: UIViewRepresentable {
 
         public func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
-                self.parent.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
+                self.parent.camera?.wrappedValue = .center(mapView.centerCoordinate,
+                                                           zoom:  mapView.zoomLevel)
             }
         }
 
@@ -186,17 +188,18 @@ public struct MapView: UIViewRepresentable {
     }
 
     private func updateMapCamera(_ mapView: MLNMapView, animated: Bool) {
-        if let camera = self.camera {
-            switch camera.wrappedValue {
-            case .centerAndZoom(let center, let zoom):
-                // TODO: Determine if MapLibre is smart enough to keep animating to the same place multiple times; if not, add a check here to prevent suprious updates.
-                if let z = zoom {
-                    mapView.setCenter(center, zoomLevel: z, animated: animated)
-                } else {
-                    mapView.setCenter(center, animated: animated)
-                }
-            }
+        guard let newCamera = self.camera?.wrappedValue,
+              lastCamera != newCamera else {
+            // Exit early - the camera has not changed.
+            return
         }
+        
+        mapView.setCenter(newCamera.coordinate,
+                          zoomLevel: newCamera.zoom,
+                          direction: newCamera.course,
+                          animated: animated)
+        
+        self.lastCamera = newCamera
     }
 }
 
