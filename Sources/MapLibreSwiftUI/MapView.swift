@@ -9,7 +9,7 @@ public struct MapView: UIViewRepresentable {
     public private(set) var camera: Binding<MapViewCamera>?
 
     public let styleSource: MapStyleSource
-    let userLayers: [StyleLayerDefinition]
+    public let userLayers: [StyleLayerDefinition]
 
     public init(
         styleURL: URL,
@@ -203,12 +203,7 @@ public struct MapView: UIViewRepresentable {
     }
 }
 
-@resultBuilder
-public enum MapViewContentBuilder {
-    public static func buildBlock(_ layers: StyleLayerDefinition...) -> [StyleLayerDefinition] {
-        return layers
-    }
-}
+
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
