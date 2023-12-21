@@ -203,8 +203,6 @@ public struct MapView: UIViewRepresentable {
     }
 }
 
-
-
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
