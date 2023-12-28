@@ -11,8 +11,9 @@ struct CameraDirectManipulationPreview: View {
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
             .overlay(alignment: .bottom, content: {
-                Text("\(camera.coordinate.latitude), \(camera.coordinate.longitude) z \(camera.zoom ?? 0)")
+                Text("\(camera.coordinate.latitude), \(camera.coordinate.longitude) z \(camera.zoom)")
                     .padding()
+                    .foregroundColor(.white)
                     .background(
                         Rectangle()
                             .foregroundColor(.black)

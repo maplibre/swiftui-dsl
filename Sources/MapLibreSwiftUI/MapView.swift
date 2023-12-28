@@ -2,18 +2,17 @@ import SwiftUI
 import InternalUtils
 import MapLibre
 import MapLibreSwiftDSL
-import MapLibreSwiftUI
 
 public struct MapView: UIViewRepresentable {
     
-    public private(set) var camera: Binding<MapViewCamera>?
+    public private(set) var camera: Binding<MapViewCamera>
 
-    public let styleSource: MapStyleSource
-    public let userLayers: [StyleLayerDefinition]
+    let styleSource: MapStyleSource
+    let userLayers: [StyleLayerDefinition]
 
     public init(
         styleURL: URL,
-        camera: Binding<MapViewCamera>? = nil,
+        camera: Binding<MapViewCamera> = .constant(.default()),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleSource = .url(styleURL)
@@ -36,7 +35,7 @@ public struct MapView: UIViewRepresentable {
         // Storage of variables as they were previously; these are snapshot
         // every update cycle so we can avoid unnecessary updates
         private var snapshotUserLayers: [StyleLayerDefinition] = []
-        var snapshotCamera: MapViewCamera?
+        private var snapshotCamera: MapViewCamera?
         
         init(parent: MapView) {
             self.parent = parent
@@ -59,13 +58,27 @@ public struct MapView: UIViewRepresentable {
 
         public func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
-                self.parent.camera?.wrappedValue = .center(mapView.centerCoordinate,
-                                                           zoom:  mapView.zoomLevel)
+                self.parent.camera.wrappedValue = .center(mapView.centerCoordinate,
+                                                          zoom:  mapView.zoomLevel)
             }
         }
 
         // MARK: - Coordinator API
 
+        func updateCamera(mapView: MLNMapView, camera: MapViewCamera, animated: Bool) {
+            guard camera != snapshotCamera else {
+                // No action - camera has not changed.
+                return
+            }
+            
+            mapView.setCenter(camera.coordinate,
+                              zoomLevel: camera.zoom,
+                              direction: camera.course,
+                              animated: animated)
+            
+            snapshotCamera = camera
+        }
+        
         func updateLayers(mapView: MLNMapView) {
             // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
 
@@ -163,8 +176,10 @@ public struct MapView: UIViewRepresentable {
             mapView.styleURL = styleURL
         }
 
-        updateMapCamera(mapView, context: context, animated: false)
-
+        context.coordinator.updateCamera(mapView: mapView,
+                                         camera: camera.wrappedValue,
+                                         animated: false)
+        
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
 
@@ -180,26 +195,13 @@ public struct MapView: UIViewRepresentable {
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(mapView: mapView)
-
+        
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
         let isStyleLoaded = mapView.style != nil
 
-        updateMapCamera(mapView, context: context, animated: isStyleLoaded)
-    }
-
-    private func updateMapCamera(_ mapView: MLNMapView, context: Context, animated: Bool) {
-        guard let newCamera = self.camera?.wrappedValue,
-              context.coordinator.snapshotCamera != newCamera else {
-            // Exit early - the camera has not changed.
-            return
-        }
-        
-        mapView.setCenter(newCamera.coordinate,
-                          zoomLevel: newCamera.zoom,
-                          direction: newCamera.course,
-                          animated: animated)
-        
-        context.coordinator.snapshotCamera = newCamera
+        context.coordinator.updateCamera(mapView: mapView,
+                                         camera: camera.wrappedValue,
+                                         animated: isStyleLoaded)
     }
 }
 

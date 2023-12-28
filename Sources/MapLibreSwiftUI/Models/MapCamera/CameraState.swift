@@ -8,7 +8,7 @@ public enum CameraState {
     case centered
     
     /// The camera is currently following a location provider.
-    case userLocation
+    case trackingUserLocation
     
     /// Centered on a bounding box/rectangle.
     case rect
@@ -24,7 +24,7 @@ extension CameraState: Equatable {
             
         case (.centered, .centered):
             return true
-        case (.userLocation, .userLocation):
+        case (.trackingUserLocation, .trackingUserLocation):
             return true
         case (.rect, .rect):
             return true

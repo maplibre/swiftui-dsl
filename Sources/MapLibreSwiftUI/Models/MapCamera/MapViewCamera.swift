@@ -9,12 +9,12 @@ public struct MapViewCamera {
     public var pitch: Double
     public var course: CLLocationDirection
     
-    /// A backup camera centered at 0.0, 0.0. This is typically used as a backup,
+    /// A camera centered at 0.0, 0.0. This is typically used as a backup,
     /// pre-load for an expected camera update (e.g. before a location provider produces
     /// it's first location).
     ///
     /// - Returns: The constructed MapViewCamera.
-    public static func backup() -> MapViewCamera {
+    public static func `default`() -> MapViewCamera {
         return MapViewCamera(state: .centered,
                              coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0),
                              zoom: 10,
@@ -42,11 +42,11 @@ public struct MapViewCamera {
                              course: course)
     }
     
-    public static func userLocation(_ location: CLLocation,
-                                    zoom: Double,
-                                    pitch: Double = 90.0) -> MapViewCamera {
+    public static func trackUserLocation(_ location: CLLocation,
+                                         zoom: Double,
+                                         pitch: Double = 90.0) -> MapViewCamera {
         
-        return MapViewCamera(state: .userLocation,
+        return MapViewCamera(state: .trackingUserLocation,
                              coordinate: location.coordinate,
                              zoom: zoom,
                              pitch: pitch,
