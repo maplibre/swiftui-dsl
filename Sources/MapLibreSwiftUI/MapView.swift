@@ -3,30 +3,29 @@ import InternalUtils
 import MapLibre
 import MapLibreSwiftDSL
 
-
 public struct MapView: UIViewRepresentable {
-    // TODO: Support MLNStyle as well; having a DSL for that would be nice
-    enum MapStyleSource {
-        case url(URL)
-    }
-
-    public enum Camera {
-        case centerAndZoom(CLLocationCoordinate2D, Double?)
-    }
-
-    var camera: Binding<Camera>?
+    
+    public private(set) var camera: Binding<MapViewCamera>
 
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
-    public init(styleURL: URL, camera: Binding<Camera>? = nil, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
+    public init(
+        styleURL: URL,
+        camera: Binding<MapViewCamera> = .constant(.default()),
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
         self.styleSource = .url(styleURL)
         self.camera = camera
 
         userLayers = makeMapContent()
     }
 
-    public init(styleURL: URL, initialCamera: Camera, @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }) {
+    public init(
+        styleURL: URL,
+        initialCamera: MapViewCamera,
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
         self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
     }
 
@@ -36,7 +35,8 @@ public struct MapView: UIViewRepresentable {
         // Storage of variables as they were previously; these are snapshot
         // every update cycle so we can avoid unnecessary updates
         private var snapshotUserLayers: [StyleLayerDefinition] = []
-
+        private var snapshotCamera: MapViewCamera?
+        
         init(parent: MapView) {
             self.parent = parent
         }
@@ -58,12 +58,27 @@ public struct MapView: UIViewRepresentable {
 
         public func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
-                self.parent.camera?.wrappedValue = .centerAndZoom(mapView.centerCoordinate, mapView.zoomLevel)
+                self.parent.camera.wrappedValue = .center(mapView.centerCoordinate,
+                                                          zoom:  mapView.zoomLevel)
             }
         }
 
         // MARK: - Coordinator API
 
+        func updateCamera(mapView: MLNMapView, camera: MapViewCamera, animated: Bool) {
+            guard camera != snapshotCamera else {
+                // No action - camera has not changed.
+                return
+            }
+            
+            mapView.setCenter(camera.coordinate,
+                              zoomLevel: camera.zoom,
+                              direction: camera.course,
+                              animated: animated)
+            
+            snapshotCamera = camera
+        }
+        
         func updateLayers(mapView: MLNMapView) {
             // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
 
@@ -161,8 +176,10 @@ public struct MapView: UIViewRepresentable {
             mapView.styleURL = styleURL
         }
 
-        updateMapCamera(mapView, animated: false)
-
+        context.coordinator.updateCamera(mapView: mapView,
+                                         camera: camera.wrappedValue,
+                                         animated: false)
+        
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
 
@@ -178,32 +195,13 @@ public struct MapView: UIViewRepresentable {
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(mapView: mapView)
-
+        
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
         let isStyleLoaded = mapView.style != nil
 
-        updateMapCamera(mapView, animated: isStyleLoaded)
-    }
-
-    private func updateMapCamera(_ mapView: MLNMapView, animated: Bool) {
-        if let camera = self.camera {
-            switch camera.wrappedValue {
-            case .centerAndZoom(let center, let zoom):
-                // TODO: Determine if MapLibre is smart enough to keep animating to the same place multiple times; if not, add a check here to prevent suprious updates.
-                if let z = zoom {
-                    mapView.setCenter(center, zoomLevel: z, animated: animated)
-                } else {
-                    mapView.setCenter(center, animated: animated)
-                }
-            }
-        }
-    }
-}
-
-@resultBuilder
-public enum MapViewContentBuilder {
-    public static func buildBlock(_ layers: StyleLayerDefinition...) -> [StyleLayerDefinition] {
-        return layers
+        context.coordinator.updateCamera(mapView: mapView,
+                                         camera: camera.wrappedValue,
+                                         animated: isStyleLoaded)
     }
 }
 

@@ -42,8 +42,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "MapLibre",
-            url: "https://github.com/maplibre/maplibre-native/releases/download/ios-v6.0.0-preda45706601c7ccc6d922a8fcddfc62ff7c8f480d/MapLibre.dynamic.xcframework.zip",
-            checksum: "37e621c0c7c1f589f0a125816155ba443000d78b80649d85a9b8b3d19144836c"
+            url: "https://github.com/maplibre/maplibre-native/releases/download/ios-v6.0.0-pre9fbcb031f019048f21fdfcb57b80f4451cdecfd9/MapLibre.dynamic.xcframework.zip",
+            checksum: "929bbc3f24740df360bf447acf08bd102cf4baf12a6bc099f42e5fb8b5130cf4"
         ),
         .target(
             name: "MapLibreSwiftUI",
