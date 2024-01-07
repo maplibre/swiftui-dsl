@@ -23,23 +23,9 @@ let package = Package(
     ],
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
-        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMajor(from: "509.0.0")),
-        .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.1.0")),
+        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", branch: "main")
     ],
     targets: [
-        .macro(
-            name: "MapLibreSwiftMacrosImpl",
-            dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-            ]
-        ),
-        .target(
-            name: "MapLibreSwiftMacros",
-            dependencies: [
-                .target(name: "MapLibreSwiftMacrosImpl")
-            ]
-        ),
         .binaryTarget(
             name: "MapLibre",
             url: "https://github.com/maplibre/maplibre-native/releases/download/ios-v6.0.0-pre9fbcb031f019048f21fdfcb57b80f4451cdecfd9/MapLibre.dynamic.xcframework.zip",
@@ -57,7 +43,7 @@ let package = Package(
             dependencies: [
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibre"),
-                .target(name: "MapLibreSwiftMacros"),
+                .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros")
             ]
         ),
         .target(
@@ -70,14 +56,6 @@ let package = Package(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
                 "MapLibreSwiftDSL"
-            ]
-        ),
-        .testTarget(
-            name: "MapLibreSwiftMacrosTests",
-            dependencies: [
-                "MapLibreSwiftMacrosImpl",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-                .product(name: "MacroTesting", package: "swift-macro-testing"),
             ]
         ),
     ]

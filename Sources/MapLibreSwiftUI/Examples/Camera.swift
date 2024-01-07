@@ -19,7 +19,6 @@ struct CameraDirectManipulationPreview: View {
                             .foregroundColor(.black)
                             .cornerRadius(8)
                     )
-
                     .padding(.bottom, 42)
             })
         .task {
