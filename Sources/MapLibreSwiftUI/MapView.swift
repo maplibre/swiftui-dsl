@@ -9,6 +9,7 @@ public struct MapView: UIViewRepresentable {
 
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
+    var mapViewModifier: ((MLNMapView) -> Void)?
 
     public init(
         styleURL: URL,
@@ -27,6 +28,27 @@ public struct MapView: UIViewRepresentable {
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
+    }
+    
+    /// Allows you to set properties of the underlying MLNMapView directly.
+    /// Use this function to modify various properties of the MLNMapView instance.
+    /// For example, you can enable the display of the user's location on the map by setting `showUserLocation` to true.
+    ///
+    /// - Parameter modifier: A closure that provides you with an MLNMapView so you can set properties.
+    /// - Returns: A MapView with the modifications applied.
+    ///
+    /// Example:
+    /// ```swift
+    ///  MapView()
+    ///     .mapViewModifier { mapView in
+    ///         mapView.showUserLocation = true
+    ///     }
+    /// ```
+    ///
+    public func mapViewModifier(_ modifier: @escaping (MLNMapView) -> Void) -> MapView {
+        var newMapView = self
+        newMapView.mapViewModifier = modifier
+        return newMapView
     }
 
     public class Coordinator: NSObject, MLNMapViewDelegate {
@@ -192,11 +214,14 @@ public struct MapView: UIViewRepresentable {
 
     public func updateUIView(_ mapView: MLNMapView, context: Context) {
         context.coordinator.parent = self
+        if let mapViewModifier {
+            mapViewModifier(mapView)
+        }
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(mapView: mapView)
         
-        // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs t obe.
+        // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
         let isStyleLoaded = mapView.style != nil
 
         context.coordinator.updateCamera(mapView: mapView,
