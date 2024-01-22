@@ -58,19 +58,6 @@ struct Layer_Previews: PreviewProvider {
         }
             .ignoresSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Dynamic)")
-        
-        MapView(styleURL: demoTilesURL) {
-            // Demonstrates how to use the unsafeMapModifier to set MLNMapView properties that have not been exposed as modifiers yet.
-            SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-                .iconImage(constant: UIImage(systemName: "mappin")!)
-        }
-        .unsafeMapViewModifier({ mapView in
-            // Not all properties have modifiers yet. Until they do, you can use this 'escape hatch' to the underlying MLNMapView. Be careful: if you modify properties that the DSL controls already, they may be overridden. This modifier is a "hack", not a final function.
-            mapView.logoView.isHidden = false
-            mapView.compassViewPosition = .topLeft
-        })
-        .ignoresSafeArea(.all)
-        .previewDisplayName("Unsafe MapView Modifier")
 
         // FIXME: This appears to be broken upstream; waiting for a new release
 //        MapView(styleURL: demoTilesURL) {
