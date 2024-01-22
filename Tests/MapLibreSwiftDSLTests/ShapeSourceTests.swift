@@ -35,4 +35,24 @@ final class ShapeSourceTests: XCTestCase {
             XCTFail("Expected a feature source")
         }
     }
+    
+    func testForInAndCombinationFeatureBuilder() throws {
+        // ShapeSource now accepts 'for in' building, arrays, and combinations of them
+        let shapeSource = ShapeSource(identifier: "foo") {
+            for coordinates in samplePedestrianWaypoints {
+                MLNPointFeature(coordinate: coordinates)
+            }
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3719))
+        }
+        
+        XCTAssertEqual(shapeSource.identifier, "foo")
+        
+        switch shapeSource.data {
+        case .features(let features):
+            XCTAssertEqual(features.count, 48)
+        default:
+            XCTFail("Expected a feature source")
+        }
+    }
+    
 }

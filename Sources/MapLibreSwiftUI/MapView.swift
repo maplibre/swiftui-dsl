@@ -9,7 +9,10 @@ public struct MapView: UIViewRepresentable {
 
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
-    var mapViewModifier: ((MLNMapView) -> Void)?
+    
+    /// 'Escape hatch' to MLNMapView until we have more modifiers.
+    /// See ``unsafeMapViewModifier(_:)``
+    private var unsafeMapViewModifier: ((MLNMapView) -> Void)?
 
     public init(
         styleURL: URL,
@@ -30,9 +33,16 @@ public struct MapView: UIViewRepresentable {
         self.init(styleURL: styleURL, camera: .constant(initialCamera), makeMapContent)
     }
     
-    /// Allows you to set properties of the underlying MLNMapView directly.
+    /// Allows you to set properties of the underlying MLNMapView directly
+    /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
     /// For example, you can enable the display of the user's location on the map by setting `showUserLocation` to true.
+    ///
+    /// This is an 'escape hatch' back to the non-DSL world
+    /// of MapLibre for features that have not been ported to DSL yet.
+    /// Be careful not to use this to modify properties that are
+    /// already ported to the DSL, like the camera for example, as your
+    /// modifications here may break updates that occur with modifiers.
     ///
     /// - Parameter modifier: A closure that provides you with an MLNMapView so you can set properties.
     /// - Returns: A MapView with the modifications applied.
@@ -45,9 +55,9 @@ public struct MapView: UIViewRepresentable {
     ///     }
     /// ```
     ///
-    public func mapViewModifier(_ modifier: @escaping (MLNMapView) -> Void) -> MapView {
+    public func unsafeMapViewModifier(_ modifier: @escaping (MLNMapView) -> Void) -> MapView {
         var newMapView = self
-        newMapView.mapViewModifier = modifier
+        newMapView.unsafeMapViewModifier = modifier
         return newMapView
     }
 
@@ -214,9 +224,9 @@ public struct MapView: UIViewRepresentable {
 
     public func updateUIView(_ mapView: MLNMapView, context: Context) {
         context.coordinator.parent = self
-        if let mapViewModifier {
-            mapViewModifier(mapView)
-        }
+        
+        unsafeMapViewModifier?(mapView)
+        
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
         context.coordinator.updateLayers(mapView: mapView)
