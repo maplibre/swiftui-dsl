@@ -43,6 +43,8 @@ public struct MapView: UIViewRepresentable {
     /// Be careful not to use this to modify properties that are
     /// already ported to the DSL, like the camera for example, as your
     /// modifications here may break updates that occur with modifiers.
+    /// In particular, this modifier is potentially dangerous as it runs on
+    /// EVERY call to `updateUIView`.
     ///
     /// - Parameter modifier: A closure that provides you with an MLNMapView so you can set properties.
     /// - Returns: A MapView with the modifications applied.
