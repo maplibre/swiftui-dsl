@@ -66,9 +66,10 @@ struct Layer_Previews: PreviewProvider {
                 .circleColor(constant: .systemRed)
                 .circleStrokeWidth(constant: 2)
                 .circleStrokeColor(constant: .white)
-                .
+                
             SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-                .iconImage(constant: UIImage(systemName: "mappin")!)
+                .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
+                .iconColor(constant: .white)
         }
         .ignoresSafeArea(.all)
         .previewDisplayName("Circles with Symbols")

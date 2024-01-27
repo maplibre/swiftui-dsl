@@ -4,6 +4,8 @@ import MapLibre
 import MapLibreSwiftMacros
 
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
+
 public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
@@ -99,6 +101,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
 
         result.iconImageName = definition.iconImageName
         result.iconRotation = definition.iconRotation
+        result.iconColor = definition.iconColor
 
         return result
     }
