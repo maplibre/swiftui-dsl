@@ -58,6 +58,21 @@ struct Layer_Previews: PreviewProvider {
         }
             .ignoresSafeArea(.all)
             .previewDisplayName("Rotated Symbols (Dynamic)")
+        
+        MapView(styleURL: demoTilesURL) {
+            // Simple symbol layer demonstration with an icon
+            CircleStyleLayer(identifier: "simple-circles", source: pointSource)
+                .radius(constant: 16)
+                .color(constant: .systemRed)
+                .strokeWidth(constant: 2)
+                .strokeColor(constant: .white)
+                
+            SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
+                .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
+                .iconColor(constant: .white)
+        }
+        .ignoresSafeArea(.all)
+        .previewDisplayName("Circles with Symbols")
 
         // FIXME: This appears to be broken upstream; waiting for a new release
 //        MapView(styleURL: demoTilesURL) {
