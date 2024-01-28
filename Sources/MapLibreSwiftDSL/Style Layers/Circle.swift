@@ -3,10 +3,10 @@ import InternalUtils
 import MapLibre
 import MapLibreSwiftMacros
 
-@MLNStyleProperty<Double>("circleRadius", supportsInterpolation: true)
-@MLNStyleProperty<UIColor>("circleColor", supportsInterpolation: false)
-@MLNStyleProperty<Double>("circleStrokeWidth", supportsInterpolation: true)
-@MLNStyleProperty<UIColor>("circleStrokeColor", supportsInterpolation: true)
+@MLNStyleProperty<Double>("radius", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("color", supportsInterpolation: false)
+@MLNStyleProperty<Double>("strokeWidth", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("strokeColor", supportsInterpolation: false)
 public struct CircleStyleLayer: SourceBoundStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
@@ -29,7 +29,6 @@ public struct CircleStyleLayer: SourceBoundStyleLayerDefinition {
     public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
         let styleSource = addSource(to: style)
         
-        // Register the images with the map style
         return CircleStyleLayerInternal(definition: self, mglSource: styleSource)
     }
     
@@ -68,12 +67,12 @@ private struct CircleStyleLayerInternal: StyleLayer {
     public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNCircleStyleLayer(identifier: identifier, source: mglSource)
         
-        result.circleRadius = definition.circleRadius
+        result.circleRadius = definition.radius
+        result.circleColor = definition.color
         
-        result.circleStrokeColor = definition.circleStrokeColor
-        result.circleStrokeWidth = definition.circleStrokeWidth
+        result.circleStrokeWidth = definition.strokeWidth
+        result.circleStrokeColor = definition.strokeColor
         
-        result.circleColor = definition.circleColor
         
         return result
     }

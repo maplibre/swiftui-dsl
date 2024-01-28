@@ -62,10 +62,10 @@ struct Layer_Previews: PreviewProvider {
         MapView(styleURL: demoTilesURL) {
             // Simple symbol layer demonstration with an icon
             CircleStyleLayer(identifier: "simple-circles", source: pointSource)
-                .circleRadius(constant: 16)
-                .circleColor(constant: .systemRed)
-                .circleStrokeWidth(constant: 2)
-                .circleStrokeColor(constant: .white)
+                .radius(constant: 16)
+                .color(constant: .systemRed)
+                .strokeWidth(constant: 2)
+                .strokeColor(constant: .white)
                 
             SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
                 .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
