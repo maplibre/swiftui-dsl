@@ -38,7 +38,7 @@ public struct MapView: UIViewRepresentable {
     public func makeCoordinator() -> MapViewCoordinator {
         MapViewCoordinator(
             parent: self,
-            onGesture: { processGesture($0, $1) }
+            onGestureEnd: { processGestureEnd($0, $1) }
         )
     }
     
@@ -96,7 +96,18 @@ public struct MapView: UIViewRepresentable {
                                          animated: isStyleLoaded)
     }
     
-    private func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
+    /// Runs on gesture ended.
+    ///
+    /// Note: Some gestures may need additional behaviors for different gesture.states.
+    ///
+    /// - Parameters:
+    ///   - mapView: The MapView emitting the gesture. This is used to calculate the point and coordinate of the gesture.
+    ///   - sender: The UIGestureRecognizer
+    private func processGestureEnd(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
+        guard sender.state == .ended else {
+            return
+        }
+        
         let point = sender.location(in: mapView)
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
         

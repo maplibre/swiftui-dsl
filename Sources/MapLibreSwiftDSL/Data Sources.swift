@@ -70,6 +70,19 @@ public enum ShapeDataBuilder {
         return components.flatMap { $0 }
     }
     
+    // Handle if statements
+    public static func buildEither(first components: [MLNShape]) -> [MLNShape] {
+        return components
+    }
+    
+    public static func buildEither(second components: [MLNShape]) -> [MLNShape] {
+        return components
+    }
+    
+    public static func buildOptional(_ components: [MLNShape]?) -> [MLNShape] {
+        return components ?? []
+    }
+    
     // Convert the collected MLNShape array to ShapeData
     public static func buildFinalResult(_ components: [MLNShape]) -> ShapeData {
         let features = components.compactMap { $0 as? MLNShape & MLNFeature }

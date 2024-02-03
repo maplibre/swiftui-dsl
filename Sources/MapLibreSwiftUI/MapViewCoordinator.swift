@@ -12,22 +12,22 @@ public class MapViewCoordinator: NSObject {
     // every update cycle so we can avoid unnecessary updates
     private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
-    private var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
+    private var onGestureEnd: (MLNMapView, UIGestureRecognizer) -> Void
     
     init(parent: MapView,
-         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
+         onGestureEnd: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
         self.parent = parent
-        self.onGesture = onGesture
+        self.onGestureEnd = onGestureEnd
     }
     
     // MARK: Core UIView Functionality
     
     @objc func captureGesture(_ sender: UIGestureRecognizer) {
-        guard let mapView else {
+        guard let mapView, sender.state == .ended else {
             return
         }
         
-        onGesture(mapView, sender)
+        onGestureEnd(mapView, sender)
     }
 
     // MARK: - Coordinator API - Camera + Manipulation

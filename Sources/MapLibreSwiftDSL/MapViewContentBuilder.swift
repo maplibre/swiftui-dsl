@@ -23,6 +23,15 @@ public enum MapViewContentBuilder {
         return styleCollection.layers
     }
     
+    // Handle an array of MLNShape (if you want to directly pass arrays)
+    public static func buildArray(_ layer: [StyleLayerDefinition]) -> [StyleLayerDefinition] {
+        return layer
+    }
+    
+    // Handle for in of MLNShape
+    public static func buildArray(_ layer: [[StyleLayerDefinition]]) -> [StyleLayerDefinition] {
+        return layer.flatMap { $0 }
+    }
     
     public static func buildEither(first layer: [StyleLayerDefinition]) -> [StyleLayerDefinition] {
         return layer
