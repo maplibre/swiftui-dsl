@@ -39,12 +39,12 @@ extension MapView {
     
     // MARK: Default Gestures
     
-    /// Add an onTap gesture to the MapView
+    /// Add an tap gesture handler to the MapView
     ///
     /// - Parameters:
     ///   - count: The number of taps required to run the gesture.
-    ///   - onTapChanged: <#onTapChanged description#>
-    /// - Returns: <#description#>
+    ///   - onTapChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc).
+    /// - Returns: The modified map view.
     public func onTapMapGesture(count: Int = 1,
                                 onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView {
         var newMapView = self
@@ -57,6 +57,12 @@ extension MapView {
         return newMapView
     }
     
+    /// Add a long press gesture handler ot the MapView
+    ///
+    /// - Parameters:
+    ///   - minimumDuration: The minimum duration in seconds the user must press the screen to run the gesture.
+    ///   - onPressChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc).
+    /// - Returns: The modified map view.
     public func onLongPressMapGesture(minimumDuration: Double = 0.5,
                                       onPressChanged: @escaping (MapGestureContext) -> Void) -> MapView {
         var newMapView = self
