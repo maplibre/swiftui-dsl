@@ -1,19 +1,38 @@
-import Foundation
+import UIKit
 
-public struct MapGesture {
+public class MapGesture: NSObject {
     
     public enum Method: Equatable {
         
         /// A standard tap gesture (UITapGestureRecognizer)
-        case tap
+        ///
+        /// - Parameters:
+        ///   - numberOfTaps: The number of taps required for the gesture to trigger
+        case tap(numberOfTaps: Int = 1)
         
         /// A standard long press gesture (UILongPressGestureRecognizer)
-        case longPress
+        ///
+        /// - Parameters:
+        ///   - minimumDuration: The minimum duration of the press in seconds.
+        case longPress(minimumDuration: Double)
     }
     
     /// The Gesture's method, this is used to register it for the correct user interaction on the MapView.
     let method: Method
     
-    /// The action that runs when the gesture is triggered from the map view.
-    let action: (MapGestureContext) -> Void
+    /// The onChange action that runs when the gesture changes on the map view.
+    let onChange: (MapGestureContext) -> Void
+    
+    /// The underlying gesture recognizer
+    var gestureRecognizer: UIGestureRecognizer?
+    
+    /// Create a new gesture recognizer definition for the MapView
+    ///
+    /// - Parameters:
+    ///   - method: The gesture recognizer method
+    ///   - onChange: The action to perform when the gesture is changed
+    init(method: Method, onChange: @escaping (MapGestureContext) -> Void) {
+        self.method = method
+        self.onChange = onChange
+    }
 }

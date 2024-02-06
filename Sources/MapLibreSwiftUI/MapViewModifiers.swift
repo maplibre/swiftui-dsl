@@ -6,6 +6,7 @@ import SwiftUI
 import MapLibre
 
 extension MapView {
+    
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
@@ -38,21 +39,31 @@ extension MapView {
     
     // MARK: Default Gestures
     
-    public func onTapMapGesture(onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView {
+    /// Add an onTap gesture to the MapView
+    ///
+    /// - Parameters:
+    ///   - count: The number of taps required to run the gesture.
+    ///   - onTapChanged: <#onTapChanged description#>
+    /// - Returns: <#description#>
+    public func onTapMapGesture(count: Int = 1,
+                                onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView {
         var newMapView = self
         
         // Build the gesture and link it to the map view.
-        let gesture = MapGesture(method: .tap, action: onTapChanged)
+        let gesture = MapGesture(method: .tap(numberOfTaps: count),
+                                 onChange: onTapChanged)
         newMapView.gestures.append(gesture)
         
         return newMapView
     }
     
-    public func onLongPressMapGesture(onPressChanged: @escaping (MapGestureContext) -> Void) -> MapView {
+    public func onLongPressMapGesture(minimumDuration: Double = 0.5,
+                                      onPressChanged: @escaping (MapGestureContext) -> Void) -> MapView {
         var newMapView = self
         
         // Build the gesture and link it to the map view.
-        let gesture = MapGesture(method: .longPress, action: onPressChanged)
+        let gesture = MapGesture(method: .longPress(minimumDuration: minimumDuration),
+                                 onChange: onPressChanged)
         newMapView.gestures.append(gesture)
         
         return newMapView

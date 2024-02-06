@@ -2,23 +2,49 @@ import Foundation
 import MapLibre
 
 /// The CameraState is used to understand the current context of the MapView's camera.
-public enum CameraState: Hashable, Codable {
+public enum CameraState: Hashable {
     
     /// Centered on a coordinate
-    case centered
+    case centered(onCenter: CLLocationCoordinate2D)
     
     /// Follow the user's location using the MapView's internal camera.
     case trackingUserLocation
     
     /// Follow the user's location using the MapView's internal camera with the user's heading.
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .followWithHeading which automatically
+    /// follows the user from within the MLNMapView.
     case trackingUserLocationWithHeading
     
     /// Follow the user's location using the MapView's internal camera with the users' course
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .followWithCourse which automatically
+    /// follows the user from within the MLNMapView.
     case trackingUserLocationWithCourse
     
     /// Centered on a bounding box/rectangle.
-    case rect
+    case rect(northeast: CLLocationCoordinate2D, southwest: CLLocationCoordinate2D) // TODO: make a bounding box?
     
-    /// Showcasing a GeoJSON/Polygon
-    case showcase
+    /// Showcasing GeoJSON, Polygons, etc.
+    case showcase(shapeCollection: MLNShapeCollection)
+}
+
+extension CameraState: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+            
+        case .centered(onCenter: let onCenter):
+            return ".center(onCenter: \(onCenter)"
+        case .trackingUserLocation:
+            return ".trackingUserLocation"
+        case .trackingUserLocationWithHeading:
+            return ".trackingUserLocationWithHeading"
+        case .trackingUserLocationWithCourse:
+            return ".trackingUserLocationWithCourse"
+        case .rect(northeast: let northeast, southwest: let southwest):
+            return ".rect(northeast: \(northeast), southwest: \(southwest))"
+        case .showcase(shapeCollection: let shapeCollection):
+            return ".showcase(shapeCollection: \(shapeCollection))"
+        }
+    }
 }

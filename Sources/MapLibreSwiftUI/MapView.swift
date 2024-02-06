@@ -38,7 +38,7 @@ public struct MapView: UIViewRepresentable {
     public func makeCoordinator() -> MapViewCoordinator {
         MapViewCoordinator(
             parent: self,
-            onGestureEnd: { processGestureEnd($0, $1) }
+            onGesture: { processGesture($0, $1) }
         )
     }
     
@@ -60,19 +60,11 @@ public struct MapView: UIViewRepresentable {
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
         
-        // Gesture recogniser setup
-        let tapGesture = UITapGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(context.coordinator.captureGesture(_:))
-        )
-        mapView.addGestureRecognizer(tapGesture)
-   
-        let longPressGesture = UILongPressGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(context.coordinator.captureGesture(_:))
-        )
-        mapView.addGestureRecognizer(longPressGesture)
-        
+        // Add all gesture recognizers
+        for gesture in gestures {
+            registerGesture(mapView, context, gesture: gesture)
+        }
+                
         return mapView
     }
     
@@ -94,45 +86,6 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateCamera(mapView: mapView,
                                          camera: $camera.wrappedValue,
                                          animated: isStyleLoaded)
-    }
-    
-    /// Runs on gesture ended.
-    ///
-    /// Note: Some gestures may need additional behaviors for different gesture.states.
-    ///
-    /// - Parameters:
-    ///   - mapView: The MapView emitting the gesture. This is used to calculate the point and coordinate of the gesture.
-    ///   - sender: The UIGestureRecognizer
-    private func processGestureEnd(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
-        guard sender.state == .ended else {
-            return
-        }
-        
-        let point = sender.location(in: mapView)
-        let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-        
-        switch sender {
-        case is UITapGestureRecognizer:
-            for gesture in gestures.filter({ $0.method == .tap }) {
-                gesture.action(
-                    MapGestureContext(gesture: gesture.method,
-                                      point: point,
-                                      coordinate: coordinate,
-                                      numberOfTaps: sender.numberOfTouches)
-                )
-            }
-        case is UILongPressGestureRecognizer:
-            for gesture in gestures.filter({ $0.method == .longPress }) {
-                gesture.action(
-                    MapGestureContext(gesture: gesture.method,
-                                      point: point,
-                                      coordinate: coordinate,
-                                      numberOfTaps: sender.numberOfTouches)
-                )
-            }
-        default:
-            print("Log unhandled gesture")
-        }
     }
 }
 

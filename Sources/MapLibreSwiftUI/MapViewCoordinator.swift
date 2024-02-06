@@ -12,22 +12,22 @@ public class MapViewCoordinator: NSObject {
     // every update cycle so we can avoid unnecessary updates
     private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
-    private var onGestureEnd: (MLNMapView, UIGestureRecognizer) -> Void
+    private var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     
     init(parent: MapView,
-         onGestureEnd: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
+         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
         self.parent = parent
-        self.onGestureEnd = onGestureEnd
+        self.onGesture = onGesture
     }
     
     // MARK: Core UIView Functionality
     
     @objc func captureGesture(_ sender: UIGestureRecognizer) {
-        guard let mapView, sender.state == .ended else {
+        guard let mapView else {
             return
         }
         
-        onGestureEnd(mapView, sender)
+        onGesture(mapView, sender)
     }
 
     // MARK: - Coordinator API - Camera + Manipulation
@@ -39,11 +39,11 @@ public class MapViewCoordinator: NSObject {
         }
         
         switch camera.state {
-        case .centered:
+        case .centered(let coordinate):
             mapView.userTrackingMode = .none
-            mapView.setCenter(camera.coordinate,
+            mapView.setCenter(coordinate,
                               zoomLevel: camera.zoom,
-                              direction: camera.course,
+                              direction: camera.direction,
                               animated: animated)
         case .trackingUserLocation:
             mapView.userTrackingMode = .follow
@@ -59,13 +59,9 @@ public class MapViewCoordinator: NSObject {
             break
         }
         
-        if let pitch = camera.pitch {
-            mapView.minimumPitch = pitch
-            mapView.maximumPitch = pitch
-        } else {
-            mapView.minimumPitch = 0
-            mapView.maximumPitch = 90
-        }
+        // Set the correct pitch range.
+        mapView.minimumPitch = camera.pitch.rangeValue.lowerBound
+        mapView.maximumPitch = camera.pitch.rangeValue.upperBound
         
         snapshotCamera = camera
     }

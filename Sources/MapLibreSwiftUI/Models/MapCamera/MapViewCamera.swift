@@ -2,20 +2,22 @@ import Foundation
 import CoreLocation
 import MapLibre
 
+/// The SwiftUI MapViewCamera.
+///
+/// This manages the camera state within the MapView.
 public struct MapViewCamera: Hashable {
     
     public struct Defaults {
         public static let coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         public static let zoom: Double = 10
-        public static let pitch: Double? = nil
-        public static let course: Double = 0
+        public static let pitch: CameraPitch = .free
+        public static let direction: CLLocationDirection = 0
     }
     
     public var state: CameraState
-    public var coordinate: CLLocationCoordinate2D
     public var zoom: Double
-    public var pitch: Double?
-    public var course: CLLocationDirection
+    public var pitch: CameraPitch
+    public var direction: CLLocationDirection
     
     /// The reason the camera was changed.
     ///
@@ -29,11 +31,10 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Returns: The constructed MapViewCamera.
     public static func `default`() -> MapViewCamera {
-        return MapViewCamera(state: .centered,
-                             coordinate: Defaults.coordinate,
+        return MapViewCamera(state: .centered(onCenter: Defaults.coordinate),
                              zoom: Defaults.zoom,
                              pitch: Defaults.pitch,
-                             course: Defaults.course,
+                             direction: Defaults.direction,
                              lastReasonForChange: .programmatic)
     }
     
@@ -43,19 +44,18 @@ public struct MapViewCamera: Hashable {
     ///   - coordinate: The coordinate to center the map on.
     ///   - zoom: The zoom level.
     ///   - pitch: The camera pitch. Default is 90 (straight down).
-    ///   - course: The course. Default is 0 (North).
+    ///   - direction: The course. Default is 0 (North).
     /// - Returns: The constructed MapViewCamera.
     public static func center(_ coordinate: CLLocationCoordinate2D,
                               zoom: Double,
-                              pitch: Double? = Defaults.pitch,
-                              course: Double = Defaults.course,
+                              pitch: CameraPitch = Defaults.pitch,
+                              direction: CLLocationDirection = Defaults.direction,
                               reason: CameraChangeReason? = nil) -> MapViewCamera {
         
-        return MapViewCamera(state: .centered,
-                             coordinate: coordinate,
+        return MapViewCamera(state: .centered(onCenter: coordinate),
                              zoom: zoom,
                              pitch: pitch,
-                             course: course,
+                             direction: direction,
                              lastReasonForChange: reason)
     }
     
@@ -68,69 +68,53 @@ public struct MapViewCamera: Hashable {
     ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocation(zoom: Double = Defaults.zoom,
-                                         pitch: Double? = Defaults.pitch) -> MapViewCamera {
+                                         pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {
         
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
         return MapViewCamera(state: .trackingUserLocation,
-                             coordinate: Defaults.coordinate,
                              zoom: zoom,
                              pitch: pitch,
-                             course: Defaults.course,
+                             direction: Defaults.direction,
                              lastReasonForChange: .programmatic)
     }
     
     /// Enables user location tracking within the MapView.
     ///
-    /// This feature uses the MLNMapView's userTrackingMode = .follow
+    /// This feature uses the MLNMapView's userTrackingMode = .followWithHeading
     ///
     /// - Parameters:
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike pitch.
     ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithHeading(zoom: Double = Defaults.zoom,
-                                                    pitch: Double? = Defaults.pitch) -> MapViewCamera {
+                                                    pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {
         
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
         return MapViewCamera(state: .trackingUserLocationWithHeading,
-                             coordinate: Defaults.coordinate,
                              zoom: zoom,
                              pitch: pitch,
-                             course: Defaults.course,
+                             direction: Defaults.direction,
                              lastReasonForChange: .programmatic)
     }
     
     /// Enables user location tracking within the MapView.
     ///
-    /// This feature uses the MLNMapView's userTrackingMode = .follow
+    /// This feature uses the MLNMapView's userTrackingMode = .followWithCourse
     ///
     /// - Parameters:
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike pitch.
     ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithCourse(zoom: Double = Defaults.zoom,
-                                                   pitch: Double? = Defaults.pitch) -> MapViewCamera {
+                                                   pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {
 
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
         return MapViewCamera(state: .trackingUserLocationWithCourse,
-                             coordinate: Defaults.coordinate,
                              zoom: zoom,
                              pitch: pitch,
-                             course: Defaults.course,
+                             direction: Defaults.direction,
                              lastReasonForChange: .programmatic)
     }
     
     // TODO: Create init methods for other camera states once supporting materials are understood (e.g. BoundingBox)
-}
-
-extension MapViewCamera: Equatable {
-    
-    public static func ==(lhs: MapViewCamera, rhs: MapViewCamera) -> Bool {
-        return lhs.state == rhs.state
-            && lhs.coordinate.latitude == rhs.coordinate.latitude
-            && lhs.coordinate.longitude == rhs.coordinate.longitude
-            && lhs.zoom == rhs.zoom
-            && lhs.pitch == rhs.pitch
-            && lhs.course == rhs.course
-            && lhs.lastReasonForChange == rhs.lastReasonForChange
-    }
 }

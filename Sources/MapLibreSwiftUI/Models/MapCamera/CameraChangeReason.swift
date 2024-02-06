@@ -1,7 +1,7 @@
 import Foundation
 import MapLibre
 
-public enum CameraChangeReason: Hashable, Codable {
+public enum CameraChangeReason: Hashable {
     case programmatic
     case resetNorth
     case gesturePan
