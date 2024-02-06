@@ -42,8 +42,7 @@ public enum CameraChangeReason: Hashable {
             self = .gestureTilt
         case .transitionCancelled: 
             self = .transitionCancelled
-        default: 
-            // TODO: MR Review Note - we could also have an "initial" value for an unset camera.
+        default:
             return nil
         }
     }
