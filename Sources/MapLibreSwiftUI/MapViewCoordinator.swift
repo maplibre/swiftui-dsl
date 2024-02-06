@@ -174,15 +174,19 @@ extension MapViewCoordinator: MLNMapViewDelegate {
 
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated: Bool) {
+        // Validate that the mapView.userTrackingMode still matches our desired camera state for each tracking type.
         let isFollowing = parent.camera.state == .trackingUserLocation && mapView.userTrackingMode == .follow
         let isFollowingHeading = parent.camera.state == .trackingUserLocationWithHeading && mapView.userTrackingMode == .followWithHeading
         let isFollowingCourse = parent.camera.state == .trackingUserLocationWithCourse && mapView.userTrackingMode == .followWithCourse
         
+        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should detach and revert
+        // to a .centered camera.
         if isFollowing || isFollowingHeading || isFollowingCourse {
             // User tracking, we can ignore camera updates until we unset this.
             return
         }
         
+        // The user's desired camera is not a user tracking method, now we need to publish back the current mapView state to the camera binding.
         parent.camera = .center(mapView.centerCoordinate,
                                 zoom: mapView.zoomLevel,
                                 reason: CameraChangeReason(reason))
