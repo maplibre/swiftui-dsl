@@ -31,7 +31,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Returns: The constructed MapViewCamera.
     public static func `default`() -> MapViewCamera {
-        return MapViewCamera(state: .coordinate(onCenter: Defaults.coordinate),
+        return MapViewCamera(state: .centered(onCoordinate: Defaults.coordinate),
                              zoom: Defaults.zoom,
                              pitch: Defaults.pitch,
                              direction: Defaults.direction,
@@ -52,7 +52,7 @@ public struct MapViewCamera: Hashable {
                               direction: CLLocationDirection = Defaults.direction,
                               reason: CameraChangeReason? = nil) -> MapViewCamera {
         
-        return MapViewCamera(state: .coordinate(onCenter: coordinate),
+        return MapViewCamera(state: .centered(onCoordinate: coordinate),
                              zoom: zoom,
                              pitch: pitch,
                              direction: direction,

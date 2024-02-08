@@ -32,7 +32,13 @@ public class MapViewCoordinator: NSObject {
     }
 
     // MARK: - Coordinator API - Camera + Manipulation
-
+    
+    /// Update the camera based on the MapViewCamera binding change.
+    ///
+    /// - Parameters:
+    ///   - mapView: This is the camera updating protocol representation of the MLNMapView. This allows mockable testing for camera related MLNMapView functionality.
+    ///   - camera: The new camera from the binding.
+    ///   - animated: Whether to animate.
     func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
         guard camera != snapshotCamera else {
             // No action - camera has not changed.
@@ -40,7 +46,7 @@ public class MapViewCoordinator: NSObject {
         }
         
         switch camera.state {
-        case .coordinate(let coordinate):
+        case .centered(onCoordinate: let coordinate):
             mapView.userTrackingMode = .none
             mapView.setCenter(coordinate,
                               zoomLevel: camera.zoom,

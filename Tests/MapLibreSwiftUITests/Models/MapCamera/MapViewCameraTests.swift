@@ -11,7 +11,7 @@ final class MapViewCameraTests: XCTestCase {
         
         let camera = MapViewCamera.center(expectedCoordinate, zoom: 12, pitch: pitch, direction: direction)
         
-        XCTAssertEqual(camera.state, .coordinate(onCenter: expectedCoordinate))
+        XCTAssertEqual(camera.state, .centered(onCoordinate: expectedCoordinate))
         XCTAssertEqual(camera.zoom, 12)
         XCTAssertEqual(camera.pitch, pitch)
         XCTAssertEqual(camera.direction, direction)
