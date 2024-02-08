@@ -15,12 +15,12 @@ public enum CameraChangeReason: Hashable {
     
     /// Initialize a Swift CameraChangeReason from the MLN NSOption.
     ///
-    /// This method will only show the last reason. If you need a full history of the full bit range,
+    /// This method will only show the largest reason. If you need a full history of the full bit range,
     /// use MLNCameraChangeReason directly
     ///
     /// - Parameter mlnCameraChangeReason: The camera change reason options list from the MapLibre MapViewDelegate
     public init?(_ mlnCameraChangeReason: MLNCameraChangeReason) {
-        switch mlnCameraChangeReason.lastValue {
+        switch mlnCameraChangeReason.largestBitwiseReason {
 
         case .programmatic: 
             self = .programmatic

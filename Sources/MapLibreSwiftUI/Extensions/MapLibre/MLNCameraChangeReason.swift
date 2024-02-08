@@ -3,8 +3,9 @@ import MapLibre
 
 extension MLNCameraChangeReason {
     
-    /// Get the last value from the MLNCameraChangeReason option set.
-    public var lastValue: MLNCameraChangeReason {
+    /// Get the MLNCameraChangeReason from the option set with the largest
+    /// bitwise value.
+    public var largestBitwiseReason: MLNCameraChangeReason {
         // Start at 1
         var mask: UInt = 1
         var result: UInt = 0

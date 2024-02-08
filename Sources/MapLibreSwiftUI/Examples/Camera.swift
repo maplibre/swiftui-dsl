@@ -7,9 +7,14 @@ struct CameraDirectManipulationPreview: View {
     @State private var camera = MapViewCamera.center(switzerland, zoom: 4)
 
     let styleURL: URL
+    var onStyleLoaded: (() -> Void)? = nil
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
+            .onStyleLoaded { _ in
+                print("Style is loaded")
+                onStyleLoaded?()
+            }
             .overlay(alignment: .bottom, content: {
                 Text("\(String(describing: camera.state)) z \(camera.zoom)")
                     .padding()
@@ -22,19 +27,16 @@ struct CameraDirectManipulationPreview: View {
                     .padding(.bottom, 42)
             })
         .task {
-            try! await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
+            try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
 
             camera = MapViewCamera.center(switzerland, zoom: 6)
         }
     }
 }
 
-struct Camera_Previews: PreviewProvider {
-    static var previews: some View {
-        let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
-
-        CameraDirectManipulationPreview(styleURL: demoTilesURL)
-            .ignoresSafeArea(.all)
-            .previewDisplayName("Camera Binding")
-    }
+#Preview("Camera Preview") {
+    CameraDirectManipulationPreview(
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!
+    )
+        .ignoresSafeArea(.all)
 }

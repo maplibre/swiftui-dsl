@@ -34,17 +34,17 @@ extension CameraState: CustomDebugStringConvertible {
         switch self {
             
         case .centered(onCenter: let onCenter):
-            return ".center(onCenter: \(onCenter)"
+            return "CameraState.center(onCenter: \(onCenter)"
         case .trackingUserLocation:
-            return ".trackingUserLocation"
+            return "CameraState.trackingUserLocation"
         case .trackingUserLocationWithHeading:
-            return ".trackingUserLocationWithHeading"
+            return "CameraState.trackingUserLocationWithHeading"
         case .trackingUserLocationWithCourse:
-            return ".trackingUserLocationWithCourse"
+            return "CameraState.trackingUserLocationWithCourse"
         case .rect(northeast: let northeast, southwest: let southwest):
-            return ".rect(northeast: \(northeast), southwest: \(southwest))"
+            return "CameraState.rect(northeast: \(northeast), southwest: \(southwest))"
         case .showcase(shapeCollection: let shapeCollection):
-            return ".showcase(shapeCollection: \(shapeCollection))"
+            return "CameraState.showcase(shapeCollection: \(shapeCollection))"
         }
     }
 }

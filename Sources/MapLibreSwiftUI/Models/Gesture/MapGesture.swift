@@ -14,7 +14,7 @@ public class MapGesture: NSObject {
         ///
         /// - Parameters:
         ///   - minimumDuration: The minimum duration of the press in seconds.
-        case longPress(minimumDuration: Double)
+        case longPress(minimumDuration: Double = 0.5)
     }
     
     /// The Gesture's method, this is used to register it for the correct user interaction on the MapView.

@@ -12,7 +12,8 @@ public class MapViewCoordinator: NSObject {
     // every update cycle so we can avoid unnecessary updates
     private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
-    private var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
+    var onStyleLoaded: ((MLNStyle) -> Void)?
+    var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     
     init(parent: MapView,
          onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
@@ -32,7 +33,7 @@ public class MapViewCoordinator: NSObject {
 
     // MARK: - Coordinator API - Camera + Manipulation
 
-    func updateCamera(mapView: MLNMapView, camera: MapViewCamera, animated: Bool) {
+    func updateCamera(mapView: MLNMapViewCamera, camera: MapViewCamera, animated: Bool) {
         guard camera != snapshotCamera else {
             // No action - camera has not changed.
             return
@@ -169,6 +170,7 @@ public class MapViewCoordinator: NSObject {
 extension MapViewCoordinator: MLNMapViewDelegate {
     
     public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+        onStyleLoaded?(mglStyle)
         addLayers(to: mglStyle)
     }
 

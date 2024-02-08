@@ -7,6 +7,16 @@ import MapLibre
 
 extension MapView {
     
+    /// Perform an action when the map view has loaded its style.
+    ///
+    /// - Parameter perform: The action to perform with the loaded style.
+    /// - Returns: The modified map view.
+    public func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
+        var newMapView = self
+        newMapView.onStyleLoaded = perform
+        return newMapView
+    }
+    
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.

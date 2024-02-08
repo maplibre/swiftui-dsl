@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import MapLibre
 
 extension MapView {
@@ -44,21 +45,35 @@ extension MapView {
             return
         }
         
+        // Process the gesture into a context response.
+        let context = processContextFromGesture(mapView, gesture: gesture, sender: sender)
+        // Run the context through the gesture held on the MapView (emitting to the MapView modifier).
+        gesture.onChange(context)
+    }
+    
+    /// Convert the sender data into a MapGestureContext
+    ///
+    /// - Parameters:
+    ///   - mapView: The mapview that's emitting the gesture.
+    ///   - gesture: The gesture definition for this event.
+    ///   - sender: The UIKit gesture emitting from the map view.
+    /// - Returns: The calculated context from the sending UIKit gesture
+    func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture, sender: UIGestureRecognizerProtocol) -> MapGestureContext {
         // Build the context of the gesture's event.
         var point: CGPoint
         switch gesture.method {
             
         case .tap(numberOfTaps: let numberOfTaps):
+            // Calculate the CGPoint of the last gesture tap
             point = sender.location(ofTouch: numberOfTaps - 1, in: mapView)
         case .longPress:
+            // Calculate the CGPoint of the long process gesture.
             point = sender.location(in: mapView)
         }
         
-        let context = MapGestureContext(gestureMethod: gesture.method,
-                                        state: sender.state,
-                                        point: point,
-                                        coordinate: mapView.convert(point, toCoordinateFrom: mapView))
-        
-        gesture.onChange(context)
+        return MapGestureContext(gestureMethod: gesture.method,
+                                 state: sender.state,
+                                 point: point,
+                                 coordinate: mapView.convert(point, toCoordinateFrom: mapView))
     }
 }

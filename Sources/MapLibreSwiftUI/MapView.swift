@@ -9,7 +9,9 @@ public struct MapView: UIViewRepresentable {
 
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
+    
     var gestures = [MapGesture]()
+    var onStyleLoaded: ((MLNStyle) -> Void)?
     
     /// 'Escape hatch' to MLNMapView until we have more modifiers.
     /// See ``unsafeMapViewModifier(_:)``
@@ -60,6 +62,9 @@ public struct MapView: UIViewRepresentable {
         // TODO: Make this settable via a modifier
         mapView.logoView.isHidden = true
         
+        // Link the style loaded to the coordinator that emits the delegate event.
+        context.coordinator.onStyleLoaded = onStyleLoaded
+        
         // Add all gesture recognizers
         for gesture in gestures {
             registerGesture(mapView, context, gesture: gesture)
@@ -89,17 +94,13 @@ public struct MapView: UIViewRepresentable {
     }
 }
 
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
-
-        MapView(styleURL: demoTilesURL)
-            .ignoresSafeArea(.all)
-            .previewDisplayName("Vanilla Map")
-
-        // For a larger selection of previews,
-        // check out the Examples directory, which
-        // has a wide variety of previews,
-        // organized into (hopefully) useful groups
-    }
+#Preview {
+    MapView(styleURL: demoTilesURL)
+        .ignoresSafeArea(.all)
+        .previewDisplayName("Vanilla Map")
+    
+    // For a larger selection of previews,
+    // check out the Examples directory, which
+    // has a wide variety of previews,
+    // organized into (hopefully) useful groups
 }
