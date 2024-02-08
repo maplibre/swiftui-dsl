@@ -8,6 +8,9 @@ public enum CameraState: Hashable {
     case centered(onCenter: CLLocationCoordinate2D)
     
     /// Follow the user's location using the MapView's internal camera.
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .follow which automatically
+    /// follows the user from within the MLNMapView.
     case trackingUserLocation
     
     /// Follow the user's location using the MapView's internal camera with the user's heading.
