@@ -1,0 +1,23 @@
+name: Release Maplibre-SwiftUI Manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_version_scheme:
+        description: 'Bump version scheme'
+        required: true
+        default: 'patch'
+        options:
+        - 'patch'
+        - 'minor'
+        - 'major'
+
+jobs:
+  release-on-push:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: ${{ inputs.bump_version_scheme }}
