@@ -2,36 +2,52 @@ import Foundation
 import MapLibre
 
 /// The CameraState is used to understand the current context of the MapView's camera.
-public enum CameraState {
+public enum CameraState: Hashable {
     
     /// Centered on a coordinate
-    case centered
+    case centered(onCoordinate: CLLocationCoordinate2D)
     
-    /// The camera is currently following a location provider.
+    /// Follow the user's location using the MapView's internal camera.
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .follow which automatically
+    /// follows the user from within the MLNMapView.
     case trackingUserLocation
     
-    /// Centered on a bounding box/rectangle.
-    case rect
+    /// Follow the user's location using the MapView's internal camera with the user's heading.
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .followWithHeading which automatically
+    /// follows the user from within the MLNMapView.
+    case trackingUserLocationWithHeading
     
-    /// Showcasing a GeoJSON/Polygon
-    case showcase
+    /// Follow the user's location using the MapView's internal camera with the users' course
+    ///
+    /// This feature uses the MLNMapView's userTrackingMode to .followWithCourse which automatically
+    /// follows the user from within the MLNMapView.
+    case trackingUserLocationWithCourse
+    
+    /// Centered on a bounding box/rectangle.
+    case rect(northeast: CLLocationCoordinate2D, southwest: CLLocationCoordinate2D) // TODO: make a bounding box?
+    
+    /// Showcasing GeoJSON, Polygons, etc.
+    case showcase(shapeCollection: MLNShapeCollection)
 }
 
-extension CameraState: Equatable {
-    
-    public static func ==(lhs: CameraState, rhs: CameraState) -> Bool {
-        switch (lhs, rhs) {
+extension CameraState: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
             
-        case (.centered, .centered):
-            return true
-        case (.trackingUserLocation, .trackingUserLocation):
-            return true
-        case (.rect, .rect):
-            return true
-        case (.showcase, .showcase):
-            return true
-        default:
-            return false
+        case .centered(onCoordinate: let onCoordinate):
+            return "CameraState.centered(onCoordinate: \(onCoordinate)"
+        case .trackingUserLocation:
+            return "CameraState.trackingUserLocation"
+        case .trackingUserLocationWithHeading:
+            return "CameraState.trackingUserLocationWithHeading"
+        case .trackingUserLocationWithCourse:
+            return "CameraState.trackingUserLocationWithCourse"
+        case .rect(northeast: let northeast, southwest: let southwest):
+            return "CameraState.rect(northeast: \(northeast), southwest: \(southwest))"
+        case .showcase(shapeCollection: let shapeCollection):
+            return "CameraState.showcase(shapeCollection: \(shapeCollection))"
         }
     }
 }

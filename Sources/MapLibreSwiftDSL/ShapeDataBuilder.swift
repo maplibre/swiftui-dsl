@@ -45,8 +45,7 @@ public struct ShapeSource: Source {
 
 
 @resultBuilder
-public enum ShapeDataBuilder {
-    // Handle a single MLNShape element
+public enum ShapeDataBuilder: DefaultResultBuilder {
     public static func buildExpression(_ expression: MLNShape) -> [MLNShape] {
         return [expression]
     }
@@ -55,19 +54,32 @@ public enum ShapeDataBuilder {
         return expression
     }
     
-    // Combine elements into an array
+    public static func buildExpression(_ expression: Void) -> [MLNShape] {
+        return []
+    }
+    
     public static func buildBlock(_ components: [MLNShape]...) -> [MLNShape] {
         return components.flatMap { $0 }
     }
     
-    // Handle an array of MLNShape (if you want to directly pass arrays)
     public static func buildArray(_ components: [MLNShape]) -> [MLNShape] {
         return components
     }
     
-    // Handle for in of MLNShape
     public static func buildArray(_ components: [[MLNShape]]) -> [MLNShape] {
         return components.flatMap { $0 }
+    }
+    
+    public static func buildEither(first components: [MLNShape]) -> [MLNShape] {
+        return components
+    }
+    
+    public static func buildEither(second components: [MLNShape]) -> [MLNShape] {
+        return components
+    }
+    
+    public static func buildOptional(_ components: [MLNShape]?) -> [MLNShape] {
+        return components ?? []
     }
     
     // Convert the collected MLNShape array to ShapeData
