@@ -3,7 +3,7 @@ import Foundation
 /// Enforces a basic set of result builder definiitons.
 ///
 /// This is just a tool to make a result builder easier to build, maintain sorting, etc.
-public protocol DefaultResultBuilder {
+protocol DefaultResultBuilder {
         
     associatedtype Component
     

@@ -20,7 +20,7 @@ let package = Package(
     ],
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.0.0-preab83392d13e3b4259e8faa9db56ab17671aa112e"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.0.0"),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", branch: "main"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.0.2"),
