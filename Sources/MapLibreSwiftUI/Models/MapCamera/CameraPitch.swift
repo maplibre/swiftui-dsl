@@ -8,7 +8,7 @@ public enum CameraPitch: Hashable {
     case free
     
     /// The user is free to control pitch within the minimum and maximum range.
-    case withinRange(minimum: Double, maximum: Double)
+    case freeWithinRange(minimum: Double, maximum: Double)
     
     /// The pitch is fixed to a certain value.
     case fixed(Double)
@@ -21,7 +21,7 @@ public enum CameraPitch: Hashable {
             
         case .free:
             return 0...60 // TODO: set this to a maplibre constant (this is available on Android, but maybe not iOS)?
-        case .withinRange(minimum: let minimum, maximum: let maximum):
+        case .freeWithinRange(minimum: let minimum, maximum: let maximum):
             return minimum...maximum
         case .fixed(let value):
             return value...value

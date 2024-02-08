@@ -5,12 +5,12 @@ import CoreLocation
 
 final class MapViewCoordinatorCameraTests: XCTestCase {
 
-    var maplibreMapView: MockMLNMapViewCamera!
+    var maplibreMapView: MockMLNMapViewCameraUpdating!
     var mapView: MapView!
     var coordinator: MapView.Coordinator!
     
     override func setUp() async throws {
-        maplibreMapView = MockMLNMapViewCamera()
+        maplibreMapView = MockMLNMapViewCameraUpdating()
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
         coordinator = MapView.Coordinator(parent: mapView) { _, _ in
             // No action
@@ -21,11 +21,12 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         let camera: MapViewCamera = .default()
         
         coordinator.updateCamera(mapView: maplibreMapView, camera: camera, animated: false)
-        // Run a second update.
+        // Run a second update. We're testing that the snapshotCamera correctly exits the function
+        // when nothing changed.
         coordinator.updateCamera(mapView: maplibreMapView, camera: camera, animated: false)
         
-        // Note all of the actions only allow 1 count of set even though we've run the action
-        // twice.
+        // All of the actions only allow 1 count of set even though we've run the action twice.
+        // This verifies the comment above.
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.none))
             .setterCalled(count: 1)

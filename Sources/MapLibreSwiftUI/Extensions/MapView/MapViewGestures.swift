@@ -58,7 +58,7 @@ extension MapView {
     ///   - gesture: The gesture definition for this event.
     ///   - sender: The UIKit gesture emitting from the map view.
     /// - Returns: The calculated context from the sending UIKit gesture
-    func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture, sender: UIGestureRecognizerProtocol) -> MapGestureContext {
+    func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture, sender: UIGestureRecognizing) -> MapGestureContext {
         // Build the context of the gesture's event.
         var point: CGPoint
         switch gesture.method {

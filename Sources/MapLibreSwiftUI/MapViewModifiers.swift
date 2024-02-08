@@ -7,7 +7,7 @@ import MapLibre
 
 extension MapView {
     
-    /// Perform an action when the map view has loaded its style.
+    /// Perform an action when the map view has loaded its style and all locally added style definitions.
     ///
     /// - Parameter perform: The action to perform with the loaded style.
     /// - Returns: The modified map view.

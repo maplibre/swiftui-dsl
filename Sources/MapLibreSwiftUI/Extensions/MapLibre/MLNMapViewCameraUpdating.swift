@@ -4,7 +4,7 @@ import MapLibre
 import Mockable
 
 @Mockable
-protocol MLNMapViewCamera: AnyObject {
+protocol MLNMapViewCameraUpdating: AnyObject {
     var userTrackingMode: MLNUserTrackingMode { get set }
     var minimumPitch: CGFloat { get set }
     var maximumPitch: CGFloat { get set }
@@ -15,6 +15,6 @@ protocol MLNMapViewCamera: AnyObject {
     func setZoomLevel(_ zoomLevel: Double, animated: Bool)
 }
 
-extension MLNMapView: MLNMapViewCamera {
+extension MLNMapView: MLNMapViewCameraUpdating {
     // No definition
 }

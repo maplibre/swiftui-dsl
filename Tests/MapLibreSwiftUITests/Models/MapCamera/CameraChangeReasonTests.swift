@@ -40,7 +40,7 @@ final class CameraChangeReasonTests: XCTestCase {
     }
     
     func testGestureZoomIn() {
-        let mlnReason: MLNCameraChangeReason = [.programmatic, .gestureZoomIn]
+        let mlnReason: MLNCameraChangeReason = [.gestureZoomIn, .programmatic, ]
         XCTAssertEqual(CameraChangeReason(mlnReason), .gestureZoomIn)
     }
     

@@ -10,7 +10,7 @@ final class CameraPitchTests: XCTestCase {
     }
     
     func testRangePitch() {
-        let pitch = CameraPitch.withinRange(minimum: 9, maximum: 29)
+        let pitch = CameraPitch.freeWithinRange(minimum: 9, maximum: 29)
         XCTAssertEqual(pitch.rangeValue.lowerBound, 9)
         XCTAssertEqual(pitch.rangeValue.upperBound, 29)
     }

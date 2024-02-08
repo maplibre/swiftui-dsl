@@ -24,7 +24,7 @@ public class MapGesture: NSObject {
     let onChange: (MapGestureContext) -> Void
     
     /// The underlying gesture recognizer
-    var gestureRecognizer: UIGestureRecognizer?
+    weak var gestureRecognizer: UIGestureRecognizer?
     
     /// Create a new gesture recognizer definition for the MapView
     ///

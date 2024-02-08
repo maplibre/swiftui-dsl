@@ -31,7 +31,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Returns: The constructed MapViewCamera.
     public static func `default`() -> MapViewCamera {
-        return MapViewCamera(state: .centered(onCenter: Defaults.coordinate),
+        return MapViewCamera(state: .coordinate(onCenter: Defaults.coordinate),
                              zoom: Defaults.zoom,
                              pitch: Defaults.pitch,
                              direction: Defaults.direction,
@@ -43,7 +43,7 @@ public struct MapViewCamera: Hashable {
     /// - Parameters:
     ///   - coordinate: The coordinate to center the map on.
     ///   - zoom: The zoom level.
-    ///   - pitch: The camera pitch. Default is 90 (straight down).
+    ///   - pitch: Set the camera pitch method.
     ///   - direction: The course. Default is 0 (North).
     /// - Returns: The constructed MapViewCamera.
     public static func center(_ coordinate: CLLocationCoordinate2D,
@@ -52,7 +52,7 @@ public struct MapViewCamera: Hashable {
                               direction: CLLocationDirection = Defaults.direction,
                               reason: CameraChangeReason? = nil) -> MapViewCamera {
         
-        return MapViewCamera(state: .centered(onCenter: coordinate),
+        return MapViewCamera(state: .coordinate(onCenter: coordinate),
                              zoom: zoom,
                              pitch: pitch,
                              direction: direction,
@@ -65,7 +65,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Parameters:
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike pitch.
-    ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
+    ///   - pitch: Set the camera pitch method.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocation(zoom: Double = Defaults.zoom,
                                          pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {
@@ -84,7 +84,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Parameters:
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike pitch.
-    ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
+    ///   - pitch: Set the camera pitch method.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithHeading(zoom: Double = Defaults.zoom,
                                                     pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {
@@ -103,7 +103,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Parameters:
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike pitch.
-    ///   - pitch: Provide a fixed pitch value. The user will not be able to adjust pitch using gestures when this is set. Use nil/default to allow user control.
+    ///   - pitch: Set the camera pitch method.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithCourse(zoom: Double = Defaults.zoom,
                                                    pitch: CameraPitch = Defaults.pitch) -> MapViewCamera {

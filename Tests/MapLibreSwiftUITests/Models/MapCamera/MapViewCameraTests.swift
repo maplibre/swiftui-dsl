@@ -4,12 +4,10 @@ import CoreLocation
 
 final class MapViewCameraTests: XCTestCase {
     
-    
-    
     func testCenterCamera() {
         let expectedCoordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
-        let state: CameraState = .centered(onCenter: expectedCoordinate)
-        XCTAssertEqual(state, .centered(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)))
+        let state: CameraState = .coordinate(onCenter: expectedCoordinate)
+        XCTAssertEqual(state, .coordinate(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)))
     }
     
     func testTrackingUserLocation() {

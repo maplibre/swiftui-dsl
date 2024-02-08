@@ -6,9 +6,9 @@ final class CameraStateTests: XCTestCase {
 
     func testCenterCameraState() {
         let expectedCoordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
-        let state: CameraState = .centered(onCenter: expectedCoordinate)
-        XCTAssertEqual(state, .centered(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)))
-        XCTAssertEqual(String(describing: state), "CameraState.center(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)")
+        let state: CameraState = .coordinate(onCenter: expectedCoordinate)
+        XCTAssertEqual(state, .coordinate(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)))
+        XCTAssertEqual(String(describing: state), "CameraState.coordinate(onCenter: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)")
     }
     
     func testTrackingUserLocation() {

@@ -5,7 +5,7 @@ import MapLibre
 public enum CameraState: Hashable {
     
     /// Centered on a coordinate
-    case centered(onCenter: CLLocationCoordinate2D)
+    case coordinate(onCenter: CLLocationCoordinate2D)
     
     /// Follow the user's location using the MapView's internal camera.
     ///
@@ -36,8 +36,8 @@ extension CameraState: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
             
-        case .centered(onCenter: let onCenter):
-            return "CameraState.center(onCenter: \(onCenter)"
+        case .coordinate(onCenter: let onCenter):
+            return "CameraState.coordinate(onCenter: \(onCenter)"
         case .trackingUserLocation:
             return "CameraState.trackingUserLocation"
         case .trackingUserLocationWithHeading:

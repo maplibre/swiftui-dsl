@@ -33,14 +33,14 @@ public class MapViewCoordinator: NSObject {
 
     // MARK: - Coordinator API - Camera + Manipulation
 
-    func updateCamera(mapView: MLNMapViewCamera, camera: MapViewCamera, animated: Bool) {
+    func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
         guard camera != snapshotCamera else {
             // No action - camera has not changed.
             return
         }
         
         switch camera.state {
-        case .centered(let coordinate):
+        case .coordinate(let coordinate):
             mapView.userTrackingMode = .none
             mapView.setCenter(coordinate,
                               zoomLevel: camera.zoom,
@@ -170,8 +170,8 @@ public class MapViewCoordinator: NSObject {
 extension MapViewCoordinator: MLNMapViewDelegate {
     
     public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
-        onStyleLoaded?(mglStyle)
         addLayers(to: mglStyle)
+        onStyleLoaded?(mglStyle)
     }
 
     /// The MapView's region has changed with a specific reason.
