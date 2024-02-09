@@ -2,7 +2,7 @@ name: Test maplibre-swiftui-dsl-playground
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "*" ]
   pull_request:
     branches: [ main ]
 
