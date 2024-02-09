@@ -1,9 +1,13 @@
-name: Release Maplibre-SwiftUI Manually
+name: Release Maplibre-SwiftUI
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       bump_version_scheme:
+        type: choice
         description: 'Bump version scheme'
         required: true
         default: 'patch'
@@ -20,4 +24,4 @@ jobs:
     steps:
       - uses: rymndhng/release-on-push-action@master
         with:
-          bump_version_scheme: ${{ inputs.bump_version_scheme }}
+          bump_version_scheme: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'patch' || inputs.bump_version_scheme }}
