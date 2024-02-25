@@ -117,4 +117,17 @@ public struct MapViewCamera: Hashable {
     }
     
     // TODO: Create init methods for other camera states once supporting materials are understood (e.g. BoundingBox)
+	
+	public static func boundingBox(northeast: CLLocationCoordinate2D,
+								   southwest: CLLocationCoordinate2D, 
+								   zoom: Double,
+								   pitch: CameraPitch = Defaults.pitch,
+								   direction: CLLocationDirection = Defaults.direction,
+								   reason: CameraChangeReason? = nil) -> MapViewCamera {
+		return MapViewCamera(state: .rect(northeast: northeast, southwest: southwest),
+							 zoom: zoom,
+							 pitch: pitch,
+							 direction: direction,
+							 lastReasonForChange: reason)
+	}
 }
