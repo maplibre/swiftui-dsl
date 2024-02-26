@@ -1,5 +1,6 @@
-import XCTest
 import CoreLocation
+import MapLibre
+import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapViewCameraTests: XCTestCase {
@@ -45,6 +46,18 @@ final class MapViewCameraTests: XCTestCase {
         XCTAssertEqual(camera.pitch, .free)
         XCTAssertEqual(camera.direction, 0)
     }
+	
+	func testBoundingBox() {
+		let southwest = CLLocationCoordinate2D(latitude: 24.6056011, longitude: 46.67369842529297)
+		let northeast = CLLocationCoordinate2D(latitude: 24.6993808, longitude: 46.7709285)
+		let bounds = MLNCoordinateBounds(sw: southwest, ne: northeast)
+		let camera = MapViewCamera.boundingBox(bounds)
+		
+		XCTAssertEqual(camera.state, .rect(boundingBox: bounds, edgePadding: .init(top: 20, left: 20, bottom: 20, right: 20)))
+		XCTAssertEqual(camera.zoom, 1)
+		XCTAssertEqual(camera.pitch, .free)
+		XCTAssertEqual(camera.direction, 0)
+	}
     
     // TODO: Add additional camera tests once behaviors are added (e.g. rect)
     

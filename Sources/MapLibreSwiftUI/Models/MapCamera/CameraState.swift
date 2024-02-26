@@ -26,7 +26,7 @@ public enum CameraState: Hashable {
     case trackingUserLocationWithCourse
     
     /// Centered on a bounding box/rectangle.
-	case rect(boundingBox: MLNCoordinateBounds, edgePadding: UIEdgeInsets)
+	case rect(boundingBox: MLNCoordinateBounds, edgePadding: UIEdgeInsets = .init(top: 20, left: 20, bottom: 20, right: 20))
     
     /// Showcasing GeoJSON, Polygons, etc.
     case showcase(shapeCollection: MLNShapeCollection)

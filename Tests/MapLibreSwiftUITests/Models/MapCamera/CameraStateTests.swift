@@ -33,8 +33,8 @@ final class CameraStateTests: XCTestCase {
         let northeast = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let southwest = CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6)
         
-        let state: CameraState = .rect(northeast: northeast, southwest: southwest)
-        XCTAssertEqual(state, .rect(northeast: northeast, southwest: southwest))
+		let state: CameraState = .rect(boundingBox: .init(sw: southwest, ne: northeast))
+		XCTAssertEqual(state, .rect(boundingBox: .init(sw: southwest, ne: northeast)))
         XCTAssertEqual(
             String(describing: state),
             "CameraState.rect(northeast: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4), southwest: CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6))")
