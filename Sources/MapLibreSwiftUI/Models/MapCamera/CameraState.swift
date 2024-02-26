@@ -26,7 +26,7 @@ public enum CameraState: Hashable {
     case trackingUserLocationWithCourse
     
     /// Centered on a bounding box/rectangle.
-    case rect(northeast: CLLocationCoordinate2D, southwest: CLLocationCoordinate2D) // TODO: make a bounding box?
+	case rect(boundingBox: MLNCoordinateBounds, edgePadding: UIEdgeInsets)
     
     /// Showcasing GeoJSON, Polygons, etc.
     case showcase(shapeCollection: MLNShapeCollection)
@@ -44,10 +44,32 @@ extension CameraState: CustomDebugStringConvertible {
             return "CameraState.trackingUserLocationWithHeading"
         case .trackingUserLocationWithCourse:
             return "CameraState.trackingUserLocationWithCourse"
-        case .rect(northeast: let northeast, southwest: let southwest):
-            return "CameraState.rect(northeast: \(northeast), southwest: \(southwest))"
+		case .rect(boundingBox: let boundingBox, _):
+			return "CameraState.rect(northeast: \(boundingBox.ne), southwest: \(boundingBox.sw))"
         case .showcase(shapeCollection: let shapeCollection):
             return "CameraState.showcase(shapeCollection: \(shapeCollection))"
         }
     }
+}
+
+extension MLNCoordinateBounds: Equatable, Hashable {
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(self.ne)
+		hasher.combine(self.sw)
+	}
+	
+	public static func == (lhs: MLNCoordinateBounds, rhs: MLNCoordinateBounds) -> Bool {
+		return lhs.ne == rhs.ne && lhs.sw == rhs.sw
+	}
+}
+
+extension UIEdgeInsets: Hashable {
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(self.left)
+		hasher.combine(self.right)
+		hasher.combine(self.top)
+		hasher.combine(self.bottom)
+	}
 }

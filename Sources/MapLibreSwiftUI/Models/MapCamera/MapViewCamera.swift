@@ -115,19 +115,21 @@ public struct MapViewCamera: Hashable {
                              direction: Defaults.direction,
                              lastReasonForChange: .programmatic)
     }
-    
-    // TODO: Create init methods for other camera states once supporting materials are understood (e.g. BoundingBox)
 	
-	public static func boundingBox(northeast: CLLocationCoordinate2D,
-								   southwest: CLLocationCoordinate2D, 
-								   zoom: Double,
-								   pitch: CameraPitch = Defaults.pitch,
-								   direction: CLLocationDirection = Defaults.direction,
-								   reason: CameraChangeReason? = nil) -> MapViewCamera {
-		return MapViewCamera(state: .rect(northeast: northeast, southwest: southwest),
-							 zoom: zoom,
-							 pitch: pitch,
-							 direction: direction,
-							 lastReasonForChange: reason)
+	/// Positions the camera to show a specific region in the MapView.
+	///
+	/// - Parameters:
+	///   - box: Set the desired bounding box. This is a one time event and the user can manipulate by moving the map.
+	///   - edgePadding: Set the edge insets that should be applied before positioning the map.
+	/// - Returns: The MapViewCamera representing the scenario
+	public static func boundingBox(_ box: MLNCoordinateBounds, edgePadding: UIEdgeInsets = .init(top: 20, left: 20, bottom: 20, right: 20)) -> MapViewCamera {
+		// zoom, pitch & direction are ignored.
+		return MapViewCamera(state: .rect(boundingBox: box, edgePadding: edgePadding),
+							 zoom: 1,
+							 pitch: Defaults.pitch,
+							 direction: Defaults.direction,
+							 lastReasonForChange: .programmatic)
 	}
+	
+	// TODO: Create init methods for other camera states once supporting materials are understood (e.g. BoundingBox)
 }

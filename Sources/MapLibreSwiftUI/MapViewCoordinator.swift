@@ -61,10 +61,11 @@ public class MapViewCoordinator: NSObject {
         case .trackingUserLocationWithCourse:
             mapView.userTrackingMode = .followWithCourse
             mapView.setZoomLevel(camera.zoom, animated: false)
-		case let .rect(northeast, southwest):
-			let bounds = MLNCoordinateBounds(sw: southwest, ne: northeast)
-			let padding: UIEdgeInsets = .init(top: 20, left: 20, bottom: 20, right: 20)
-			(mapView as? MLNMapView)?.setVisibleCoordinateBounds(bounds, edgePadding: padding, animated: animated, completionHandler: nil)
+		case let .rect(boundingBox, padding):
+			mapView.setVisibleCoordinateBounds(boundingBox,
+											   edgePadding: padding,
+											   animated: animated,
+											   completionHandler: nil)
         case .showcase:
             // TODO: Need a method these/or to finalize a goal here.
             break
