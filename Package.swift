@@ -19,7 +19,7 @@ let package = Package(
             targets: ["MapLibreSwiftDSL"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.0.0"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.1.0"),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", branch: "main"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.0.2"),
