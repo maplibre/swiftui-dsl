@@ -1,4 +1,4 @@
-name: Test maplibre-swiftui-dsl-playground
+name: Test
 
 on:
   push:
@@ -9,15 +9,6 @@ on:
 jobs:
   format-lint:
     runs-on: macos-14
-    strategy:
-      matrix:
-        scheme: [
-          MapLibreSwiftUI-Package
-        ]
-        destination: [
-          # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 15,OS=17.2'
-        ]
 
     steps:
     - name: Install tools
