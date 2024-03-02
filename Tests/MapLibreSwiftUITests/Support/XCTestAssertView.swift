@@ -1,25 +1,23 @@
+import MapLibreSwiftUI
+import SnapshotTesting
 import SwiftUI
 import XCTest
-import SnapshotTesting
-import MapLibreSwiftUI
 
 // TODO: This is a WIP that needs some additional eyes
 extension XCTestCase {
-    
-    func assertView<Content: View>(
+    func assertView(
         named name: String? = nil,
         record: Bool = false,
         frame: CGSize = CGSize(width: 430, height: 932),
-        expectation: XCTestExpectation? = nil,
-        @ViewBuilder content: () -> Content,
+        expectation _: XCTestExpectation? = nil,
+        @ViewBuilder content: () -> some View,
         file: StaticString = #file,
         testName: String = #function,
         line: UInt = #line
     ) {
-        
         let view = content()
             .frame(width: frame.width, height: frame.height)
-        
+
         assertSnapshot(matching: view,
                        as: .image(precision: 0.9, perceptualPrecision: 0.95),
                        named: name,
@@ -49,4 +47,3 @@ extension Snapshotting {
         )
     }
 }
-

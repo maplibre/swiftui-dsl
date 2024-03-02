@@ -1,22 +1,18 @@
-// This file contains modifiers that are internal and specific to the MapView.
-// They are not intended to be exposed directly in the public interface.
-
 import Foundation
-import SwiftUI
 import MapLibre
+import SwiftUI
 
-extension MapView {
-    
+public extension MapView {
     /// Perform an action when the map view has loaded its style and all locally added style definitions.
     ///
     /// - Parameter perform: The action to perform with the loaded style.
     /// - Returns: The modified map view.
-    public func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
+    func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
         var newMapView = self
         newMapView.onStyleLoaded = perform
         return newMapView
     }
-    
+
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
@@ -41,47 +37,49 @@ extension MapView {
     ///     }
     /// ```
     ///
-    public func unsafeMapViewModifier(_ modifier: @escaping (MLNMapView) -> Void) -> MapView {
+    func unsafeMapViewModifier(_ modifier: @escaping (MLNMapView) -> Void) -> MapView {
         var newMapView = self
         newMapView.unsafeMapViewModifier = modifier
         return newMapView
     }
-    
+
     // MARK: Default Gestures
-    
+
     /// Add an tap gesture handler to the MapView
     ///
     /// - Parameters:
     ///   - count: The number of taps required to run the gesture.
     ///   - onTapChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc).
     /// - Returns: The modified map view.
-    public func onTapMapGesture(count: Int = 1,
-                                onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView {
+    func onTapMapGesture(count: Int = 1,
+                         onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView
+    {
         var newMapView = self
-        
+
         // Build the gesture and link it to the map view.
         let gesture = MapGesture(method: .tap(numberOfTaps: count),
                                  onChange: onTapChanged)
         newMapView.gestures.append(gesture)
-        
+
         return newMapView
     }
-    
+
     /// Add a long press gesture handler ot the MapView
     ///
     /// - Parameters:
     ///   - minimumDuration: The minimum duration in seconds the user must press the screen to run the gesture.
     ///   - onPressChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc).
     /// - Returns: The modified map view.
-    public func onLongPressMapGesture(minimumDuration: Double = 0.5,
-                                      onPressChanged: @escaping (MapGestureContext) -> Void) -> MapView {
+    func onLongPressMapGesture(minimumDuration: Double = 0.5,
+                               onPressChanged: @escaping (MapGestureContext) -> Void) -> MapView
+    {
         var newMapView = self
-        
+
         // Build the gesture and link it to the map view.
         let gesture = MapGesture(method: .longPress(minimumDuration: minimumDuration),
                                  onChange: onPressChanged)
         newMapView.gestures.append(gesture)
-        
+
         return newMapView
     }
 }

@@ -1,7 +1,7 @@
+import InternalUtils
+import MapLibre
 import XCTest
 @testable import MapLibreSwiftDSL
-import MapLibre
-import InternalUtils
 
 final class ShapeSourceTests: XCTestCase {
     func testShapeSourcePolylineShapeBuilder() throws {
@@ -14,7 +14,7 @@ final class ShapeSourceTests: XCTestCase {
         XCTAssertEqual(shapeSource.identifier, "foo")
 
         switch shapeSource.data {
-        case .shapes(let shapes):
+        case let .shapes(shapes):
             XCTAssertEqual(shapes.count, 1)
         default:
             XCTFail("Expected a shape source")
@@ -29,13 +29,13 @@ final class ShapeSourceTests: XCTestCase {
         XCTAssertEqual(shapeSource.identifier, "foo")
 
         switch shapeSource.data {
-        case .features(let features):
+        case let .features(features):
             XCTAssertEqual(features.count, 1)
         default:
             XCTFail("Expected a feature source")
         }
     }
-    
+
     func testForInAndCombinationFeatureBuilder() throws {
         // ShapeSource now accepts 'for in' building, arrays, and combinations of them
         let shapeSource = ShapeSource(identifier: "foo") {
@@ -44,15 +44,14 @@ final class ShapeSourceTests: XCTestCase {
             }
             MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3719))
         }
-        
+
         XCTAssertEqual(shapeSource.identifier, "foo")
-        
+
         switch shapeSource.data {
-        case .features(let features):
+        case let .features(features):
             XCTAssertEqual(features.count, 48)
         default:
             XCTFail("Expected a feature source")
         }
     }
-    
 }

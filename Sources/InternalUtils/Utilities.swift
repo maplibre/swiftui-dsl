@@ -25,12 +25,12 @@ public func addSourceIfNecessary(_ source: MLNSource, to mlnStyle: MLNStyle) -> 
     }
 }
 
-extension UIImage{
+public extension UIImage {
     /// Computes a SHA256 hash of the image data.
     ///
     /// This is used internally to generate identifiers for images that can be used in the MapLibre GL
     /// style which uniquely identify `UIImage`s to the renderer.
-    public func sha256() -> String{
+    func sha256() -> String {
         if let imageData = cgImage?.dataProvider?.data as? Data {
             return imageData.digest.hexString
         }

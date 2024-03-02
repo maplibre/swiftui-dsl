@@ -1,6 +1,6 @@
 import Foundation
-import MapLibre
 import InternalUtils
+import MapLibre
 import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
@@ -43,14 +43,17 @@ private struct LineStyleLayerInternal: StyleLayer {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }
     }
+
     public var isVisible: Bool {
         get { definition.isVisible }
         set { definition.isVisible = newValue }
     }
+
     public var maximumZoomLevel: Float? {
         get { definition.maximumZoomLevel }
         set { definition.maximumZoomLevel = newValue }
     }
+
     public var minimumZoomLevel: Float? {
         get { definition.minimumZoomLevel }
         set { definition.minimumZoomLevel = newValue }

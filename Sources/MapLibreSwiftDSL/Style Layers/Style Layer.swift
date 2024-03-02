@@ -25,11 +25,11 @@ public enum StyleLayerSource {
     case mglSource(MLNSource)
 }
 
-extension StyleLayerSource {
-    public var identifier: String {
+public extension StyleLayerSource {
+    var identifier: String {
         switch self {
-        case .mglSource(let s): return s.identifier
-        case .source(let s): return s.identifier
+        case let .mglSource(s): s.identifier
+        case let .source(s): s.identifier
         }
     }
 }
@@ -45,7 +45,6 @@ public protocol StyleLayerDefinition {
 
     /// Whether this layer is displayed.
     var isVisible: Bool { get set }
-
 
     /// The minimum zoom level at which the layer gets processed and rendered.
     ///
@@ -83,10 +82,10 @@ extension SourceBoundStyleLayerDefinition {
         let tmpSource: MLNSource
 
         switch source {
-        case .source(let s):
+        case let .source(s):
             let source = s.makeMGLSource()
             tmpSource = source
-        case .mglSource(let s):
+        case let .mglSource(s):
             tmpSource = s
         }
 
@@ -100,41 +99,40 @@ public protocol StyleLayer: StyleLayerDefinition {
     func makeMLNStyleLayer() -> MLNStyleLayer
 }
 
-extension StyleLayer {
-    public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
-        return self
+public extension StyleLayer {
+    func makeStyleLayer(style _: MLNStyle) -> StyleLayer {
+        self
     }
 }
 
-
-extension StyleLayer {
+public extension StyleLayer {
     // MARK: - Common modifiers
 
-    public func visible(_ value: Bool) -> Self {
-        return modified(self) { $0.isVisible = value }
+    func visible(_ value: Bool) -> Self {
+        modified(self) { $0.isVisible = value }
     }
 
-    public func minimumZoomLevel(_ value: Float) -> Self {
-        return modified(self) { $0.minimumZoomLevel = value }
+    func minimumZoomLevel(_ value: Float) -> Self {
+        modified(self) { $0.minimumZoomLevel = value }
     }
 
-    public func maximumZoomLevel(_ value: Float) -> Self {
-        return modified(self) { $0.maximumZoomLevel = value }
+    func maximumZoomLevel(_ value: Float) -> Self {
+        modified(self) { $0.maximumZoomLevel = value }
     }
 
-    public func renderAbove(_ layerID: String) -> Self {
-        return modified(self) { $0.insertionPosition = .above(layerID: layerID) }
+    func renderAbove(_ layerID: String) -> Self {
+        modified(self) { $0.insertionPosition = .above(layerID: layerID) }
     }
 
-    public func renderBelow(_ layerID: String) -> Self {
-        return modified(self) { $0.insertionPosition = .below(layerID: layerID) }
+    func renderBelow(_ layerID: String) -> Self {
+        modified(self) { $0.insertionPosition = .below(layerID: layerID) }
     }
 
-    public func renderAboveOthers() -> Self {
-        return modified(self) { $0.insertionPosition = .aboveOthers }
+    func renderAboveOthers() -> Self {
+        modified(self) { $0.insertionPosition = .aboveOthers }
     }
 
-    public func renderBelowOthers() -> Self {
-        return modified(self) { $0.insertionPosition = .belowOthers }
+    func renderBelowOthers() -> Self {
+        modified(self) { $0.insertionPosition = .belowOthers }
     }
 }

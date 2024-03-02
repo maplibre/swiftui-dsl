@@ -3,10 +3,9 @@ import MapLibre
 import MapLibreSwiftDSL
 
 public class MapViewCoordinator: NSObject {
-    
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
-    var parent:  MapView
+    var parent: MapView
 
     // Storage of variables as they were previously; these are snapshot
     // every update cycle so we can avoid unnecessary updates
@@ -14,29 +13,32 @@ public class MapViewCoordinator: NSObject {
     private var snapshotCamera: MapViewCamera?
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
-    
+
     init(parent: MapView,
-         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void) {
+         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void)
+    {
         self.parent = parent
         self.onGesture = onGesture
     }
-    
+
     // MARK: Core UIView Functionality
-    
+
     @objc func captureGesture(_ sender: UIGestureRecognizer) {
         guard let mapView else {
             return
         }
-        
+
         onGesture(mapView, sender)
     }
 
     // MARK: - Coordinator API - Camera + Manipulation
-    
+
     /// Update the camera based on the MapViewCamera binding change.
     ///
     /// - Parameters:
-    ///   - mapView: This is the camera updating protocol representation of the MLNMapView. This allows mockable testing for camera related MLNMapView functionality.
+    ///   - mapView: This is the camera updating protocol representation of the MLNMapView. This allows mockable testing
+    /// for
+    /// camera related MLNMapView functionality.
     ///   - camera: The new camera from the binding.
     ///   - animated: Whether to animate.
     func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
@@ -44,9 +46,9 @@ public class MapViewCoordinator: NSObject {
             // No action - camera has not changed.
             return
         }
-        
+
         switch camera.state {
-        case .centered(onCoordinate: let coordinate):
+        case let .centered(onCoordinate: coordinate):
             mapView.userTrackingMode = .none
             mapView.setCenter(coordinate,
                               zoomLevel: camera.zoom,
@@ -65,25 +67,25 @@ public class MapViewCoordinator: NSObject {
             // TODO: Need a method these/or to finalize a goal here.
             break
         }
-        
+
         // Set the correct pitch range.
         mapView.minimumPitch = camera.pitch.rangeValue.lowerBound
         mapView.maximumPitch = camera.pitch.rangeValue.upperBound
-        
+
         snapshotCamera = camera
     }
-    
+
     // MARK: - Coordinator API - Styles + Layers
-    
+
     func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
         switch (source, parent.styleSource) {
-        case (.url(let newURL), .url(let oldURL)):
+        case let (.url(newURL), .url(oldURL)):
             if newURL != oldURL {
                 mapView.styleURL = newURL
             }
         }
     }
-    
+
     func updateLayers(mapView: MLNMapView) {
         // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
 
@@ -98,12 +100,12 @@ public class MapViewCoordinator: NSObject {
 
                 if let specWithSource = layer as? SourceBoundStyleLayerDefinition {
                     switch specWithSource.source {
-                    case .mglSource(_):
+                    case .mglSource:
                         // Do Nothing
                         // DISCUSS: The idea is to exclude "unmanaged" sources and only manage the ones specified via the DSL and attached to a layer.
                         // This is a really hackish design and I don't particularly like it.
                         continue
-                    case .source(_):
+                    case .source:
                         // Mark sources for removal after all user layers have been removed.
                         // Sources specified in this way should be used by a layer already in the style.
                         sourcesToRemove.insert(specWithSource.source.identifier)
@@ -148,14 +150,14 @@ public class MapViewCoordinator: NSObject {
             }
 
             switch layerSpec.insertionPosition {
-            case .above(layerID: let id):
+            case let .above(layerID: id):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, above: layer)
                 } else {
                     NSLog("Failed to find layer with ID \(id). Adding layer on top.")
                     mglStyle.addLayer(newLayer)
                 }
-            case .below(layerID: let id):
+            case let .below(layerID: id):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, below: layer)
                 } else {
@@ -174,28 +176,30 @@ public class MapViewCoordinator: NSObject {
 // MARK: - MLNMapViewDelegate
 
 extension MapViewCoordinator: MLNMapViewDelegate {
-    
-    public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+    public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
 
     /// The MapView's region has changed with a specific reason.
-    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated: Bool) {
+    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
         // Validate that the mapView.userTrackingMode still matches our desired camera state for each tracking type.
         let isFollowing = parent.camera.state == .trackingUserLocation && mapView.userTrackingMode == .follow
-        let isFollowingHeading = parent.camera.state == .trackingUserLocationWithHeading && mapView.userTrackingMode == .followWithHeading
-        let isFollowingCourse = parent.camera.state == .trackingUserLocationWithCourse && mapView.userTrackingMode == .followWithCourse
-        
-        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should detach and revert
-        // to a .centered camera.
-        // If any one of these is true, the desired camera state still matches the mapView's userTrackingMode
+        let isFollowingHeading = parent.camera.state == .trackingUserLocationWithHeading && mapView
+            .userTrackingMode == .followWithHeading
+        let isFollowingCourse = parent.camera.state == .trackingUserLocationWithCourse && mapView
+            .userTrackingMode == .followWithCourse
+
+        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
+        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still matches
+        // the mapView's userTrackingMode
         if isFollowing || isFollowingHeading || isFollowingCourse {
             // User tracking is still active, we can ignore camera updates until we unset/fail this boolean check
             return
         }
-        
-        // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera state to the MapView camera binding.
+
+        // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera state
+        // to the MapView camera binding.
         parent.camera = .center(mapView.centerCoordinate,
                                 zoom: mapView.zoomLevel,
                                 reason: CameraChangeReason(reason))

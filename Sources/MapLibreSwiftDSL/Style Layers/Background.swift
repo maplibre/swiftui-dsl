@@ -1,6 +1,6 @@
 import Foundation
-import MapLibre
 import InternalUtils
+import MapLibre
 import MapLibreSwiftMacros
 
 @MLNStyleProperty<UIColor>("backgroundColor", supportsInterpolation: true)
