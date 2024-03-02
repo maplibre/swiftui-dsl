@@ -1,8 +1,8 @@
 // swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 let package = Package(
     name: "MapLibreSwiftUI",
@@ -13,10 +13,12 @@ let package = Package(
     products: [
         .library(
             name: "MapLibreSwiftUI",
-            targets: ["MapLibreSwiftUI"]),
+            targets: ["MapLibreSwiftUI"]
+        ),
         .library(
             name: "MapLibreSwiftDSL",
-            targets: ["MapLibreSwiftDSL"]),
+            targets: ["MapLibreSwiftDSL"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.1.0"),
@@ -32,37 +34,38 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibreSwiftDSL"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-                .product(name: "Mockable", package: "Mockable")
+                .product(name: "Mockable", package: "Mockable"),
             ],
             swiftSettings: [
-                .define("MOCKING", .when(configuration: .debug))
-            ]),
+                .define("MOCKING", .when(configuration: .debug)),
+            ]
+        ),
         .target(
             name: "MapLibreSwiftDSL",
             dependencies: [
                 .target(name: "InternalUtils"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-                .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros")
+                .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros"),
             ]
         ),
         .target(
             name: "InternalUtils"
         ),
-        
+
         // MARK: Tests
-        
+
         .testTarget(
             name: "MapLibreSwiftUITests",
             dependencies: [
                 "MapLibreSwiftUI",
                 .product(name: "MockableTest", package: "Mockable"),
-                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ]
         ),
         .testTarget(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
-                "MapLibreSwiftDSL"
+                "MapLibreSwiftDSL",
             ]
         ),
     ]

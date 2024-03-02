@@ -43,14 +43,15 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     // MARK: - Modifiers
 
     public func iconImage(constant image: UIImage) -> Self {
-        return modified(self) { it in
+        modified(self) { it in
             it.iconImageName = NSExpression(forConstantValue: image.sha256())
             it.iconImages = [image]
         }
     }
 
     // FIXME: This appears to be broken upstream; waiting for a new release
-//    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self {
+//    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self
+//    {
 //        return modified(self) { it in
 //            it.iconImageName = NSExpression(forMLNMatchingKey: NSExpression(forConstantValue: attribute),
 //                                            in: Dictionary(uniqueKeysWithValues: mappings.map({ (k, v) in
@@ -62,7 +63,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 //    }
 
     public func iconRotation(expression: NSExpression) -> Self {
-        return modified(self) { it in
+        modified(self) { it in
             it.iconRotation = expression
         }
     }
@@ -77,15 +78,17 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }
     }
+
     public var isVisible: Bool {
         get { definition.isVisible }
         set { definition.isVisible = newValue }
-
     }
+
     public var maximumZoomLevel: Float? {
         get { definition.maximumZoomLevel }
         set { definition.maximumZoomLevel = newValue }
     }
+
     public var minimumZoomLevel: Float? {
         get { definition.minimumZoomLevel }
         set { definition.minimumZoomLevel = newValue }

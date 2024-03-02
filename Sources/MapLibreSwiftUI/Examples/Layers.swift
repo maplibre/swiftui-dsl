@@ -29,7 +29,7 @@ let pointSource = ShapeSource(identifier: "points") {
             .backgroundColor(constant: .systemPink.withAlphaComponent(0.3))
             .renderAboveOthers()
     }
-        .ignoresSafeArea(.all)
+    .ignoresSafeArea(.all)
 }
 
 #Preview("Simple Symbol") {
@@ -38,7 +38,7 @@ let pointSource = ShapeSource(identifier: "points") {
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(constant: UIImage(systemName: "mappin")!)
     }
-        .ignoresSafeArea(.all)
+    .ignoresSafeArea(.all)
 }
 
 #Preview("Rotated Symbols (Const)") {
@@ -48,7 +48,7 @@ let pointSource = ShapeSource(identifier: "points") {
             .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
             .iconRotation(constant: 45)
     }
-        .ignoresSafeArea(.all)
+    .ignoresSafeArea(.all)
 }
 
 #Preview("Rotated Symbols (Dynamic)") {
@@ -58,7 +58,7 @@ let pointSource = ShapeSource(identifier: "points") {
             .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
             .iconRotation(featurePropertyNamed: "heading")
     }
-        .ignoresSafeArea(.all)
+    .ignoresSafeArea(.all)
 }
 
 #Preview("Circles with Symbols") {
@@ -69,7 +69,7 @@ let pointSource = ShapeSource(identifier: "points") {
             .color(constant: .systemRed)
             .strokeWidth(constant: 2)
             .strokeColor(constant: .white)
-            
+
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
             .iconColor(constant: .white)
@@ -78,7 +78,7 @@ let pointSource = ShapeSource(identifier: "points") {
 }
 
 // TODO: Fixme
-//#Preview("Multiple Symbol Icons") {
+// #Preview("Multiple Symbol Icons") {
 //    MapView(styleURL: demoTilesURL) {
 //        // Simple symbol layer demonstration with an icon
 //        SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
@@ -90,4 +90,4 @@ let pointSource = ShapeSource(identifier: "points") {
 //                       default: UIImage(systemName: "mappin")!)
 //    }
 //    .edgesIgnoringSafeArea(.all)
-//}
+// }

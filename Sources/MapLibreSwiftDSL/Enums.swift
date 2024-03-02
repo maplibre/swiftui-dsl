@@ -1,5 +1,5 @@
-import MapLibre
 import InternalUtils
+import MapLibre
 
 // This file exists for convenience until / unless
 // this is merged into the MapLibre Native Swift module OR Swift gains the
@@ -11,13 +11,12 @@ public enum LineCap {
     case square
 }
 
-
 extension LineCap: MLNRawRepresentable {
     public var mlnRawValue: MLNLineCap {
         switch self {
-        case .butt: return .butt
-        case .round: return .round
-        case .square: return .square
+        case .butt: .butt
+        case .round: .round
+        case .square: .square
         }
     }
 }
@@ -31,9 +30,9 @@ public enum LineJoin {
 extension LineJoin: MLNRawRepresentable {
     public var mlnRawValue: MLNLineJoin {
         switch self {
-        case .bevel: return .bevel
-        case .miter: return .miter
-        case .round: return .round
+        case .bevel: .bevel
+        case .miter: .miter
+        case .round: .round
         }
     }
 }
@@ -52,19 +51,19 @@ extension MLNVariableExpression {
     var nsExpression: NSExpression {
         switch self {
         case .featureAccumulated:
-            return .featureAccumulatedVariable
+            .featureAccumulatedVariable
         case .featureAttributes:
-            return .featureAttributesVariable
+            .featureAttributesVariable
         case .featureIdentifier:
-            return .featureIdentifierVariable
+            .featureIdentifierVariable
         case .geometryType:
-            return .geometryTypeVariable
+            .geometryTypeVariable
         case .heatmapDensity:
-            return .heatmapDensityVariable
+            .heatmapDensityVariable
         case .lineProgress:
-            return .lineProgressVariable
+            .lineProgressVariable
         case .zoomLevel:
-            return .zoomLevelVariable
+            .zoomLevelVariable
         }
     }
 }

@@ -12,7 +12,7 @@ public enum CameraChangeReason: Hashable {
     case gestureOneFingerZoom
     case gestureTilt
     case transitionCancelled
-    
+
     /// Initialize a Swift CameraChangeReason from the MLN NSOption.
     ///
     /// This method will only show the largest bitwise reason contained in MLNCameraChangeReason.
@@ -21,26 +21,25 @@ public enum CameraChangeReason: Hashable {
     /// - Parameter mlnCameraChangeReason: The camera change reason options list from the MapLibre MapViewDelegate
     init?(_ mlnCameraChangeReason: MLNCameraChangeReason) {
         switch mlnCameraChangeReason.largestBitwiseReason {
-
-        case .programmatic: 
+        case .programmatic:
             self = .programmatic
-        case .resetNorth: 
+        case .resetNorth:
             self = .resetNorth
-        case .gesturePan: 
+        case .gesturePan:
             self = .gesturePan
-        case .gesturePinch: 
+        case .gesturePinch:
             self = .gesturePinch
         case .gestureRotate:
             self = .gestureRotate
-        case .gestureZoomIn: 
+        case .gestureZoomIn:
             self = .gestureZoomIn
-        case .gestureZoomOut: 
+        case .gestureZoomOut:
             self = .gestureZoomOut
-        case .gestureOneFingerZoom: 
+        case .gestureOneFingerZoom:
             self = .gestureOneFingerZoom
-        case .gestureTilt: 
+        case .gestureTilt:
             self = .gestureTilt
-        case .transitionCancelled: 
+        case .transitionCancelled:
             self = .transitionCancelled
         default:
             return nil

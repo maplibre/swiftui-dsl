@@ -1,10 +1,9 @@
-import XCTest
 import MapLibre
 import MapLibreSwiftDSL
+import XCTest
 @testable import MapLibreSwiftUI
 
 final class LayerPreviewTests: XCTestCase {
-
     let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
     // A collection of points with various
@@ -34,7 +33,7 @@ final class LayerPreviewTests: XCTestCase {
             }
         }
     }
-    
+
     func testSimpleSymbol() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -44,7 +43,7 @@ final class LayerPreviewTests: XCTestCase {
             }
         }
     }
-    
+
     func testRotatedSymbolConst() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -55,7 +54,7 @@ final class LayerPreviewTests: XCTestCase {
             }
         }
     }
-    
+
     func testRotatedSymboleDynamic() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -66,7 +65,7 @@ final class LayerPreviewTests: XCTestCase {
             }
         }
     }
-    
+
     func testCirclesWithSymbols() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -76,7 +75,7 @@ final class LayerPreviewTests: XCTestCase {
                     .color(constant: .systemRed)
                     .strokeWidth(constant: 2)
                     .strokeColor(constant: .white)
-                    
+
                 SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
                     .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
                     .iconColor(constant: .white)

@@ -1,14 +1,15 @@
-import SwiftUI
-import MapLibreSwiftDSL
-import MapLibre
 import InternalUtils
+import MapLibre
+import MapLibreSwiftDSL
+import SwiftUI
 
 struct PolylinePreview: View {
     let styleURL: URL
 
     var body: some View {
         MapView(styleURL: styleURL,
-                constantCamera: .center(samplePedestrianWaypoints.first!, zoom: 14)) {
+                constantCamera: .center(samplePedestrianWaypoints.first!, zoom: 14))
+        {
             // Note: This line does not add the source to the style as if it
             // were a statement in an imperative programming language.
             // The source is added automatically if a layer references it.
