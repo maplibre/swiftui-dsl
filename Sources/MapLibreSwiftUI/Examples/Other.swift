@@ -23,17 +23,14 @@ import SwiftUI
         }
 
         // Demonstrates how to use the unsafeMapModifier to set MLNMapView properties that have not been exposed as
-        // modifiers
-        // yet.
+        // modifiers yet.
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(constant: UIImage(systemName: "mappin")!)
     }
     .unsafeMapViewModifier { mapView in
         // Not all properties have modifiers yet. Until they do, you can use this 'escape hatch' to the underlying
-        // MLNMapView.
-        // Be careful: if you modify properties that the DSL controls already, they may be overridden. This modifier is
-        // a
-        // "hack", not a final function.
+        // MLNMapView. Be careful: if you modify properties that the DSL controls already, they may be overridden. This
+        // modifier is a "hack", not a final function.
         mapView.logoView.isHidden = false
         mapView.compassViewPosition = .topLeft
     }

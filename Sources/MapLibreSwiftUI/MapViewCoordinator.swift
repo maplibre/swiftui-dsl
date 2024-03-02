@@ -191,18 +191,15 @@ extension MapViewCoordinator: MLNMapViewDelegate {
             .userTrackingMode == .followWithCourse
 
         // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
-        // detach and
-        // revert
-        // to a .centered camera.
-        // If any one of these is true, the desired camera state still matches the mapView's userTrackingMode
+        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still matches
+        // the mapView's userTrackingMode
         if isFollowing || isFollowingHeading || isFollowingCourse {
             // User tracking is still active, we can ignore camera updates until we unset/fail this boolean check
             return
         }
 
         // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera state
-        // to the
-        // MapView camera binding.
+        // to the MapView camera binding.
         parent.camera = .center(mapView.centerCoordinate,
                                 zoom: mapView.zoomLevel,
                                 reason: CameraChangeReason(reason))
