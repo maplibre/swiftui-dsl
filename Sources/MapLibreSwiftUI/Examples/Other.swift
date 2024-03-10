@@ -25,7 +25,7 @@ import SwiftUI
         // Demonstrates how to use the unsafeMapModifier to set MLNMapView properties that have not been exposed as
         // modifiers yet.
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-            .iconImage(constant: UIImage(systemName: "mappin")!)
+            .iconImage(UIImage(systemName: "mappin")!)
     }
     .unsafeMapViewModifier { mapView in
         // Not all properties have modifiers yet. Until they do, you can use this 'escape hatch' to the underlying

@@ -42,7 +42,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 
     // MARK: - Modifiers
 
-    public func iconImage(constant image: UIImage) -> Self {
+    public func iconImage(_ image: UIImage) -> Self {
         modified(self) { it in
             it.iconImageName = NSExpression(forConstantValue: image.sha256())
             it.iconImages = [image]

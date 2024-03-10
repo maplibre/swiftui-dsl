@@ -26,7 +26,7 @@ let pointSource = ShapeSource(identifier: "points") {
     MapView(styleURL: demoTilesURL) {
         // Silly example: a background layer on top of everything to create a tint effect
         BackgroundLayer(identifier: "rose-colored-glasses")
-            .backgroundColor(constant: .systemPink.withAlphaComponent(0.3))
+            .backgroundColor(.systemPink.withAlphaComponent(0.3))
             .renderAboveOthers()
     }
     .ignoresSafeArea(.all)
@@ -36,7 +36,7 @@ let pointSource = ShapeSource(identifier: "points") {
     MapView(styleURL: demoTilesURL) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-            .iconImage(constant: UIImage(systemName: "mappin")!)
+            .iconImage(UIImage(systemName: "mappin")!)
     }
     .ignoresSafeArea(.all)
 }
@@ -45,8 +45,8 @@ let pointSource = ShapeSource(identifier: "points") {
     MapView(styleURL: demoTilesURL) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
-            .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-            .iconRotation(constant: 45)
+            .iconImage(UIImage(systemName: "location.north.circle.fill")!)
+            .iconRotation(45)
     }
     .ignoresSafeArea(.all)
 }
@@ -55,7 +55,7 @@ let pointSource = ShapeSource(identifier: "points") {
     MapView(styleURL: demoTilesURL) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
-            .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
+            .iconImage(UIImage(systemName: "location.north.circle.fill")!)
             .iconRotation(featurePropertyNamed: "heading")
     }
     .ignoresSafeArea(.all)
@@ -65,14 +65,14 @@ let pointSource = ShapeSource(identifier: "points") {
     MapView(styleURL: demoTilesURL) {
         // Simple symbol layer demonstration with an icon
         CircleStyleLayer(identifier: "simple-circles", source: pointSource)
-            .radius(constant: 16)
-            .color(constant: .systemRed)
-            .strokeWidth(constant: 2)
-            .strokeColor(constant: .white)
+            .radius(16)
+            .color(.systemRed)
+            .strokeWidth(2)
+            .strokeColor(.white)
 
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-            .iconImage(constant: UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
-            .iconColor(constant: .white)
+            .iconImage(UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
+            .iconColor(.white)
     }
     .ignoresSafeArea(.all)
 }

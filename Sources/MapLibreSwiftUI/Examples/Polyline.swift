@@ -19,9 +19,9 @@ struct PolylinePreview: View {
 
             // Add a polyline casing for a stroke effect
             LineStyleLayer(identifier: "route-line-casing", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.white)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
@@ -29,9 +29,9 @@ struct PolylinePreview: View {
 
             // Add an inner (blue) polyline
             LineStyleLayer(identifier: "route-line-inner", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .systemBlue)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.systemBlue)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
