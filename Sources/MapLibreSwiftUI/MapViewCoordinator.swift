@@ -198,10 +198,13 @@ extension MapViewCoordinator: MLNMapViewDelegate {
             return
         }
 
-        // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera state
-        // to the MapView camera binding.
-        parent.camera = .center(mapView.centerCoordinate,
-                                zoom: mapView.zoomLevel,
-                                reason: CameraChangeReason(reason))
+        DispatchQueue.main.async {
+            // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera
+            // state
+            // to the MapView camera binding.
+            self.parent.camera = .center(mapView.centerCoordinate,
+                                         zoom: mapView.zoomLevel,
+                                         reason: CameraChangeReason(reason))
+        }
     }
 }
