@@ -64,7 +64,7 @@ extension MapView {
                                    sender: UIGestureRecognizing) -> MapGestureContext
     {
         // Build the context of the gesture's event.
-        var point: CGPoint = switch gesture.method {
+        let point: CGPoint = switch gesture.method {
         case let .tap(numberOfTaps: numberOfTaps):
             // Calculate the CGPoint of the last gesture tap
             sender.location(ofTouch: numberOfTaps - 1, in: mapView)
