@@ -1,8 +1,6 @@
 import CoreLocation
 import SwiftUI
 
-private let switzerland = CLLocationCoordinate2D(latitude: 46.801111, longitude: 8.226667)
-
 struct CameraDirectManipulationPreview: View {
     @State private var camera = MapViewCamera.center(switzerland, zoom: 4)
 
@@ -39,7 +37,7 @@ struct CameraDirectManipulationPreview: View {
 
 #Preview("Camera Zoom after delay") {
     CameraDirectManipulationPreview(
-        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: demoTilesURL,
         targetCameraAfterDelay: .center(switzerland, zoom: 6)
     )
     .ignoresSafeArea(.all)

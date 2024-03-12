@@ -54,7 +54,7 @@ public class MapViewCoordinator: NSObject {
                               zoomLevel: camera.zoom,
                               direction: camera.direction,
                               animated: animated)
-        case.trackingUserLocation:
+        case .trackingUserLocation:
             mapView.userTrackingMode = .follow
             mapView.setZoomLevel(camera.zoom, animated: false)
         case .trackingUserLocationWithHeading:
@@ -176,7 +176,7 @@ public class MapViewCoordinator: NSObject {
 // MARK: - MLNMapViewDelegate
 
 extension MapViewCoordinator: MLNMapViewDelegate {
-    public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+    public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
@@ -213,5 +213,9 @@ extension MapViewCoordinator: MLNMapViewDelegate {
                                          zoom: mapView.zoomLevel,
                                          reason: CameraChangeReason(reason))
         }
+    }
+
+    public func mapView(_: MLNMapView, didUpdate userLocation: MLNUserLocation?) {
+        print("Updated user location! \(String(describing: userLocation))")
     }
 }

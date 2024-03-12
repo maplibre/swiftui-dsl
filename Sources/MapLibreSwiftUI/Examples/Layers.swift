@@ -3,8 +3,6 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
-
 // A collection of points with various
 // attributes
 let pointSource = ShapeSource(identifier: "points") {
