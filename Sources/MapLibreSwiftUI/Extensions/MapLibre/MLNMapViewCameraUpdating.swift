@@ -13,7 +13,12 @@ protocol MLNMapViewCameraUpdating: AnyObject {
                    direction: CLLocationDirection,
                    animated: Bool)
     func setZoomLevel(_ zoomLevel: Double, animated: Bool)
-	func setVisibleCoordinateBounds(_ bounds: MLNCoordinateBounds, edgePadding: UIEdgeInsets, animated: Bool, completionHandler: (() -> Void)?)
+    func setVisibleCoordinateBounds(
+        _ bounds: MLNCoordinateBounds,
+        edgePadding: UIEdgeInsets,
+        animated: Bool,
+        completionHandler: (() -> Void)?
+    )
 }
 
 extension MLNMapView: MLNMapViewCameraUpdating {
