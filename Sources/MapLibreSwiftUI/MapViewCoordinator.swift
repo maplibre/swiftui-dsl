@@ -54,7 +54,7 @@ public class MapViewCoordinator: NSObject {
                               zoomLevel: camera.zoom,
                               direction: camera.direction,
                               animated: animated)
-        case .trackingUserLocation:
+        case.trackingUserLocation:
             mapView.userTrackingMode = .follow
             mapView.setZoomLevel(camera.zoom, animated: false)
         case .trackingUserLocationWithHeading:
@@ -176,32 +176,39 @@ public class MapViewCoordinator: NSObject {
 // MARK: - MLNMapViewDelegate
 
 extension MapViewCoordinator: MLNMapViewDelegate {
-    public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+    public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
 
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-        // Validate that the mapView.userTrackingMode still matches our desired camera state for each tracking type.
-        let isFollowing = parent.camera.state == .trackingUserLocation && mapView.userTrackingMode == .follow
-        let isFollowingHeading = parent.camera.state == .trackingUserLocationWithHeading && mapView
-            .userTrackingMode == .followWithHeading
-        let isFollowingCourse = parent.camera.state == .trackingUserLocationWithCourse && mapView
-            .userTrackingMode == .followWithCourse
-
         // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
-        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still matches
-        // the mapView's userTrackingMode
-        if isFollowing || isFollowingHeading || isFollowingCourse {
-            // User tracking is still active, we can ignore camera updates until we unset/fail this boolean check
+        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
+        // matches the mapView's userTrackingMode
+        let isProgrammaticallyTracking: Bool = switch parent.camera.state {
+        case .centered(onCoordinate: _):
+            false
+        case .trackingUserLocation:
+            mapView.userTrackingMode == .follow
+        case .trackingUserLocationWithHeading:
+            mapView.userTrackingMode == .followWithHeading
+        case .trackingUserLocationWithCourse:
+            mapView.userTrackingMode == .followWithCourse
+        case .rect(northeast: _, southwest: _):
+            false
+        case .showcase(shapeCollection: _):
+            false
+        }
+
+        if isProgrammaticallyTracking {
+            // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
+            // check
             return
         }
 
         DispatchQueue.main.async {
-            // The user's desired camera is not a user tracking method, now we need to publish the MLNMapView's camera
-            // state
-            // to the MapView camera binding.
+            // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
             self.parent.camera = .center(mapView.centerCoordinate,
                                          zoom: mapView.zoomLevel,
                                          reason: CameraChangeReason(reason))

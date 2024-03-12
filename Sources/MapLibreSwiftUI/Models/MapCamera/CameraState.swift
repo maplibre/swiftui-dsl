@@ -34,8 +34,8 @@ public enum CameraState: Hashable {
 extension CameraState: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case let .centered(onCoordinate: onCoordinate):
-            "CameraState.centered(onCoordinate: \(onCoordinate)"
+        case let .centered(onCoordinate: coordinate):
+            "CameraState.centered(onCoordinate: \(coordinate))"
         case .trackingUserLocation:
             "CameraState.trackingUserLocation"
         case .trackingUserLocationWithHeading:

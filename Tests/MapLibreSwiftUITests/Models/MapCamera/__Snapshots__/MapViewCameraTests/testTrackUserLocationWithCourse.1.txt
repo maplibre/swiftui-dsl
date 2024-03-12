@@ -1,0 +1,10 @@
+▿ MapViewCamera
+  - direction: 0.0
+  ▿ lastReasonForChange: Optional<CameraChangeReason>
+    - some: CameraChangeReason.programmatic
+  ▿ pitch: CameraPitch
+    ▿ freeWithinRange: (2 elements)
+      - minimum: 12.0
+      - maximum: 34.0
+  - state: CameraState.CameraState.trackingUserLocationWithCourse
+  - zoom: 18.0
