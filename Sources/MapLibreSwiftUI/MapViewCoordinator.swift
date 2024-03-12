@@ -214,8 +214,4 @@ extension MapViewCoordinator: MLNMapViewDelegate {
                                          reason: CameraChangeReason(reason))
         }
     }
-
-    public func mapView(_: MLNMapView, didUpdate userLocation: MLNUserLocation?) {
-        print("Updated user location! \(String(describing: userLocation))")
-    }
 }

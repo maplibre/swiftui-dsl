@@ -11,7 +11,6 @@ struct CameraDirectManipulationPreview: View {
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
             .onStyleLoaded { _ in
-                print("Style is loaded")
                 onStyleLoaded?()
             }
             .overlay(alignment: .bottom, content: {

@@ -100,7 +100,7 @@ public struct MapView: UIViewRepresentable {
     }
 }
 
-extension MapView {
+public extension MapView {
     func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
         var result = self
 
