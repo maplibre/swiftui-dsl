@@ -1,5 +1,5 @@
-import UIKit
 import Mockable
+import UIKit
 
 @Mockable
 protocol UIGestureRecognizing: AnyObject {

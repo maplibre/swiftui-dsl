@@ -1,4 +1,4 @@
-name: Test maplibre-swiftui-dsl-playground
+name: Test
 
 on:
   push:
@@ -7,6 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
+  format-lint:
+    runs-on: macos-14
+
+    steps:
+    - name: Install tools
+      run: brew install swiftformat
+      
+    - name: Checkout maplibre-swiftui-dsl-playground
+      uses: actions/checkout@v3
+
+    - name: Check format
+      run: swiftformat . --lint
+
   test:
     runs-on: macos-14
     strategy:
@@ -20,15 +33,15 @@ jobs:
         ]
 
     steps:
-    - name: Install xcbeautify
+    - name: Install tools
       run: brew install xcbeautify
-    
+
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: '15.0'
 
     - name: Checkout maplibre-swiftui-dsl-playground
       uses: actions/checkout@v3
-    
+
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
       run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}

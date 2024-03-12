@@ -46,6 +46,20 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
 Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
 or more detailed [Examples](Sources/MapLibreSwiftUI/Examples) to see how it works in practice.
 
+## Developer Quick Start
+
+This project uses [`swiftformat`](https://github.com/nicklockwood/SwiftFormat) to automatically handle basic swift formatting
+as well as to lint and ensure conformance in PRs. Check out the swiftformat [Install Guide](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
+to add swiftformat to your machine.
+
+Once installed, you can autoformat code using the command:
+
+```sh
+swiftformat .
+```
+
+Swiftformat can occasionally poorly resolve a formatting issue (e.g. when you've already line-broken a large comment). Issues like this are typically easy to manually correct.
+
 ## Structure
 
 This package is structured into a few targets. `InternalUtils` is pretty much what it says. `MapLibreSwiftDSL` and

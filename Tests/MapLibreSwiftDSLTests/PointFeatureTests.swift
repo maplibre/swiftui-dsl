@@ -1,7 +1,7 @@
+import InternalUtils
+import MapLibre
 import XCTest
 @testable import MapLibreSwiftDSL
-import MapLibre
-import InternalUtils
 
 final class PointFeatureTests: XCTestCase {
     private let primeMeridian = CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139)

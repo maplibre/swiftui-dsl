@@ -1,4 +1,4 @@
-name: Release Maplibre-SwiftUI
+name: Release
 
 on:
   push:

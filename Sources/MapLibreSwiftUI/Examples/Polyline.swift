@@ -1,14 +1,15 @@
-import SwiftUI
-import MapLibreSwiftDSL
-import MapLibre
 import InternalUtils
+import MapLibre
+import MapLibreSwiftDSL
+import SwiftUI
 
 struct PolylinePreview: View {
     let styleURL: URL
 
     var body: some View {
         MapView(styleURL: styleURL,
-                constantCamera: .center(samplePedestrianWaypoints.first!, zoom: 14)) {
+                constantCamera: .center(samplePedestrianWaypoints.first!, zoom: 14))
+        {
             // Note: This line does not add the source to the style as if it
             // were a statement in an imperative programming language.
             // The source is added automatically if a layer references it.
@@ -18,9 +19,9 @@ struct PolylinePreview: View {
 
             // Add a polyline casing for a stroke effect
             LineStyleLayer(identifier: "route-line-casing", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.white)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
@@ -28,9 +29,9 @@ struct PolylinePreview: View {
 
             // Add an inner (blue) polyline
             LineStyleLayer(identifier: "route-line-inner", source: polylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .systemBlue)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.systemBlue)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),

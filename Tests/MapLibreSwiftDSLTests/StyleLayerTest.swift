@@ -1,12 +1,12 @@
-import XCTest
 import MapLibre
 import MapLibreSwiftDSL
+import XCTest
 
 final class StyleLayerTest: XCTestCase {
     func testBackgroundStyleLayer() throws {
         let styleLayer = BackgroundLayer(identifier: "background")
-            .backgroundColor(constant: .cyan)
-            .backgroundOpacity(constant: 0.4)
+            .backgroundColor(.cyan)
+            .backgroundOpacity(0.4)
 
         let mglStyleLayer = styleLayer.makeMLNStyleLayer() as! MLNBackgroundStyleLayer
 

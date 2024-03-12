@@ -26,11 +26,11 @@ struct CameraDirectManipulationPreview: View {
                     )
                     .padding(.bottom, 42)
             })
-        .task {
-            try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
+            .task {
+                try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
 
-            camera = MapViewCamera.center(switzerland, zoom: 6)
-        }
+                camera = MapViewCamera.center(switzerland, zoom: 6)
+            }
     }
 }
 
@@ -38,5 +38,5 @@ struct CameraDirectManipulationPreview: View {
     CameraDirectManipulationPreview(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!
     )
-        .ignoresSafeArea(.all)
+    .ignoresSafeArea(.all)
 }
