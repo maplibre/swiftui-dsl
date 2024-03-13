@@ -1,8 +1,6 @@
 ▿ MapViewCamera
-  - direction: 0.0
   ▿ lastReasonForChange: Optional<CameraChangeReason>
     - some: CameraChangeReason.programmatic
-  - pitch: CameraPitch.free
   ▿ state: CameraState
     ▿ rect: (2 elements)
       ▿ boundingBox: MLNCoordinateBounds

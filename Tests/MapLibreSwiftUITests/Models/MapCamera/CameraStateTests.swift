@@ -7,26 +7,26 @@ final class CameraStateTests: XCTestCase {
     let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
 
     func testCenterCameraState() {
-        let state: CameraState = .centered(onCoordinate: coordinate, zoom: 4)
-        XCTAssertEqual(state, .centered(onCoordinate: coordinate, zoom: 4))
+        let state: CameraState = .centered(onCoordinate: coordinate, zoom: 4, pitch: .free, direction: 42)
+        XCTAssertEqual(state, .centered(onCoordinate: coordinate, zoom: 4, pitch: .free, direction: 42))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocation() {
-        let state: CameraState = .trackingUserLocation(zoom: 4)
-        XCTAssertEqual(state, .trackingUserLocation(zoom: 4))
+        let state: CameraState = .trackingUserLocation(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocation(zoom: 4, pitch: .free))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithHeading() {
-        let state: CameraState = .trackingUserLocationWithHeading(zoom: 4)
-        XCTAssertEqual(state, .trackingUserLocationWithHeading(zoom: 4))
+        let state: CameraState = .trackingUserLocationWithHeading(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocationWithHeading(zoom: 4, pitch: .free))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithCourse() {
-        let state: CameraState = .trackingUserLocationWithCourse(zoom: 4)
-        XCTAssertEqual(state, .trackingUserLocationWithCourse(zoom: 4))
+        let state: CameraState = .trackingUserLocationWithCourse(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocationWithCourse(zoom: 4, pitch: .free))
         assertSnapshot(of: state, as: .description)
     }
 

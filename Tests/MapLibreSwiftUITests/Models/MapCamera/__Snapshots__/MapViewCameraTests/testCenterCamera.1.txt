@@ -1,13 +1,13 @@
 ▿ MapViewCamera
-  - direction: 23.0
   - lastReasonForChange: Optional<CameraChangeReason>.none
-  ▿ pitch: CameraPitch
-    ▿ freeWithinRange: (2 elements)
-      - minimum: 12.0
-      - maximum: 34.0
   ▿ state: CameraState
-    ▿ centered: (2 elements)
+    ▿ centered: (4 elements)
       ▿ onCoordinate: CLLocationCoordinate2D
         - latitude: 12.3
         - longitude: 23.4
       - zoom: 5.0
+      ▿ pitch: CameraPitch
+        ▿ freeWithinRange: (2 elements)
+          - minimum: 12.0
+          - maximum: 34.0
+      - direction: 23.0

@@ -48,21 +48,29 @@ public class MapViewCoordinator: NSObject {
         }
 
         switch camera.state {
-        case let .centered(onCoordinate: coordinate, zoom: zoom):
+        case let .centered(onCoordinate: coordinate, zoom: zoom, pitch: pitch, direction: direction):
             mapView.userTrackingMode = .none
             mapView.setCenter(coordinate,
                               zoomLevel: zoom,
-                              direction: camera.direction,
+                              direction: direction,
                               animated: animated)
-        case let .trackingUserLocation(zoom: zoom):
+            mapView.minimumPitch = pitch.rangeValue.lowerBound
+            mapView.maximumPitch = pitch.rangeValue.upperBound
+        case let .trackingUserLocation(zoom: zoom, pitch: pitch):
             mapView.userTrackingMode = .follow
             mapView.setZoomLevel(zoom, animated: animated)
-        case let .trackingUserLocationWithHeading(zoom: zoom):
+            mapView.minimumPitch = pitch.rangeValue.lowerBound
+            mapView.maximumPitch = pitch.rangeValue.upperBound
+        case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch):
             mapView.userTrackingMode = .followWithHeading
             mapView.setZoomLevel(zoom, animated: animated)
-        case let .trackingUserLocationWithCourse(zoom: zoom):
+            mapView.minimumPitch = pitch.rangeValue.lowerBound
+            mapView.maximumPitch = pitch.rangeValue.upperBound
+        case let .trackingUserLocationWithCourse(zoom: zoom, pitch: pitch):
             mapView.userTrackingMode = .followWithCourse
             mapView.setZoomLevel(zoom, animated: animated)
+            mapView.minimumPitch = pitch.rangeValue.lowerBound
+            mapView.maximumPitch = pitch.rangeValue.upperBound
         case let .rect(boundingBox, padding):
             mapView.setVisibleCoordinateBounds(boundingBox,
                                                edgePadding: padding,
@@ -72,10 +80,6 @@ public class MapViewCoordinator: NSObject {
             // TODO: Need a method these/or to finalize a goal here.
             break
         }
-
-        // Set the correct pitch range.
-        mapView.minimumPitch = camera.pitch.rangeValue.lowerBound
-        mapView.maximumPitch = camera.pitch.rangeValue.upperBound
 
         snapshotCamera = camera
     }
