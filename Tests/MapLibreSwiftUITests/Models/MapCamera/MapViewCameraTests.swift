@@ -1,6 +1,6 @@
 import CoreLocation
-import SnapshotTesting
 import MapLibre
+import SnapshotTesting
 import XCTest
 @testable import MapLibreSwiftUI
 

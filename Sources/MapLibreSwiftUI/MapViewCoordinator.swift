@@ -56,13 +56,13 @@ public class MapViewCoordinator: NSObject {
                               animated: animated)
         case let .trackingUserLocation(zoom: zoom):
             mapView.userTrackingMode = .follow
-            mapView.setZoomLevel(zoom, animated: false)
+            mapView.setZoomLevel(zoom, animated: animated)
         case let .trackingUserLocationWithHeading(zoom: zoom):
             mapView.userTrackingMode = .followWithHeading
-            mapView.setZoomLevel(zoom, animated: false)
+            mapView.setZoomLevel(zoom, animated: animated)
         case let .trackingUserLocationWithCourse(zoom: zoom):
             mapView.userTrackingMode = .followWithCourse
-            mapView.setZoomLevel(zoom, animated: false)
+            mapView.setZoomLevel(zoom, animated: animated)
         case let .rect(boundingBox, padding):
             mapView.setVisibleCoordinateBounds(boundingBox,
                                                edgePadding: padding,
