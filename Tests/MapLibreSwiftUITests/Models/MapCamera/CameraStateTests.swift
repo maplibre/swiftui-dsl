@@ -7,26 +7,26 @@ final class CameraStateTests: XCTestCase {
     let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
 
     func testCenterCameraState() {
-        let state: CameraState = .centered(onCoordinate: coordinate)
-        XCTAssertEqual(state, .centered(onCoordinate: coordinate))
+        let state: CameraState = .centered(onCoordinate: coordinate, zoom: 4)
+        XCTAssertEqual(state, .centered(onCoordinate: coordinate, zoom: 4))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocation() {
-        let state: CameraState = .trackingUserLocation
-        XCTAssertEqual(state, .trackingUserLocation)
+        let state: CameraState = .trackingUserLocation(zoom: 4)
+        XCTAssertEqual(state, .trackingUserLocation(zoom: 4))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithHeading() {
-        let state: CameraState = .trackingUserLocationWithHeading
-        XCTAssertEqual(state, .trackingUserLocationWithHeading)
+        let state: CameraState = .trackingUserLocationWithHeading(zoom: 4)
+        XCTAssertEqual(state, .trackingUserLocationWithHeading(zoom: 4))
         assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithCourse() {
-        let state: CameraState = .trackingUserLocationWithCourse
-        XCTAssertEqual(state, .trackingUserLocationWithCourse)
+        let state: CameraState = .trackingUserLocationWithCourse(zoom: 4)
+        XCTAssertEqual(state, .trackingUserLocationWithCourse(zoom: 4))
         assertSnapshot(of: state, as: .description)
     }
 
@@ -34,8 +34,9 @@ final class CameraStateTests: XCTestCase {
         let northeast = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let southwest = CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6)
 
-        let state: CameraState = .rect(northeast: northeast, southwest: southwest)
-        XCTAssertEqual(state, .rect(northeast: northeast, southwest: southwest))
+        let state: CameraState = .rect(boundingBox: .init(sw: southwest, ne: northeast))
+        XCTAssertEqual(state, .rect(boundingBox: .init(sw: southwest, ne: northeast)))
+
         assertSnapshot(of: state, as: .description)
     }
 }

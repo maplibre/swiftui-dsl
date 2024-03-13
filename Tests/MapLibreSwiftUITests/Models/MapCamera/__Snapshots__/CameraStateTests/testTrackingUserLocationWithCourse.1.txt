@@ -1,1 +1,1 @@
-CameraState.trackingUserLocationWithCourse
+CameraState.trackingUserLocationWithCourse(zoom: 4.0)

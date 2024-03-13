@@ -1,1 +1,1 @@
-CameraState.centered(onCoordinate: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4))
+CameraState.centered(onCoordinate: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4), zoom: 4.0)

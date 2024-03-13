@@ -3,5 +3,6 @@
   ▿ lastReasonForChange: Optional<CameraChangeReason>
     - some: CameraChangeReason.programmatic
   - pitch: CameraPitch.free
-  - state: CameraState.CameraState.trackingUserLocationWithHeading
-  - zoom: 10.0
+  ▿ state: CameraState
+    ▿ trackingUserLocationWithHeading: (1 element)
+      - zoom: 10.0

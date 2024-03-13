@@ -4,28 +4,31 @@ import MapLibre
 /// The CameraState is used to understand the current context of the MapView's camera.
 public enum CameraState: Hashable {
     /// Centered on a coordinate
-    case centered(onCoordinate: CLLocationCoordinate2D)
+    case centered(onCoordinate: CLLocationCoordinate2D, zoom: Double)
 
     /// Follow the user's location using the MapView's internal camera.
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .follow which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocation
+    case trackingUserLocation(zoom: Double)
 
     /// Follow the user's location using the MapView's internal camera with the user's heading.
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .followWithHeading which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocationWithHeading
+    case trackingUserLocationWithHeading(zoom: Double)
 
     /// Follow the user's location using the MapView's internal camera with the users' course
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .followWithCourse which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocationWithCourse
+    case trackingUserLocationWithCourse(zoom: Double)
 
     /// Centered on a bounding box/rectangle.
-    case rect(northeast: CLLocationCoordinate2D, southwest: CLLocationCoordinate2D) // TODO: make a bounding box?
+    case rect(
+        boundingBox: MLNCoordinateBounds,
+        edgePadding: UIEdgeInsets = .init(top: 20, left: 20, bottom: 20, right: 20)
+    )
 
     /// Showcasing GeoJSON, Polygons, etc.
     case showcase(shapeCollection: MLNShapeCollection)
@@ -34,18 +37,38 @@ public enum CameraState: Hashable {
 extension CameraState: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case let .centered(onCoordinate: coordinate):
-            "CameraState.centered(onCoordinate: \(coordinate))"
-        case .trackingUserLocation:
-            "CameraState.trackingUserLocation"
-        case .trackingUserLocationWithHeading:
-            "CameraState.trackingUserLocationWithHeading"
-        case .trackingUserLocationWithCourse:
-            "CameraState.trackingUserLocationWithCourse"
-        case let .rect(northeast: northeast, southwest: southwest):
-            "CameraState.rect(northeast: \(northeast), southwest: \(southwest))"
+        case let .centered(onCoordinate: coordinate, zoom: zoom):
+            "CameraState.centered(onCoordinate: \(coordinate), zoom: \(zoom))"
+        case let .trackingUserLocation(zoom: zoom):
+            "CameraState.trackingUserLocation(zoom: \(zoom))"
+        case let .trackingUserLocationWithHeading(zoom: zoom):
+            "CameraState.trackingUserLocationWithHeading(zoom: \(zoom))"
+        case let .trackingUserLocationWithCourse(zoom: zoom):
+            "CameraState.trackingUserLocationWithCourse(zoom: \(zoom))"
+        case let .rect(boundingBox: boundingBox, edgePadding: edgePadding):
+            "CameraState.rect(northeast: \(boundingBox.ne), southwest: \(boundingBox.sw), edgePadding: \(edgePadding))"
         case let .showcase(shapeCollection: shapeCollection):
             "CameraState.showcase(shapeCollection: \(shapeCollection))"
         }
+    }
+}
+
+extension MLNCoordinateBounds: Equatable, Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ne)
+        hasher.combine(sw)
+    }
+
+    public static func == (lhs: MLNCoordinateBounds, rhs: MLNCoordinateBounds) -> Bool {
+        lhs.ne == rhs.ne && lhs.sw == rhs.sw
+    }
+}
+
+extension UIEdgeInsets: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(left)
+        hasher.combine(right)
+        hasher.combine(top)
+        hasher.combine(bottom)
     }
 }

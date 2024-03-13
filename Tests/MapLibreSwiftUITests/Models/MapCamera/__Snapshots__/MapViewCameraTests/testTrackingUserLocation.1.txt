@@ -6,5 +6,6 @@
     ▿ freeWithinRange: (2 elements)
       - minimum: 12.0
       - maximum: 34.0
-  - state: CameraState.CameraState.trackingUserLocation
-  - zoom: 10.0
+  ▿ state: CameraState
+    ▿ trackingUserLocation: (1 element)
+      - zoom: 10.0

@@ -1,1 +1,1 @@
-CameraState.trackingUserLocationWithHeading
+CameraState.trackingUserLocationWithHeading(zoom: 4.0)

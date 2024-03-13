@@ -48,22 +48,27 @@ public class MapViewCoordinator: NSObject {
         }
 
         switch camera.state {
-        case let .centered(onCoordinate: coordinate):
+        case let .centered(onCoordinate: coordinate, zoom: zoom):
             mapView.userTrackingMode = .none
             mapView.setCenter(coordinate,
-                              zoomLevel: camera.zoom,
+                              zoomLevel: zoom,
                               direction: camera.direction,
                               animated: animated)
-        case .trackingUserLocation:
+        case let .trackingUserLocation(zoom: zoom):
             mapView.userTrackingMode = .follow
-            mapView.setZoomLevel(camera.zoom, animated: false)
-        case .trackingUserLocationWithHeading:
+            mapView.setZoomLevel(zoom, animated: false)
+        case let .trackingUserLocationWithHeading(zoom: zoom):
             mapView.userTrackingMode = .followWithHeading
-            mapView.setZoomLevel(camera.zoom, animated: false)
-        case .trackingUserLocationWithCourse:
+            mapView.setZoomLevel(zoom, animated: false)
+        case let .trackingUserLocationWithCourse(zoom: zoom):
             mapView.userTrackingMode = .followWithCourse
-            mapView.setZoomLevel(camera.zoom, animated: false)
-        case .rect, .showcase:
+            mapView.setZoomLevel(zoom, animated: false)
+        case let .rect(boundingBox, padding):
+            mapView.setVisibleCoordinateBounds(boundingBox,
+                                               edgePadding: padding,
+                                               animated: animated,
+                                               completionHandler: nil)
+        case .showcase:
             // TODO: Need a method these/or to finalize a goal here.
             break
         }
@@ -195,7 +200,7 @@ extension MapViewCoordinator: MLNMapViewDelegate {
             mapView.userTrackingMode == .followWithHeading
         case .trackingUserLocationWithCourse:
             mapView.userTrackingMode == .followWithCourse
-        case .rect(northeast: _, southwest: _):
+        case .rect(boundingBox: _, edgePadding: _):
             false
         case .showcase(shapeCollection: _):
             false

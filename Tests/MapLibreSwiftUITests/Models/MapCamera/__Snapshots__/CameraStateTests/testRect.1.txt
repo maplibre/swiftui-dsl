@@ -1,1 +1,1 @@
-CameraState.rect(northeast: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4), southwest: CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6))
+CameraState.rect(northeast: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4), southwest: CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6), edgePadding: UIEdgeInsets(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0))

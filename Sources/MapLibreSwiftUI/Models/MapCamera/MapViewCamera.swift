@@ -14,7 +14,6 @@ public struct MapViewCamera: Hashable {
     }
 
     public var state: CameraState
-    public var zoom: Double
     public var pitch: CameraPitch
     public var direction: CLLocationDirection
 
@@ -30,8 +29,7 @@ public struct MapViewCamera: Hashable {
     ///
     /// - Returns: The constructed MapViewCamera.
     public static func `default`() -> MapViewCamera {
-        MapViewCamera(state: .centered(onCoordinate: Defaults.coordinate),
-                      zoom: Defaults.zoom,
+        MapViewCamera(state: .centered(onCoordinate: Defaults.coordinate, zoom: Defaults.zoom),
                       pitch: Defaults.pitch,
                       direction: Defaults.direction,
                       lastReasonForChange: .programmatic)
@@ -51,8 +49,7 @@ public struct MapViewCamera: Hashable {
                               direction: CLLocationDirection = Defaults.direction,
                               reason: CameraChangeReason? = nil) -> MapViewCamera
     {
-        MapViewCamera(state: .centered(onCoordinate: coordinate),
-                      zoom: zoom,
+        MapViewCamera(state: .centered(onCoordinate: coordinate, zoom: zoom),
                       pitch: pitch,
                       direction: direction,
                       lastReasonForChange: reason)
@@ -71,8 +68,7 @@ public struct MapViewCamera: Hashable {
                                          pitch: CameraPitch = Defaults.pitch) -> MapViewCamera
     {
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
-        MapViewCamera(state: .trackingUserLocation,
-                      zoom: zoom,
+        MapViewCamera(state: .trackingUserLocation(zoom: zoom),
                       pitch: pitch,
                       direction: Defaults.direction,
                       lastReasonForChange: .programmatic)
@@ -91,8 +87,7 @@ public struct MapViewCamera: Hashable {
                                                     pitch: CameraPitch = Defaults.pitch) -> MapViewCamera
     {
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
-        MapViewCamera(state: .trackingUserLocationWithHeading,
-                      zoom: zoom,
+        MapViewCamera(state: .trackingUserLocationWithHeading(zoom: zoom),
                       pitch: pitch,
                       direction: Defaults.direction,
                       lastReasonForChange: .programmatic)
@@ -111,12 +106,26 @@ public struct MapViewCamera: Hashable {
                                                    pitch: CameraPitch = Defaults.pitch) -> MapViewCamera
     {
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
-        MapViewCamera(state: .trackingUserLocationWithCourse,
-                      zoom: zoom,
+        MapViewCamera(state: .trackingUserLocationWithCourse(zoom: zoom),
                       pitch: pitch,
                       direction: Defaults.direction,
                       lastReasonForChange: .programmatic)
     }
 
-    // TODO: Create init methods for other camera states once supporting materials are understood (e.g. BoundingBox)
+    /// Positions the camera to show a specific region in the MapView.
+    ///
+    /// - Parameters:
+    ///   - box: Set the desired bounding box. This is a one time event and the user can manipulate by moving the map.
+    ///   - edgePadding: Set the edge insets that should be applied before positioning the map.
+    /// - Returns: The MapViewCamera representing the scenario
+    public static func boundingBox(
+        _ box: MLNCoordinateBounds,
+        edgePadding: UIEdgeInsets = .init(top: 20, left: 20, bottom: 20, right: 20)
+    ) -> MapViewCamera {
+        // TODO: pitch & direction are ignored. We should extract these into the state parameter.
+        MapViewCamera(state: .rect(boundingBox: box, edgePadding: edgePadding),
+                      pitch: Defaults.pitch,
+                      direction: Defaults.direction,
+                      lastReasonForChange: .programmatic)
+    }
 }
