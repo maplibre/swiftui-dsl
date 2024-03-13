@@ -63,7 +63,12 @@ public class MapViewCoordinator: NSObject {
         case .trackingUserLocationWithCourse:
             mapView.userTrackingMode = .followWithCourse
             mapView.setZoomLevel(camera.zoom, animated: false)
-        case .rect, .showcase:
+        case let .rect(boundingBox, padding):
+            mapView.setVisibleCoordinateBounds(boundingBox,
+                                               edgePadding: padding,
+                                               animated: animated,
+                                               completionHandler: nil)
+        case .showcase:
             // TODO: Need a method these/or to finalize a goal here.
             break
         }
