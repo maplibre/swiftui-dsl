@@ -20,6 +20,11 @@ public struct MapView: UIViewRepresentable {
     /// See ``unsafeMapViewModifier(_:)``
     var unsafeMapViewModifier: ((MLNMapView) -> Void)?
 
+    var controls: [MapControl] = [
+        CompassView(),
+        LogoView(),
+    ]
+
     private var locationManager: MLNLocationManager?
 
     public init(
@@ -92,38 +97,18 @@ public struct MapView: UIViewRepresentable {
     @MainActor private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
         mapView.contentInset = mapViewContentInset
 
-        mapView.logoView.isHidden = isLogoViewHidden
-        mapView.compassView.isHidden = isCompassViewHidden
+        // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
+        mapView.logoView.isHidden = true
+        mapView.compassView.isHidden = true
+
+        // Apply each control configuration
+        for control in controls {
+            control.configureMapView(mapView)
+        }
 
         if runUnsafe {
             unsafeMapViewModifier?(mapView)
         }
-    }
-}
-
-public extension MapView {
-    func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
-        var result = self
-
-        result.mapViewContentInset = inset
-
-        return result
-    }
-
-    func hideLogoView() -> Self {
-        var result = self
-
-        result.isLogoViewHidden = true
-
-        return result
-    }
-
-    func hideCompassView() -> Self {
-        var result = self
-
-        result.isCompassViewHidden = true
-
-        return result
     }
 }
 

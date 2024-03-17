@@ -1,4 +1,5 @@
 import CoreLocation
+import MapLibreSwiftDSL
 import SwiftUI
 
 @MainActor
@@ -29,6 +30,8 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
         locationManager: locationManager
     )
     .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
-    .hideCompassView()
+    .mapControls {
+        LogoView()
+    }
     .ignoresSafeArea(.all)
 }

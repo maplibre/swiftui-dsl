@@ -1,5 +1,6 @@
 import Foundation
 import MapLibre
+import MapLibreSwiftDSL
 import SwiftUI
 
 public extension MapView {
@@ -81,5 +82,21 @@ public extension MapView {
         newMapView.gestures.append(gesture)
 
         return newMapView
+    }
+
+    func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
+        var result = self
+
+        result.mapViewContentInset = inset
+
+        return result
+    }
+
+    func mapControls(@MapControlsBuilder _ buildControls: () -> [MapControl]) -> Self {
+        var result = self
+
+        result.controls = buildControls()
+
+        return result
     }
 }
