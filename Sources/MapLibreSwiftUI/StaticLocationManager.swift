@@ -11,21 +11,12 @@ import MapLibre
 /// You can provide a new location by setting the ``lastLocation`` property.
 ///
 /// This class does not ever perform any authorization checks. That is the responsiblity of the caller.
-public class StaticLocationManager: NSObject {
-    public var delegate: (any MLNLocationManagerDelegate)? = nil {
-        didSet {
-            DispatchQueue.main.async {
-                self.delegate?.locationManagerDidChangeAuthorization(self)
-                self.delegate?.locationManager(self, didUpdate: [self.lastLocation])
-            }
-        }
-    }
+public final class StaticLocationManager: NSObject, @unchecked Sendable {
+    public var delegate: (any MLNLocationManagerDelegate)?
 
     public var authorizationStatus: CLAuthorizationStatus = .authorizedAlways {
         didSet {
-            DispatchQueue.main.async {
-                self.delegate?.locationManagerDidChangeAuthorization(self)
-            }
+            delegate?.locationManagerDidChangeAuthorization(self)
         }
     }
 
@@ -33,9 +24,7 @@ public class StaticLocationManager: NSObject {
 
     public var lastLocation: CLLocation {
         didSet {
-            DispatchQueue.main.async {
-                self.delegate?.locationManager(self, didUpdate: [self.lastLocation])
-            }
+            delegate?.locationManager(self, didUpdate: [lastLocation])
         }
     }
 
@@ -54,7 +43,13 @@ extension StaticLocationManager: MLNLocationManager {
     }
 
     public func startUpdatingLocation() {
-        // Do nothing
+        // This has to be async dispatched or else the map view will not update immediately if the camera is set to
+        // follow the user's location. This leads to some REALLY (unbearably) bad artifacts. We should find a better
+        // solution for this at some point. This is the reason for the @unchecked Sendable conformance by the way (so
+        // that we don't get a warning about using non-sendable self; it should be safe though).
+        DispatchQueue.main.async {
+            self.delegate?.locationManager(self, didUpdate: [self.lastLocation])
+        }
     }
 
     public func stopUpdatingLocation() {

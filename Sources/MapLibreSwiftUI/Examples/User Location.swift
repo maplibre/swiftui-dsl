@@ -1,6 +1,7 @@
 import CoreLocation
 import SwiftUI
 
+@MainActor
 private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     coordinate: switzerland,
     altitude: 0,

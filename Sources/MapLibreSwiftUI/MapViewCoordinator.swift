@@ -11,6 +11,12 @@ public class MapViewCoordinator: NSObject {
     // every update cycle so we can avoid unnecessary updates
     private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
+
+    // Indicates whether we are currently in a push-down camera update cycle.
+    // This is necessary in order to ensure we don't keep trying to reset a state value which we were already processing
+    // an update for.
+    private var isUpdatingCamera = false
+
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
 
@@ -41,12 +47,13 @@ public class MapViewCoordinator: NSObject {
     /// camera related MLNMapView functionality.
     ///   - camera: The new camera from the binding.
     ///   - animated: Whether to animate.
-    func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
+    @MainActor func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
         guard camera != snapshotCamera else {
             // No action - camera has not changed.
             return
         }
 
+        isUpdatingCamera = true
         switch camera.state {
         case let .centered(onCoordinate: coordinate, zoom: zoom, pitch: pitch, direction: direction):
             mapView.userTrackingMode = .none
@@ -85,11 +92,12 @@ public class MapViewCoordinator: NSObject {
         }
 
         snapshotCamera = camera
+        isUpdatingCamera = false
     }
 
     // MARK: - Coordinator API - Styles + Layers
 
-    func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
+    @MainActor func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
         switch (source, parent.styleSource) {
         case let (.url(newURL), .url(oldURL)):
             if newURL != oldURL {
@@ -98,7 +106,7 @@ public class MapViewCoordinator: NSObject {
         }
     }
 
-    func updateLayers(mapView: MLNMapView) {
+    @MainActor func updateLayers(mapView: MLNMapView) {
         // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
 
         // TODO: Extract this out into a separate function or three...
@@ -195,35 +203,48 @@ extension MapViewCoordinator: MLNMapViewDelegate {
 
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
-        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
-        // matches the mapView's userTrackingMode
-        let isProgrammaticallyTracking: Bool = switch parent.camera.state {
-        case .centered(onCoordinate: _):
-            false
-        case .trackingUserLocation:
-            mapView.userTrackingMode == .follow
-        case .trackingUserLocationWithHeading:
-            mapView.userTrackingMode == .followWithHeading
-        case .trackingUserLocationWithCourse:
-            mapView.userTrackingMode == .followWithCourse
-        case .rect(boundingBox: _, edgePadding: _):
-            false
-        case .showcase(shapeCollection: _):
-            false
-        }
-
-        if isProgrammaticallyTracking {
-            // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
-            // check
+        guard !isUpdatingCamera else {
             return
         }
 
-        DispatchQueue.main.async {
+        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
+        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
+        // matches the mapView's userTrackingMode
+        // NOTE: The use of assumeIsolated is just to make Swift strict concurrency checks happy.
+        // This invariant is upheld by the MLNMapView.
+        MainActor.assumeIsolated {
+            let userTrackingMode = mapView.userTrackingMode
+            let isProgrammaticallyTracking: Bool = switch parent.camera.state {
+            case .trackingUserLocation:
+                userTrackingMode == .follow
+            case .trackingUserLocationWithHeading:
+                userTrackingMode == .followWithHeading
+            case .trackingUserLocationWithCourse:
+                userTrackingMode == .followWithCourse
+            case .centered, .rect, .showcase:
+                false
+            }
+
+            guard !isProgrammaticallyTracking else {
+                // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
+                // check
+                return
+            }
+
             // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
-            self.parent.camera = .center(mapView.centerCoordinate,
-                                         zoom: mapView.zoomLevel,
-                                         reason: CameraChangeReason(reason))
+            // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
+            // state propagation.
+            let newCamera: MapViewCamera = .center(mapView.centerCoordinate,
+                                                   zoom: mapView.zoomLevel,
+                                                   // TODO: Pitch doesn't really describe current state
+                                                   pitch: .freeWithinRange(
+                                                       minimum: mapView.minimumPitch,
+                                                       maximum: mapView.maximumPitch
+                                                   ),
+                                                   direction: mapView.direction,
+                                                   reason: CameraChangeReason(reason))
+            snapshotCamera = newCamera
+            self.parent.camera = newCamera
         }
     }
 }

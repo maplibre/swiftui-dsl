@@ -59,6 +59,7 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateCamera(mapView: mapView,
                                          camera: $camera.wrappedValue,
                                          animated: false)
+        mapView.locationManager = mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
         context.coordinator.onStyleLoaded = onStyleLoaded
@@ -88,7 +89,7 @@ public struct MapView: UIViewRepresentable {
                                          animated: isStyleLoaded)
     }
 
-    private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
+    @MainActor private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
         mapView.contentInset = mapViewContentInset
 
         mapView.logoView.isHidden = isLogoViewHidden

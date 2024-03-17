@@ -16,7 +16,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         }
     }
 
-    func testUnchangedCamera() {
+    @MainActor func testUnchangedCamera() {
         let camera: MapViewCamera = .default()
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: camera, animated: false)
@@ -50,7 +50,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(count: 0)
     }
 
-    func testCenterCameraUpdate() {
+    @MainActor func testCenterCameraUpdate() {
         let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let newCamera: MapViewCamera = .center(coordinate, zoom: 13)
 
@@ -80,7 +80,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(count: 0)
     }
 
-    func testUserTrackingCameraUpdate() {
+    @MainActor func testUserTrackingCameraUpdate() {
         let newCamera: MapViewCamera = .trackUserLocation()
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
@@ -109,7 +109,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(count: 1)
     }
 
-    func testUserTrackingWithCourseCameraUpdate() {
+    @MainActor func testUserTrackingWithCourseCameraUpdate() {
         let newCamera: MapViewCamera = .trackUserLocationWithCourse()
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
@@ -138,7 +138,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(count: 1)
     }
 
-    func testUserTrackingWithHeadingUpdate() {
+    @MainActor func testUserTrackingWithHeadingUpdate() {
         let newCamera: MapViewCamera = .trackUserLocationWithHeading()
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)

@@ -9,7 +9,7 @@ extension MapView {
     ///   - mapView: The MLNMapView that will host the gesture itself.
     ///   - context: The UIViewRepresentable context that will orchestrate the response sender
     ///   - gesture: The gesture definition.
-    func registerGesture(_ mapView: MLNMapView, _ context: Context, gesture: MapGesture) {
+    @MainActor func registerGesture(_ mapView: MLNMapView, _ context: Context, gesture: MapGesture) {
         switch gesture.method {
         case let .tap(numberOfTaps: numberOfTaps):
             let gestureRecognizer = UITapGestureRecognizer(target: context.coordinator,
@@ -41,7 +41,7 @@ extension MapView {
     ///   - mapView: The MapView emitting the gesture. This is used to calculate the point and coordinate of the
     /// gesture.
     ///   - sender: The UIGestureRecognizer
-    func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
+    @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
         guard let gesture = gestures.first(where: { $0.gestureRecognizer == sender }) else {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return
@@ -60,8 +60,8 @@ extension MapView {
     ///   - gesture: The gesture definition for this event.
     ///   - sender: The UIKit gesture emitting from the map view.
     /// - Returns: The calculated context from the sending UIKit gesture
-    func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture,
-                                   sender: UIGestureRecognizing) -> MapGestureContext
+    @MainActor func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture,
+                                              sender: UIGestureRecognizing) -> MapGestureContext
     {
         // Build the context of the gesture's event.
         let point: CGPoint = switch gesture.method {
