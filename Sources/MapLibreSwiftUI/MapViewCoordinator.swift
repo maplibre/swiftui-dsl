@@ -15,7 +15,7 @@ public class MapViewCoordinator: NSObject {
     // Indicates whether we are currently in a push-down camera update cycle.
     // This is necessary in order to ensure we don't keep trying to reset a state value which we were already processing
     // an update for.
-    private var isUpdatingCamera = false
+    var suppressCameraUpdatePropagation = false
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
@@ -53,7 +53,7 @@ public class MapViewCoordinator: NSObject {
             return
         }
 
-        isUpdatingCamera = true
+        suppressCameraUpdatePropagation = true
         switch camera.state {
         case let .centered(onCoordinate: coordinate, zoom: zoom, pitch: pitch, direction: direction):
             mapView.userTrackingMode = .none
@@ -92,7 +92,7 @@ public class MapViewCoordinator: NSObject {
         }
 
         snapshotCamera = camera
-        isUpdatingCamera = false
+        suppressCameraUpdatePropagation = false
     }
 
     // MARK: - Coordinator API - Styles + Layers
@@ -238,12 +238,12 @@ extension MapViewCoordinator: MLNMapViewDelegate {
                                                direction: mapView.direction,
                                                reason: CameraChangeReason(reason))
         snapshotCamera = newCamera
-        self.parent.camera = newCamera
+        parent.camera = newCamera
     }
 
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-        guard !isUpdatingCamera else {
+        guard !suppressCameraUpdatePropagation else {
             return
         }
 

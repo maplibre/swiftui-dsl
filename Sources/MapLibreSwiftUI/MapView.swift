@@ -52,7 +52,11 @@ public struct MapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         context.coordinator.mapView = mapView
 
+        // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
+        // content insets can trigger a change)
+        context.coordinator.suppressCameraUpdatePropagation = true
         applyModifiers(mapView, runUnsafe: false)
+        context.coordinator.suppressCameraUpdatePropagation = false
 
         mapView.locationManager = locationManager
 
