@@ -201,50 +201,54 @@ extension MapViewCoordinator: MLNMapViewDelegate {
         onStyleLoaded?(mglStyle)
     }
 
+    @MainActor private func updateParentCamera(mapView: MLNMapView, reason: MLNCameraChangeReason) {
+        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
+        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
+        // matches the mapView's userTrackingMode
+        // NOTE: The use of assumeIsolated is just to make Swift strict concurrency checks happy.
+        // This invariant is upheld by the MLNMapView.
+        let userTrackingMode = mapView.userTrackingMode
+        let isProgrammaticallyTracking: Bool = switch parent.camera.state {
+        case .trackingUserLocation:
+            userTrackingMode == .follow
+        case .trackingUserLocationWithHeading:
+            userTrackingMode == .followWithHeading
+        case .trackingUserLocationWithCourse:
+            userTrackingMode == .followWithCourse
+        case .centered, .rect, .showcase:
+            false
+        }
+
+        guard !isProgrammaticallyTracking else {
+            // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
+            // check
+            return
+        }
+
+        // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
+        // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
+        // state propagation.
+        let newCamera: MapViewCamera = .center(mapView.centerCoordinate,
+                                               zoom: mapView.zoomLevel,
+                                               // TODO: Pitch doesn't really describe current state
+                                               pitch: .freeWithinRange(
+                                                   minimum: mapView.minimumPitch,
+                                                   maximum: mapView.maximumPitch
+                                               ),
+                                               direction: mapView.direction,
+                                               reason: CameraChangeReason(reason))
+        snapshotCamera = newCamera
+        self.parent.camera = newCamera
+    }
+
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
         guard !isUpdatingCamera else {
             return
         }
 
-        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
-        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
-        // matches the mapView's userTrackingMode
-        // NOTE: The use of assumeIsolated is just to make Swift strict concurrency checks happy.
-        // This invariant is upheld by the MLNMapView.
         MainActor.assumeIsolated {
-            let userTrackingMode = mapView.userTrackingMode
-            let isProgrammaticallyTracking: Bool = switch parent.camera.state {
-            case .trackingUserLocation:
-                userTrackingMode == .follow
-            case .trackingUserLocationWithHeading:
-                userTrackingMode == .followWithHeading
-            case .trackingUserLocationWithCourse:
-                userTrackingMode == .followWithCourse
-            case .centered, .rect, .showcase:
-                false
-            }
-
-            guard !isProgrammaticallyTracking else {
-                // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
-                // check
-                return
-            }
-
-            // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
-            // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
-            // state propagation.
-            let newCamera: MapViewCamera = .center(mapView.centerCoordinate,
-                                                   zoom: mapView.zoomLevel,
-                                                   // TODO: Pitch doesn't really describe current state
-                                                   pitch: .freeWithinRange(
-                                                       minimum: mapView.minimumPitch,
-                                                       maximum: mapView.maximumPitch
-                                                   ),
-                                                   direction: mapView.direction,
-                                                   reason: CameraChangeReason(reason))
-            snapshotCamera = newCamera
-            self.parent.camera = newCamera
+            updateParentCamera(mapView: mapView, reason: reason)
         }
     }
 }
