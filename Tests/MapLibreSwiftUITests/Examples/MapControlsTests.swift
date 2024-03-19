@@ -22,6 +22,16 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    func testLogoChangePosition() {
+        assertView {
+            MapView(styleURL: demoTilesURL)
+                .mapControls {
+                    LogoView()
+                        .position(.topLeft)
+                }
+        }
+    }
+
     func testCompassOnly() {
         assertView {
             MapView(styleURL: demoTilesURL)

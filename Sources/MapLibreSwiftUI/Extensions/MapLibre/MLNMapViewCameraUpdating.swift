@@ -3,6 +3,7 @@ import Foundation
 import MapLibre
 import Mockable
 
+// NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
 @Mockable
 protocol MLNMapViewCameraUpdating: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }

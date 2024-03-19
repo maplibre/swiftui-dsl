@@ -54,6 +54,10 @@ public class MapViewCoordinator: NSObject {
         }
 
         suppressCameraUpdatePropagation = true
+        defer {
+            suppressCameraUpdatePropagation = false
+        }
+
         switch camera.state {
         case let .centered(onCoordinate: coordinate, zoom: zoom, pitch: pitch, direction: direction):
             mapView.userTrackingMode = .none
@@ -92,7 +96,6 @@ public class MapViewCoordinator: NSObject {
         }
 
         snapshotCamera = camera
-        suppressCameraUpdatePropagation = false
     }
 
     // MARK: - Coordinator API - Styles + Layers
@@ -247,7 +250,7 @@ extension MapViewCoordinator: MLNMapViewDelegate {
             return
         }
 
-        // FIXME: CI complains about this being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
+        // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
         Task { @MainActor in
             updateParentCamera(mapView: mapView, reason: reason)
         }

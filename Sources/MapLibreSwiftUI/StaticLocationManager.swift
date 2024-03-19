@@ -20,6 +20,7 @@ public final class StaticLocationManager: NSObject, @unchecked Sendable {
         }
     }
 
+    // TODO: Investigate what this does and document it
     public var headingOrientation: CLDeviceOrientation = .portrait
 
     public var lastLocation: CLLocation {
