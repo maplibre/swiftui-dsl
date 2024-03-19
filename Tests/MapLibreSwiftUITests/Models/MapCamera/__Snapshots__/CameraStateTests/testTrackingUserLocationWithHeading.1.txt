@@ -1,0 +1,1 @@
+CameraState.trackingUserLocationWithHeading(zoom: (4.0, MapLibreSwiftUI.CameraPitch.free))

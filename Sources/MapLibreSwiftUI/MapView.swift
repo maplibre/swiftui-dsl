@@ -12,28 +12,31 @@ public struct MapView: UIViewRepresentable {
     var gestures = [MapGesture]()
     var onStyleLoaded: ((MLNStyle) -> Void)?
 
+    public var mapViewContentInset: UIEdgeInsets = .zero
+    public var isLogoViewHidden = false
+    public var isCompassViewHidden = false
+
     /// 'Escape hatch' to MLNMapView until we have more modifiers.
     /// See ``unsafeMapViewModifier(_:)``
     var unsafeMapViewModifier: ((MLNMapView) -> Void)?
 
+    var controls: [MapControl] = [
+        CompassView(),
+        LogoView(),
+    ]
+
+    private var locationManager: MLNLocationManager?
+
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),
+        locationManager: MLNLocationManager? = nil,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         styleSource = .url(styleURL)
         _camera = camera
         userLayers = makeMapContent()
-    }
-
-    public init(
-        styleURL: URL,
-        constantCamera: MapViewCamera,
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
-    ) {
-        self.init(styleURL: styleURL,
-                  camera: .constant(constantCamera),
-                  makeMapContent)
+        self.locationManager = locationManager
     }
 
     public func makeCoordinator() -> MapViewCoordinator {
@@ -49,6 +52,14 @@ public struct MapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         context.coordinator.mapView = mapView
 
+        // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
+        // content insets can trigger a change)
+        context.coordinator.suppressCameraUpdatePropagation = true
+        applyModifiers(mapView, runUnsafe: false)
+        context.coordinator.suppressCameraUpdatePropagation = false
+
+        mapView.locationManager = locationManager
+
         switch styleSource {
         case let .url(styleURL):
             mapView.styleURL = styleURL
@@ -57,9 +68,7 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateCamera(mapView: mapView,
                                          camera: $camera.wrappedValue,
                                          animated: false)
-
-        // TODO: Make this settable via a modifier
-        mapView.logoView.isHidden = true
+        mapView.locationManager = mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
         context.coordinator.onStyleLoaded = onStyleLoaded
@@ -75,11 +84,7 @@ public struct MapView: UIViewRepresentable {
     public func updateUIView(_ mapView: MLNMapView, context: Context) {
         context.coordinator.parent = self
 
-        // MARK: Modifiers
-
-        unsafeMapViewModifier?(mapView)
-
-        // MARK: End Modifiers
+        applyModifiers(mapView, runUnsafe: true)
 
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: mapView)
@@ -91,6 +96,23 @@ public struct MapView: UIViewRepresentable {
         context.coordinator.updateCamera(mapView: mapView,
                                          camera: $camera.wrappedValue,
                                          animated: isStyleLoaded)
+    }
+
+    @MainActor private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
+        mapView.contentInset = mapViewContentInset
+
+        // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
+        mapView.logoView.isHidden = true
+        mapView.compassView.isHidden = true
+
+        // Apply each control configuration
+        for control in controls {
+            control.configureMapView(mapView)
+        }
+
+        if runUnsafe {
+            unsafeMapViewModifier?(mapView)
+        }
     }
 }
 

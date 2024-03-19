@@ -1,34 +1,33 @@
 import CoreLocation
+import SnapshotTesting
 import XCTest
 @testable import MapLibreSwiftUI
 
 final class CameraStateTests: XCTestCase {
+    let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
+
     func testCenterCameraState() {
-        let expectedCoordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
-        let state: CameraState = .centered(onCoordinate: expectedCoordinate)
-        XCTAssertEqual(state, .centered(onCoordinate: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)))
-        XCTAssertEqual(
-            String(describing: state),
-            "CameraState.centered(onCoordinate: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)"
-        )
+        let state: CameraState = .centered(onCoordinate: coordinate, zoom: 4, pitch: .free, direction: 42)
+        XCTAssertEqual(state, .centered(onCoordinate: coordinate, zoom: 4, pitch: .free, direction: 42))
+        assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocation() {
-        let state: CameraState = .trackingUserLocation
-        XCTAssertEqual(state, .trackingUserLocation)
-        XCTAssertEqual(String(describing: state), "CameraState.trackingUserLocation")
+        let state: CameraState = .trackingUserLocation(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocation(zoom: 4, pitch: .free))
+        assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithHeading() {
-        let state: CameraState = .trackingUserLocationWithHeading
-        XCTAssertEqual(state, .trackingUserLocationWithHeading)
-        XCTAssertEqual(String(describing: state), "CameraState.trackingUserLocationWithHeading")
+        let state: CameraState = .trackingUserLocationWithHeading(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocationWithHeading(zoom: 4, pitch: .free))
+        assertSnapshot(of: state, as: .description)
     }
 
     func testTrackingUserLocationWithCourse() {
-        let state: CameraState = .trackingUserLocationWithCourse
-        XCTAssertEqual(state, .trackingUserLocationWithCourse)
-        XCTAssertEqual(String(describing: state), "CameraState.trackingUserLocationWithCourse")
+        let state: CameraState = .trackingUserLocationWithCourse(zoom: 4, pitch: .free)
+        XCTAssertEqual(state, .trackingUserLocationWithCourse(zoom: 4, pitch: .free))
+        assertSnapshot(of: state, as: .description)
     }
 
     func testRect() {
@@ -38,9 +37,6 @@ final class CameraStateTests: XCTestCase {
         let state: CameraState = .rect(boundingBox: .init(sw: southwest, ne: northeast))
         XCTAssertEqual(state, .rect(boundingBox: .init(sw: southwest, ne: northeast)))
 
-        XCTAssertEqual(
-            String(describing: state),
-            "CameraState.rect(northeast: CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4), southwest: CLLocationCoordinate2D(latitude: 34.5, longitude: 45.6))"
-        )
+        assertSnapshot(of: state, as: .description)
     }
 }

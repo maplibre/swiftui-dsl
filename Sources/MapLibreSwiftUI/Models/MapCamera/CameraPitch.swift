@@ -2,7 +2,7 @@ import Foundation
 import MapLibre
 
 /// The current pitch state for the MapViewCamera
-public enum CameraPitch: Hashable {
+public enum CameraPitch: Hashable, Sendable {
     /// The user is free to control pitch from it's default min to max.
     case free
 

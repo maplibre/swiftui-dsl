@@ -8,7 +8,7 @@ struct PolylinePreview: View {
 
     var body: some View {
         MapView(styleURL: styleURL,
-                constantCamera: .center(samplePedestrianWaypoints.first!, zoom: 14))
+                camera: .constant(.center(samplePedestrianWaypoints.first!, zoom: 14)))
         {
             // Note: This line does not add the source to the style as if it
             // were a statement in an imperative programming language.
@@ -43,8 +43,6 @@ struct PolylinePreview: View {
 
 struct Polyline_Previews: PreviewProvider {
     static var previews: some View {
-        let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
-
         PolylinePreview(styleURL: demoTilesURL)
             .ignoresSafeArea(.all)
     }

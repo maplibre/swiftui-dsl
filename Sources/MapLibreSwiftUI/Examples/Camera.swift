@@ -1,22 +1,20 @@
 import CoreLocation
 import SwiftUI
 
-private let switzerland = CLLocationCoordinate2D(latitude: 46.801111, longitude: 8.226667)
-
 struct CameraDirectManipulationPreview: View {
     @State private var camera = MapViewCamera.center(switzerland, zoom: 4)
 
     let styleURL: URL
     var onStyleLoaded: (() -> Void)? = nil
+    var targetCameraAfterDelay: MapViewCamera? = nil
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
             .onStyleLoaded { _ in
-                print("Style is loaded")
                 onStyleLoaded?()
             }
             .overlay(alignment: .bottom, content: {
-                Text("\(String(describing: camera.state)) z \(camera.zoom)")
+                Text("\(String(describing: camera.state))")
                     .padding()
                     .foregroundColor(.white)
                     .background(
@@ -27,16 +25,19 @@ struct CameraDirectManipulationPreview: View {
                     .padding(.bottom, 42)
             })
             .task {
-                try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
+                if let targetCameraAfterDelay {
+                    try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
 
-                camera = MapViewCamera.center(switzerland, zoom: 6)
+                    camera = targetCameraAfterDelay
+                }
             }
     }
 }
 
-#Preview("Camera Preview") {
+#Preview("Camera Zoom after delay") {
     CameraDirectManipulationPreview(
-        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!
+        styleURL: demoTilesURL,
+        targetCameraAfterDelay: .center(switzerland, zoom: 6)
     )
     .ignoresSafeArea(.all)
 }

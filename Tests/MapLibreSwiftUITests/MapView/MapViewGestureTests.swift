@@ -27,7 +27,7 @@ final class MapViewGestureTests: XCTestCase {
 
     // MARK: Gesture Processing
 
-    func testTapGesture() {
+    @MainActor func testTapGesture() {
         let gesture = MapGesture(method: .tap(numberOfTaps: 2)) { _ in
             // Do nothing
         }
@@ -52,7 +52,7 @@ final class MapViewGestureTests: XCTestCase {
         XCTAssertEqual(result.coordinate.longitude, -15, accuracy: 1)
     }
 
-    func testLongPressGesture() {
+    @MainActor func testLongPressGesture() {
         let gesture = MapGesture(method: .longPress(minimumDuration: 1)) { _ in
             // Do nothing
         }

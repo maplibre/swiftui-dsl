@@ -1,0 +1,17 @@
+▿ MapViewCamera
+  ▿ lastReasonForChange: Optional<CameraChangeReason>
+    - some: CameraChangeReason.programmatic
+  ▿ state: CameraState
+    ▿ rect: (2 elements)
+      ▿ boundingBox: MLNCoordinateBounds
+        ▿ ne: CLLocationCoordinate2D
+          - latitude: 24.6993808
+          - longitude: 46.7709285
+        ▿ sw: CLLocationCoordinate2D
+          - latitude: 24.6056011
+          - longitude: 46.67369842529297
+      ▿ edgePadding: UIEdgeInsets
+        - bottom: 20.0
+        - left: 20.0
+        - right: 20.0
+        - top: 20.0
