@@ -15,6 +15,13 @@ extension MapView {
             let gestureRecognizer = UITapGestureRecognizer(target: context.coordinator,
                                                            action: #selector(context.coordinator.captureGesture(_:)))
             gestureRecognizer.numberOfTapsRequired = numberOfTaps
+            if numberOfTaps == 1 {
+                // If a user double taps to zoom via the built in gesture, a normal
+                // tap should not be triggered.
+                if let doubleTapRecognizer = mapView.gestureRecognizers?.first(where: { $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2 }) {
+                    gestureRecognizer.require(toFail: doubleTapRecognizer)
+                }
+            }
             mapView.addGestureRecognizer(gestureRecognizer)
             gesture.gestureRecognizer = gestureRecognizer
 
@@ -42,15 +49,29 @@ extension MapView {
     /// gesture.
     ///   - sender: The UIGestureRecognizer
     @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
+        
+        guard sender.state == .ended else {
+            // We should only process gestures that have ended, else built in gestures like double tapping the map
+            // interfere with ours.
+            return
+        }
         guard let gesture = gestures.first(where: { $0.gestureRecognizer == sender }) else {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return
         }
+        
 
         // Process the gesture into a context response.
         let context = processContextFromGesture(mapView, gesture: gesture, sender: sender)
         // Run the context through the gesture held on the MapView (emitting to the MapView modifier).
-        gesture.onChange(context)
+        switch gesture.onChange {
+        case .context(let action):
+            action(context)
+        case .feature(let action, let layers):
+            let point = sender.location(in: sender.view)
+            let features = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layers)
+            action(context, features)
+        }
     }
 
     /// Convert the sender data into a MapGestureContext
