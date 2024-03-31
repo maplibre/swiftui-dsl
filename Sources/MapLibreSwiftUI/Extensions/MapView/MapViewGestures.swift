@@ -53,11 +53,6 @@ extension MapView {
     /// gesture.
     ///   - sender: The UIGestureRecognizer
     @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
-        guard sender.state == .ended else {
-            // We should only process gestures that have ended, else built in gestures like double tapping the map
-            // interfere with ours.
-            return
-        }
         guard let gesture = gestures.first(where: { $0.gestureRecognizer == sender }) else {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return

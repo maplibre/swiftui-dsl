@@ -50,7 +50,8 @@ public extension MapView {
     ///
     /// - Parameters:
     ///   - count: The number of taps required to run the gesture.
-    ///   - onTapChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc).
+    ///   - onTapChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc), that also contains
+    /// information like the latitude and longitude of the tap.
     /// - Returns: The modified map view.
     func onTapMapGesture(count: Int = 1,
                          onTapChanged: @escaping (MapGestureContext) -> Void) -> MapView
@@ -65,6 +66,16 @@ public extension MapView {
         return newMapView
     }
 
+    /// Add an tap gesture handler to the MapView that returns any visible map features that were tapped.
+    ///
+    /// - Parameters:
+    ///   - count: The number of taps required to run the gesture.
+    ///   - on layers: The set of layer ids that you would like to check for visible features that were tapped. If no
+    /// set is provided, all map layers are checked.
+    ///   - onTapChanged: Emits the context whenever the gesture changes (e.g. began, ended, etc), that also contains
+    /// information like the latitude and longitude of the tap. Also emits an array of map features that were tapped.
+    /// Returns an empty array when nothing was tapped on the "on" layer ids that were provided.
+    /// - Returns: The modified map view.
     func onTapMapGesture(count: Int = 1, on layers: Set<String>?,
                          onTapChanged: @escaping (MapGestureContext, [any MLNFeature]) -> Void) -> MapView
     {
