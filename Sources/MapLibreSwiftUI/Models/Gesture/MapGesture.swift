@@ -1,5 +1,5 @@
-import UIKit
 import MapLibre
+import UIKit
 
 public class MapGesture: NSObject {
     public enum Method: Equatable {

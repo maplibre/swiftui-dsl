@@ -64,17 +64,17 @@ public extension MapView {
 
         return newMapView
     }
-    
+
     func onTapMapGesture(count: Int = 1, on layers: Set<String>?,
                          onTapChanged: @escaping (MapGestureContext, [any MLNFeature]) -> Void) -> MapView
     {
         var newMapView = self
-        
+
         // Build the gesture and link it to the map view.
         let gesture = MapGesture(method: .tap(numberOfTaps: count),
                                  onChange: .feature(onTapChanged, layers: layers))
         newMapView.gestures.append(gesture)
-        
+
         return newMapView
     }
 

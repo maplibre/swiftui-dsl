@@ -28,10 +28,9 @@ final class MapViewGestureTests: XCTestCase {
     // MARK: Gesture Processing
 
     @MainActor func testTapGesture() {
-        
-        let gesture = MapGesture(method: .tap(numberOfTaps: 2), onChange: .context({ _ in
+        let gesture = MapGesture(method: .tap(numberOfTaps: 2), onChange: .context { _ in
             // Do nothing
-        }))
+        })
 
         let mockTapGesture = MockUIGestureRecognizing()
 
@@ -54,11 +53,9 @@ final class MapViewGestureTests: XCTestCase {
     }
 
     @MainActor func testLongPressGesture() {
-        
-        let gesture = MapGesture(method: .longPress(minimumDuration: 1), onChange: .context({ _ in
+        let gesture = MapGesture(method: .longPress(minimumDuration: 1), onChange: .context { _ in
             // Do nothing
-        }))
-
+        })
 
         let mockTapGesture = MockUIGestureRecognizing()
 

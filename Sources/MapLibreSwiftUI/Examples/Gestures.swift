@@ -1,15 +1,7 @@
-//
-//  File.swift
-//  
-//
-//  Created by patrick on 29.03.24.
-//
-
 import CoreLocation
 import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
-
 
 #Preview("Tappable Circles") {
     let tappableID = "simple-circles"
@@ -20,7 +12,7 @@ import SwiftUI
             .color(.systemRed)
             .strokeWidth(2)
             .strokeColor(.white)
-        
+
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
             .iconColor(.white)
@@ -33,8 +25,8 @@ import SwiftUI
 
 #Preview("Tappable Countries") {
     MapView(styleURL: demoTilesURL)
-    .onTapMapGesture(on: ["countries-fill"], onTapChanged: { _, features in
-        print("Tapped on \(features.first)")
-    })
-    .ignoresSafeArea(.all)
+        .onTapMapGesture(on: ["countries-fill"], onTapChanged: { _, features in
+            print("Tapped on \(features.first)")
+        })
+        .ignoresSafeArea(.all)
 }

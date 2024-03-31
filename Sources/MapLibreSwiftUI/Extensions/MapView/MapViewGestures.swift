@@ -18,7 +18,11 @@ extension MapView {
             if numberOfTaps == 1 {
                 // If a user double taps to zoom via the built in gesture, a normal
                 // tap should not be triggered.
-                if let doubleTapRecognizer = mapView.gestureRecognizers?.first(where: { $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2 }) {
+                if let doubleTapRecognizer = mapView.gestureRecognizers?
+                    .first(where: {
+                        $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2
+                    })
+                {
                     gestureRecognizer.require(toFail: doubleTapRecognizer)
                 }
             }
@@ -49,7 +53,6 @@ extension MapView {
     /// gesture.
     ///   - sender: The UIGestureRecognizer
     @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
-        
         guard sender.state == .ended else {
             // We should only process gestures that have ended, else built in gestures like double tapping the map
             // interfere with ours.
@@ -59,15 +62,14 @@ extension MapView {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return
         }
-        
 
         // Process the gesture into a context response.
         let context = processContextFromGesture(mapView, gesture: gesture, sender: sender)
         // Run the context through the gesture held on the MapView (emitting to the MapView modifier).
         switch gesture.onChange {
-        case .context(let action):
+        case let .context(action):
             action(context)
-        case .feature(let action, let layers):
+        case let .feature(action, layers):
             let point = sender.location(in: sender.view)
             let features = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layers)
             action(context, features)
