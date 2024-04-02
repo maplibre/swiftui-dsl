@@ -13,8 +13,8 @@ final class CameraStateTests: XCTestCase {
     }
 
     func testTrackingUserLocation() {
-        let state: CameraState = .trackingUserLocation(zoom: 4, pitch: .free)
-        XCTAssertEqual(state, .trackingUserLocation(zoom: 4, pitch: .free))
+        let state: CameraState = .trackingUserLocation(zoom: 4, pitch: .free, direction: 12)
+        XCTAssertEqual(state, .trackingUserLocation(zoom: 4, pitch: .free, direction: 12))
         assertSnapshot(of: state, as: .description)
     }
 
