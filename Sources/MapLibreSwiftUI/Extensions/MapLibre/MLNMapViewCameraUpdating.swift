@@ -9,6 +9,7 @@ protocol MLNMapViewCameraUpdating: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
     @MainActor var minimumPitch: CGFloat { get set }
     @MainActor var maximumPitch: CGFloat { get set }
+    @MainActor var direction: CLLocationDirection { get set }
     @MainActor func setCenter(_ coordinate: CLLocationCoordinate2D,
                               zoomLevel: Double,
                               direction: CLLocationDirection,

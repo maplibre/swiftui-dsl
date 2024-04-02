@@ -15,7 +15,7 @@ public enum CameraState: Hashable {
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .follow which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocation(zoom: Double, pitch: CameraPitch)
+    case trackingUserLocation(zoom: Double, pitch: CameraPitch, direction: CLLocationDirection)
 
     /// Follow the user's location using the MapView's internal camera with the user's heading.
     ///
