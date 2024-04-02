@@ -66,10 +66,11 @@ public struct MapViewCamera: Hashable {
     ///   - pitch: Set the camera pitch method.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocation(zoom: Double = Defaults.zoom,
-                                         pitch: CameraPitch = Defaults.pitch) -> MapViewCamera
+                                         pitch: CameraPitch = Defaults.pitch,
+                                         direction: CLLocationDirection = Defaults.direction) -> MapViewCamera
     {
         // Coordinate is ignored when tracking user location. However, pitch and zoom are valid.
-        MapViewCamera(state: .trackingUserLocation(zoom: zoom, pitch: pitch),
+        MapViewCamera(state: .trackingUserLocation(zoom: zoom, pitch: pitch, direction: direction),
                       lastReasonForChange: .programmatic)
     }
 

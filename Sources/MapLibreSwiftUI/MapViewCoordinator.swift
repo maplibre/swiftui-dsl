@@ -67,10 +67,11 @@ public class MapViewCoordinator: NSObject {
                               animated: animated)
             mapView.minimumPitch = pitch.rangeValue.lowerBound
             mapView.maximumPitch = pitch.rangeValue.upperBound
-        case let .trackingUserLocation(zoom: zoom, pitch: pitch):
+        case let .trackingUserLocation(zoom: zoom, pitch: pitch, direction: direction):
             mapView.userTrackingMode = .follow
             // Needs to be non-animated or else it messes up following
             mapView.setZoomLevel(zoom, animated: false)
+            mapView.direction = direction
             mapView.minimumPitch = pitch.rangeValue.lowerBound
             mapView.maximumPitch = pitch.rangeValue.upperBound
         case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch):
