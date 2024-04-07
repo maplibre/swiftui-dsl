@@ -19,9 +19,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: newZoom, pitch: pitch)
         case let .trackingUserLocationWithCourse(_, pitch):
             state = .trackingUserLocationWithCourse(zoom: newZoom, pitch: pitch)
-        case let .rect(boundingBox, edgePadding):
+        case .rect(_, _):
             return
-        case let .showcase(shapeCollection):
+        case .showcase(_):
             return
         }
 
@@ -44,9 +44,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: zoom + increment, pitch: pitch)
         case let .trackingUserLocationWithCourse(zoom, pitch):
             state = .trackingUserLocationWithCourse(zoom: zoom + increment, pitch: pitch)
-        case let .rect(boundingBox, edgePadding):
+        case .rect(_, _):
             return
-        case let .showcase(shapeCollection):
+        case .showcase(_):
             return
         }
 
@@ -60,7 +60,7 @@ public extension MapViewCamera {
     /// - Parameter newPitch: The new pitch value.
     mutating func setPitch(_ newPitch: CameraPitch) {
         switch state {
-        case let .centered(onCoordinate, zoom, pitch, direction):
+        case let .centered(onCoordinate, zoom, _, direction):
             state = .centered(onCoordinate: onCoordinate,
                               zoom: zoom,
                               pitch: newPitch,
@@ -71,9 +71,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: zoom, pitch: newPitch)
         case let .trackingUserLocationWithCourse(zoom, _):
             state = .trackingUserLocationWithCourse(zoom: zoom, pitch: newPitch)
-        case let .rect(boundingBox, edgePadding):
+        case .rect(_, _):
             return
-        case let .showcase(shapeCollection):
+        case .showcase(_):
             return
         }
 
