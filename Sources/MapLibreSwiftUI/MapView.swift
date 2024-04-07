@@ -13,8 +13,6 @@ public struct MapView: UIViewRepresentable {
     var onStyleLoaded: ((MLNStyle) -> Void)?
 
     public var mapViewContentInset: UIEdgeInsets = .zero
-    public var isLogoViewHidden = false
-    public var isCompassViewHidden = false
 
     /// 'Escape hatch' to MLNMapView until we have more modifiers.
     /// See ``unsafeMapViewModifier(_:)``
@@ -23,6 +21,7 @@ public struct MapView: UIViewRepresentable {
     var controls: [MapControl] = [
         CompassView(),
         LogoView(),
+        AttributionButton()
     ]
 
     private var locationManager: MLNLocationManager?
@@ -104,6 +103,7 @@ public struct MapView: UIViewRepresentable {
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
         mapView.logoView.isHidden = true
         mapView.compassView.isHidden = true
+        mapView.attributionButton.isHidden = true
 
         // Apply each control configuration
         for control in controls {

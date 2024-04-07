@@ -50,4 +50,23 @@ final class MapControlsTests: XCTestCase {
                 }
         }
     }
+
+    func testAttributionOnly() {
+        assertView {
+            MapView(styleURL: demoTilesURL)
+                .mapControls {
+                    AttributionButton()
+                }
+        }
+    }
+
+    func testAttributionChangePosition() {
+        assertView {
+            MapView(styleURL: demoTilesURL)
+                .mapControls {
+                    AttributionButton()
+                        .position(.topLeft)
+                }
+        }
+    }
 }

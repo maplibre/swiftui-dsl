@@ -97,6 +97,26 @@ public extension LogoView {
     }
 }
 
+public struct AttributionButton: MapControl {
+    public var position: MLNOrnamentPosition?
+    public var margins: CGPoint?
+    public var isHidden: Bool = false
+
+    public func configureMapView(_ mapView: MLNMapView) {
+        if let position {
+            mapView.attributionButtonPosition = position
+        }
+
+        if let margins {
+            mapView.attributionButtonMargins = margins
+        }
+
+        mapView.attributionButton.isHidden = isHidden
+    }
+
+    public init() {}
+}
+
 @resultBuilder
 public enum MapControlsBuilder: DefaultResultBuilder {
     public static func buildExpression(_ expression: MapControl) -> [MapControl] {
