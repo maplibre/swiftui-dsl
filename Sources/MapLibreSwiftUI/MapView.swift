@@ -21,7 +21,7 @@ public struct MapView: UIViewRepresentable {
     var controls: [MapControl] = [
         CompassView(),
         LogoView(),
-        AttributionButton()
+        AttributionButton(),
     ]
 
     private var locationManager: MLNLocationManager?
