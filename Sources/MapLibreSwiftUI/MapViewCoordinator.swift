@@ -251,8 +251,7 @@ extension MapViewCoordinator: MLNMapViewDelegate {
             return
         }
 
-        // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             updateParentCamera(mapView: mapView, reason: reason)
         }
     }
