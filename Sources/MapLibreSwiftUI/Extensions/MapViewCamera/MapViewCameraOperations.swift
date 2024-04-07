@@ -19,9 +19,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: newZoom, pitch: pitch)
         case let .trackingUserLocationWithCourse(_, pitch):
             state = .trackingUserLocationWithCourse(zoom: newZoom, pitch: pitch)
-        case .rect(_, _):
+        case .rect:
             return
-        case .showcase(_):
+        case .showcase:
             return
         }
 
@@ -44,9 +44,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: zoom + increment, pitch: pitch)
         case let .trackingUserLocationWithCourse(zoom, pitch):
             state = .trackingUserLocationWithCourse(zoom: zoom + increment, pitch: pitch)
-        case .rect(_, _):
+        case .rect:
             return
-        case .showcase(_):
+        case .showcase:
             return
         }
 
@@ -71,9 +71,9 @@ public extension MapViewCamera {
             state = .trackingUserLocationWithHeading(zoom: zoom, pitch: newPitch)
         case let .trackingUserLocationWithCourse(zoom, _):
             state = .trackingUserLocationWithCourse(zoom: zoom, pitch: newPitch)
-        case .rect(_, _):
+        case .rect:
             return
-        case .showcase(_):
+        case .showcase:
             return
         }
 
