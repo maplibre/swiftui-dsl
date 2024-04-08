@@ -11,6 +11,7 @@ public struct MapView: UIViewRepresentable {
 
     var gestures = [MapGesture]()
     var onStyleLoaded: ((MLNStyle) -> Void)?
+    var onViewPortChanged: ((MapViewPort) -> Void)?
 
     public var mapViewContentInset: UIEdgeInsets = .zero
     public var isLogoViewHidden = false
@@ -42,7 +43,8 @@ public struct MapView: UIViewRepresentable {
     public func makeCoordinator() -> MapViewCoordinator {
         MapViewCoordinator(
             parent: self,
-            onGesture: { processGesture($0, $1) }
+            onGesture: { processGesture($0, $1) },
+            onViewPortChanged: { onViewPortChanged?($0) }
         )
     }
 

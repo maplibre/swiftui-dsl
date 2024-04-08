@@ -99,4 +99,10 @@ public extension MapView {
 
         return result
     }
+    
+    func onMapViewPortUpdate(_ onViewPortChanged: @escaping (MapViewPort) -> Void) -> Self {
+        var result = self
+        result.onViewPortChanged = onViewPortChanged
+        return result
+    }
 }

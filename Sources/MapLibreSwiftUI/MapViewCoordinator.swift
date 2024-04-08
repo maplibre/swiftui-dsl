@@ -19,12 +19,15 @@ public class MapViewCoordinator: NSObject {
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
+    var onViewPortChanged: (MapViewPort) -> Void
 
     init(parent: MapView,
-         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void)
+         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
+         onViewPortChanged: @escaping (MapViewPort) -> Void)
     {
         self.parent = parent
         self.onGesture = onGesture
+        self.onViewPortChanged = onViewPortChanged
     }
 
     // MARK: Core UIView Functionality
@@ -204,7 +207,9 @@ extension MapViewCoordinator: MLNMapViewDelegate {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
-
+    
+    // MARK: MapViewCamera
+    
     @MainActor private func updateParentCamera(mapView: MLNMapView, reason: MLNCameraChangeReason) {
         // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
         // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
@@ -222,13 +227,13 @@ extension MapViewCoordinator: MLNMapViewDelegate {
         case .centered, .rect, .showcase:
             false
         }
-
+        
         guard !isProgrammaticallyTracking else {
             // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
             // check
             return
         }
-
+        
         // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
         // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
         // state propagation.
@@ -236,24 +241,43 @@ extension MapViewCoordinator: MLNMapViewDelegate {
                                                zoom: mapView.zoomLevel,
                                                // TODO: Pitch doesn't really describe current state
                                                pitch: .freeWithinRange(
-                                                   minimum: mapView.minimumPitch,
-                                                   maximum: mapView.maximumPitch
+                                                minimum: mapView.minimumPitch,
+                                                maximum: mapView.maximumPitch
                                                ),
                                                direction: mapView.direction,
                                                reason: CameraChangeReason(reason))
         snapshotCamera = newCamera
         parent.camera = newCamera
     }
-
+    
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+        // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
+        // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
+        Task { @MainActor in
+            updateViewPort(mapView: mapView)
+        }
+        
         guard !suppressCameraUpdatePropagation else {
             return
         }
-
+        
         // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
         Task { @MainActor in
             updateParentCamera(mapView: mapView, reason: reason)
         }
+    }
+    
+    // MARK: MapViewPort
+    
+    @MainActor private func updateViewPort(mapView: MLNMapView) {
+        // Calculate the Raw "ViewPort"
+        let calculatedViewPort = MapViewPort(
+            center: mapView.centerCoordinate,
+            zoom: mapView.zoomLevel,
+            direction: mapView.direction
+        )
+        
+        onViewPortChanged(calculatedViewPort)
     }
 }

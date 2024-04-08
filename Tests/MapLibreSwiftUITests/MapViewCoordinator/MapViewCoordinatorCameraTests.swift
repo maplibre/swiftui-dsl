@@ -13,6 +13,8 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
         coordinator = MapView.Coordinator(parent: mapView) { _, _ in
             // No action
+        } onViewPortChanged: { _ in
+            // No action
         }
     }
 
