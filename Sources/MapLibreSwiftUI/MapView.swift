@@ -10,6 +10,7 @@ public struct MapView: UIViewRepresentable {
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
+
     var onStyleLoaded: ((MLNStyle) -> Void)?
 
     public var mapViewContentInset: UIEdgeInsets = .zero

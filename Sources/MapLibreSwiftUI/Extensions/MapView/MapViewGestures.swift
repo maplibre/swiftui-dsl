@@ -15,6 +15,17 @@ extension MapView {
             let gestureRecognizer = UITapGestureRecognizer(target: context.coordinator,
                                                            action: #selector(context.coordinator.captureGesture(_:)))
             gestureRecognizer.numberOfTapsRequired = numberOfTaps
+            if numberOfTaps == 1 {
+                // If a user double taps to zoom via the built in gesture, a normal
+                // tap should not be triggered.
+                if let doubleTapRecognizer = mapView.gestureRecognizers?
+                    .first(where: {
+                        $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2
+                    })
+                {
+                    gestureRecognizer.require(toFail: doubleTapRecognizer)
+                }
+            }
             mapView.addGestureRecognizer(gestureRecognizer)
             gesture.gestureRecognizer = gestureRecognizer
 
@@ -50,7 +61,14 @@ extension MapView {
         // Process the gesture into a context response.
         let context = processContextFromGesture(mapView, gesture: gesture, sender: sender)
         // Run the context through the gesture held on the MapView (emitting to the MapView modifier).
-        gesture.onChange(context)
+        switch gesture.onChange {
+        case let .context(action):
+            action(context)
+        case let .feature(action, layers):
+            let point = sender.location(in: sender.view)
+            let features = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layers)
+            action(context, features)
+        }
     }
 
     /// Convert the sender data into a MapGestureContext
