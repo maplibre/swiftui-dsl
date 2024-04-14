@@ -83,7 +83,7 @@ public struct MapView: UIViewRepresentable {
 
     public func updateUIView(_ mapView: MLNMapView, context: Context) {
         context.coordinator.parent = self
-        
+
         switch styleSource {
         case let .url(styleURL):
             if styleURL != mapView.styleURL {
