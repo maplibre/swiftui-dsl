@@ -11,6 +11,7 @@ public class MapViewCoordinator: NSObject {
     // every update cycle so we can avoid unnecessary updates
     private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
+    private var snapshotStyleSource: MapStyleSource?
 
     // Indicates whether we are currently in a push-down camera update cycle.
     // This is necessary in order to ensure we don't keep trying to reset a state value which we were already processing
@@ -102,12 +103,16 @@ public class MapViewCoordinator: NSObject {
     // MARK: - Coordinator API - Styles + Layers
 
     @MainActor func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
-        switch (source, parent.styleSource) {
+        switch (source, snapshotStyleSource) {
         case let (.url(newURL), .url(oldURL)):
             if newURL != oldURL {
                 mapView.styleURL = newURL
             }
+        case let (.url(newURL), .none):
+            mapView.styleURL = newURL
         }
+
+        snapshotStyleSource = source
     }
 
     @MainActor func updateLayers(mapView: MLNMapView) {
