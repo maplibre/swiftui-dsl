@@ -89,7 +89,7 @@ public extension MapView {
         return newMapView
     }
 
-    /// Add a long press gesture handler ot the MapView
+    /// Add a long press gesture handler to the MapView
     ///
     /// - Parameters:
     ///   - minimumDuration: The minimum duration in seconds the user must press the screen to run the gesture.

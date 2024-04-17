@@ -9,7 +9,7 @@ public struct MapGestureContext {
     /// The state of the on change event.
     public let state: UIGestureRecognizer.State
 
-    /// The location that the gesture occured on the screen.
+    /// The location that the gesture occurred on the screen.
     public let point: CGPoint
 
     /// The underlying geographic coordinate at the point of the gesture.

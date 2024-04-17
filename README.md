@@ -95,7 +95,7 @@ API for the line style layer, head over to [the docs](https://maplibre.org/mapli
 and get to work filling out the remaining properties and modifiers.
 
 Note that some Swift 5.9 improvements like macros will make things a bit easier, so it may make sense to punt on
-things like fleshing out the expresison API helpers (which will be highly repetitive) till that lands. When in doubt,
+things like fleshing out the expressions API helpers (which will be highly repetitive) till that lands. When in doubt,
 check out the issue tracker, as these sholud be noted there.
 
 TODO: Look at PointFree's Snapshot testing that generates images of SwiftUI views. Also look at inline snapshotting.

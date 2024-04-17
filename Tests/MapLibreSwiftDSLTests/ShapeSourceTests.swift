@@ -5,7 +5,7 @@ import XCTest
 
 final class ShapeSourceTests: XCTestCase {
     func testShapeSourcePolylineShapeBuilder() throws {
-        // Ideally in a style context, these colud be tested at compile time to
+        // Ideally in a style context, these could be tested at compile time to
         // ensure there are no duplicate IDs.
         let shapeSource = ShapeSource(identifier: "foo") {
             MLNPolyline(coordinates: samplePedestrianWaypoints)
