@@ -260,7 +260,7 @@ extension MapViewCoordinator: MLNMapViewDelegate {
         // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         Task { @MainActor in
-            updateViewPort(mapView: mapView)
+            updateViewPort(mapView: mapView, reason: reason)
         }
 
         guard !suppressCameraUpdatePropagation else {
@@ -275,12 +275,13 @@ extension MapViewCoordinator: MLNMapViewDelegate {
 
     // MARK: MapViewPort
 
-    @MainActor private func updateViewPort(mapView: MLNMapView) {
+    @MainActor private func updateViewPort(mapView: MLNMapView, reason: MLNCameraChangeReason) {
         // Calculate the Raw "ViewPort"
         let calculatedViewPort = MapViewPort(
             center: mapView.centerCoordinate,
             zoom: mapView.zoomLevel,
-            direction: mapView.direction
+            direction: mapView.direction,
+            lastReasonForChange: CameraChangeReason(reason)
         )
 
         onViewPortChanged(calculatedViewPort)

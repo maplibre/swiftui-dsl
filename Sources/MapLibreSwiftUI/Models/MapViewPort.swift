@@ -16,16 +16,25 @@ public struct MapViewPort: Hashable, Equatable {
     /// The current compass direction of the MapView
     public let direction: CLLocationDirection
 
-    public init(center: CLLocationCoordinate2D, zoom: Double, direction: CLLocationDirection) {
+    /// The reason the view port was changed.
+    public let lastReasonForChange: CameraChangeReason?
+
+    public init(center: CLLocationCoordinate2D,
+                zoom: Double,
+                direction: CLLocationDirection,
+                lastReasonForChange: CameraChangeReason?)
+    {
         self.center = center
         self.zoom = zoom
         self.direction = direction
+        self.lastReasonForChange = lastReasonForChange
     }
 
     public static func zero(zoom: Double = 10) -> MapViewPort {
         MapViewPort(center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
                     zoom: zoom,
-                    direction: 0)
+                    direction: 0,
+                    lastReasonForChange: nil)
     }
 }
 
