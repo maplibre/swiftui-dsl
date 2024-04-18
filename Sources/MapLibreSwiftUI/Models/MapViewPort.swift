@@ -15,14 +15,15 @@ public struct MapViewPort: Hashable, Equatable {
 
     /// The current compass direction of the MapView
     public let direction: CLLocationDirection
-    
+
     /// The reason the view port was changed.
     public let lastReasonForChange: CameraChangeReason?
 
     public init(center: CLLocationCoordinate2D,
                 zoom: Double,
                 direction: CLLocationDirection,
-                lastReasonForChange: CameraChangeReason?) {
+                lastReasonForChange: CameraChangeReason?)
+    {
         self.center = center
         self.zoom = zoom
         self.direction = direction

@@ -276,7 +276,6 @@ extension MapViewCoordinator: MLNMapViewDelegate {
     // MARK: MapViewPort
 
     @MainActor private func updateViewPort(mapView: MLNMapView, reason: MLNCameraChangeReason) {
-        
         // Calculate the Raw "ViewPort"
         let calculatedViewPort = MapViewPort(
             center: mapView.centerCoordinate,
