@@ -107,12 +107,10 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.text = definition.text
         result.textColor = definition.textColor
         result.textFontSize = definition.textFontSize
-        
-        result.iconAllowsOverlap = definition.iconAllowsOverlap
-        
-        result.predicate = definition.predicate
 
-        
+        result.iconAllowsOverlap = definition.iconAllowsOverlap
+
+        result.predicate = definition.predicate
 
         return result
     }

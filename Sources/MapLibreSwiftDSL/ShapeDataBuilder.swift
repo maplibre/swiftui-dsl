@@ -21,14 +21,17 @@ public enum ShapeData {
 
 public struct ShapeSource: Source {
     public let identifier: String
-    public let options: [MLNShapeSourceOption : Any]?
+    public let options: [MLNShapeSourceOption: Any]?
     let data: ShapeData
 
-    public init(identifier: String, options: [MLNShapeSourceOption : Any]? = nil, @ShapeDataBuilder _ makeShapeDate: () -> ShapeData) {
+    public init(
+        identifier: String,
+        options: [MLNShapeSourceOption: Any]? = nil,
+        @ShapeDataBuilder _ makeShapeDate: () -> ShapeData
+    ) {
         self.identifier = identifier
         self.options = options
         data = makeShapeDate()
-        
     }
 
     public func makeMGLSource() -> MLNSource {

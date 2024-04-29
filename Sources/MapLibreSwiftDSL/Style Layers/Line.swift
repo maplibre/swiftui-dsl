@@ -72,9 +72,8 @@ private struct LineStyleLayerInternal: StyleLayer {
         result.lineCap = definition.lineCap
         result.lineWidth = definition.lineWidth
         result.lineJoin = definition.lineJoin
-        
+
         result.predicate = definition.predicate
-        
 
         return result
     }
