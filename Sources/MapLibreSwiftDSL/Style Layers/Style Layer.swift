@@ -86,7 +86,8 @@ public protocol SourceBoundVectorStyleLayerDefinition: SourceBoundStyleLayerDefi
      layer that satisfy a condition that you define.
 
      See the *Predicates and Expressions*
-     guide for details about the predicate syntax supported by this class.
+     guide for details about the predicate syntax supported by this class:
+     https://maplibre.org/maplibre-native/ios/api/predicates-and-expressions.html
      */
     var predicate: NSPredicate? { get set }
 
