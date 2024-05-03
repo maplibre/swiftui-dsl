@@ -12,10 +12,10 @@
     {
       "identity" : "maplibre-swift-macros",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hactar/maplibre-swift-macros.git",
+      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
       "state" : {
-        "branch" : "public-expression",
-        "revision" : "8cc58a6ed5911d88e610f76e50facb2c34a7b306"
+        "revision" : "d52adbcbfaf96bd0723a156bd838826916ff7a69",
+        "version" : "0.0.3"
       }
     },
     {
