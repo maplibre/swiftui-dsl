@@ -77,6 +77,31 @@ public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
     var source: StyleLayerSource { get set }
 }
 
+/// Based on MLNVectorStyleLayer
+public protocol SourceBoundVectorStyleLayerDefinition: SourceBoundStyleLayerDefinition {
+    /**
+     The style layer’s predicate.
+
+     Use the style layer’s predicate to include only the features in the source
+     layer that satisfy a condition that you define.
+
+     See the *Predicates and Expressions*
+     guide for details about the predicate syntax supported by this class:
+     https://maplibre.org/maplibre-native/ios/api/predicates-and-expressions.html
+     */
+    var predicate: NSPredicate? { get set }
+
+    func predicate(_ predicate: NSPredicate) -> Self
+}
+
+public extension SourceBoundVectorStyleLayerDefinition {
+    func predicate(_ predicate: NSPredicate) -> Self {
+        modified(self) { it in
+            it.predicate = predicate
+        }
+    }
+}
+
 extension SourceBoundStyleLayerDefinition {
     func addSource(to style: MLNStyle) -> MLNSource {
         let tmpSource: MLNSource

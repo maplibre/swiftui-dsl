@@ -21,6 +21,18 @@ let pointSource = ShapeSource(identifier: "points") {
     }
 }
 
+@MainActor
+let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .clusterRadius: 44]) {
+    // Uses the DSL to quickly construct point features inline
+    MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3719))
+
+    MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.3082, longitude: 16.3719))
+
+    MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.9719))
+
+    MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 48.0082, longitude: 17.9719))
+}
+
 #Preview("Rose Tint") {
     MapView(styleURL: demoTilesURL) {
         // Silly example: a background layer on top of everything to create a tint effect
@@ -72,6 +84,44 @@ let pointSource = ShapeSource(identifier: "points") {
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
             .iconColor(.white)
+    }
+    .ignoresSafeArea(.all)
+}
+
+#Preview("Clustered Circles with Symbols") {
+    @State var camera = MapViewCamera.center(
+        CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3719),
+        zoom: 5,
+        direction: 0
+    )
+    return MapView(styleURL: demoTilesURL, camera: $camera) {
+        // Clusters pins when they would touch
+
+        // Cluster == YES shows only those pins that are clustered, using .text
+        CircleStyleLayer(identifier: "simple-circles-clusters", source: clustered)
+            .radius(16)
+            .color(.systemRed)
+            .strokeWidth(2)
+            .strokeColor(.white)
+            .predicate(NSPredicate(format: "cluster == YES"))
+
+        SymbolStyleLayer(identifier: "simple-symbols-clusters", source: clustered)
+            .textColor(.white)
+            .text(expression: NSExpression(format: "CAST(point_count, 'NSString')"))
+            .predicate(NSPredicate(format: "cluster == YES"))
+
+        // Cluster != YES shows only those pins that are not clustered, using an icon
+        CircleStyleLayer(identifier: "simple-circles-non-clusters", source: clustered)
+            .radius(16)
+            .color(.systemRed)
+            .strokeWidth(2)
+            .strokeColor(.white)
+            .predicate(NSPredicate(format: "cluster != YES"))
+
+        SymbolStyleLayer(identifier: "simple-symbols-non-clusters", source: clustered)
+            .iconImage(UIImage(systemName: "mappin")!.withRenderingMode(.alwaysTemplate))
+            .iconColor(.white)
+            .predicate(NSPredicate(format: "cluster != YES"))
     }
     .ignoresSafeArea(.all)
 }

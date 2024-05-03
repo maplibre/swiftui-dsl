@@ -5,8 +5,12 @@ import MapLibreSwiftMacros
 
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
+@MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
+@MLNStyleProperty<String>("text", supportsInterpolation: false)
+@MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
 
-public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
+public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
     public var isVisible: Bool = true
@@ -14,6 +18,7 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
     public var minimumZoomLevel: Float? = nil
 
     public var source: StyleLayerSource
+    public var predicate: NSPredicate?
 
     public init(identifier: String, source: Source) {
         self.identifier = identifier
@@ -61,12 +66,6 @@ public struct SymbolStyleLayer: SourceBoundStyleLayerDefinition {
 //            it.iconImages = mappings.values + [defaultImage]
 //        }
 //    }
-
-    public func iconRotation(expression: NSExpression) -> Self {
-        modified(self) { it in
-            it.iconRotation = expression
-        }
-    }
 }
 
 private struct SymbolStyleLayerInternal: StyleLayer {
@@ -105,6 +104,13 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.iconImageName = definition.iconImageName
         result.iconRotation = definition.iconRotation
         result.iconColor = definition.iconColor
+        result.text = definition.text
+        result.textColor = definition.textColor
+        result.textFontSize = definition.textFontSize
+
+        result.iconAllowsOverlap = definition.iconAllowsOverlap
+
+        result.predicate = definition.predicate
 
         return result
     }

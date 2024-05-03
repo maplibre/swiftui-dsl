@@ -21,10 +21,16 @@ public enum ShapeData {
 
 public struct ShapeSource: Source {
     public let identifier: String
+    public let options: [MLNShapeSourceOption: Any]?
     let data: ShapeData
 
-    public init(identifier: String, @ShapeDataBuilder _ makeShapeDate: () -> ShapeData) {
+    public init(
+        identifier: String,
+        options: [MLNShapeSourceOption: Any]? = nil,
+        @ShapeDataBuilder _ makeShapeDate: () -> ShapeData
+    ) {
         self.identifier = identifier
+        self.options = options
         data = makeShapeDate()
     }
 
@@ -32,11 +38,11 @@ public struct ShapeSource: Source {
         // TODO: Options! These should be represented via modifiers like .clustered()
         switch data {
         case let .geoJSONURL(url):
-            MLNShapeSource(identifier: identifier, url: url)
+            MLNShapeSource(identifier: identifier, url: url, options: options)
         case let .shapes(shapes):
-            MLNShapeSource(identifier: identifier, shapes: shapes)
+            MLNShapeSource(identifier: identifier, shapes: shapes, options: options)
         case let .features(features):
-            MLNShapeSource(identifier: identifier, features: features)
+            MLNShapeSource(identifier: identifier, features: features, options: options)
         }
     }
 }

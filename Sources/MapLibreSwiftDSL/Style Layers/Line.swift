@@ -8,7 +8,7 @@ import MapLibreSwiftMacros
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
 @MLNStyleProperty<Float>("lineWidth", supportsInterpolation: true)
-public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
+public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
     public var isVisible: Bool = true
@@ -16,6 +16,7 @@ public struct LineStyleLayer: SourceBoundStyleLayerDefinition {
     public var minimumZoomLevel: Float? = nil
 
     public var source: StyleLayerSource
+    public var predicate: NSPredicate?
 
     public init(identifier: String, source: Source) {
         self.identifier = identifier
@@ -71,6 +72,8 @@ private struct LineStyleLayerInternal: StyleLayer {
         result.lineCap = definition.lineCap
         result.lineWidth = definition.lineWidth
         result.lineJoin = definition.lineJoin
+
+        result.predicate = definition.predicate
 
         return result
     }
