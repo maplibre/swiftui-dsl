@@ -10,6 +10,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
 
     override func setUp() async throws {
         maplibreMapView = MockMLNMapViewCameraUpdating()
+        given(maplibreMapView).frame.willReturn(.zero)
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
         coordinator = MapView.Coordinator(parent: mapView) { _, _ in
             // No action
