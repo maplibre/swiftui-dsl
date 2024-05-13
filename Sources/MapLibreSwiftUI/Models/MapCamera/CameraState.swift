@@ -8,7 +8,7 @@ public enum CameraState: Hashable {
         onCoordinate: CLLocationCoordinate2D,
         zoom: Double,
         pitch: Double,
-        pitchRange: CameraPitch,
+        pitchRange: CameraPitchRange,
         direction: CLLocationDirection
     )
 
@@ -16,19 +16,19 @@ public enum CameraState: Hashable {
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .follow which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocation(zoom: Double, pitch: Double, pitchRange: CameraPitch, direction: CLLocationDirection)
+    case trackingUserLocation(zoom: Double, pitch: Double, pitchRange: CameraPitchRange, direction: CLLocationDirection)
 
     /// Follow the user's location using the MapView's internal camera with the user's heading.
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .followWithHeading which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocationWithHeading(zoom: Double, pitch: Double, pitchRange: CameraPitch)
+    case trackingUserLocationWithHeading(zoom: Double, pitch: Double, pitchRange: CameraPitchRange)
 
     /// Follow the user's location using the MapView's internal camera with the users' course
     ///
     /// This feature uses the MLNMapView's userTrackingMode to .followWithCourse which automatically
     /// follows the user from within the MLNMapView.
-    case trackingUserLocationWithCourse(zoom: Double, pitch: Double, pitchRange: CameraPitch)
+    case trackingUserLocationWithCourse(zoom: Double, pitch: Double, pitchRange: CameraPitchRange)
 
     /// Centered on a bounding box/rectangle.
     case rect(

@@ -17,14 +17,14 @@ final class MapViewCameraTests: XCTestCase {
     }
 
     func testTrackingUserLocation() {
-        let pitch: CameraPitch = .freeWithinRange(minimum: 12, maximum: 34)
+        let pitch: CameraPitchRange = .freeWithinRange(minimum: 12, maximum: 34)
         let camera = MapViewCamera.trackUserLocation(zoom: 10, pitchRange: pitch)
 
         assertSnapshot(of: camera, as: .dump)
     }
 
     func testTrackUserLocationWithCourse() {
-        let pitchRange: CameraPitch = .freeWithinRange(minimum: 12, maximum: 34)
+        let pitchRange: CameraPitchRange = .freeWithinRange(minimum: 12, maximum: 34)
         let camera = MapViewCamera.trackUserLocationWithCourse(zoom: 18, pitchRange: pitchRange)
 
         assertSnapshot(of: camera, as: .dump)
