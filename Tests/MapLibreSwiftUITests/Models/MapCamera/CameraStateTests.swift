@@ -7,7 +7,13 @@ final class CameraStateTests: XCTestCase {
     let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
 
     func testCenterCameraState() {
-        let state: CameraState = .centered(onCoordinate: coordinate, zoom: 4, pitch: 0, pitchRange: .free, direction: 42)
+        let state: CameraState = .centered(
+            onCoordinate: coordinate,
+            zoom: 4,
+            pitch: 0,
+            pitchRange: .free,
+            direction: 42
+        )
         XCTAssertEqual(state, .centered(onCoordinate: coordinate, zoom: 4, pitch: 0, pitchRange: .free, direction: 42))
         assertSnapshot(of: state, as: .description)
     }

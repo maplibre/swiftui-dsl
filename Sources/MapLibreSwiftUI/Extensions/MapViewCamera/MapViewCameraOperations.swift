@@ -41,7 +41,12 @@ public extension MapViewCamera {
                               pitchRange: pitchRange,
                               direction: direction)
         case let .trackingUserLocation(zoom, pitch, pitchRange, direction):
-            state = .trackingUserLocation(zoom: zoom + increment, pitch: pitch, pitchRange: pitchRange, direction: direction)
+            state = .trackingUserLocation(
+                zoom: zoom + increment,
+                pitch: pitch,
+                pitchRange: pitchRange,
+                direction: direction
+            )
         case let .trackingUserLocationWithHeading(zoom, pitch, pitchRange):
             state = .trackingUserLocationWithHeading(zoom: zoom + increment, pitch: pitch, pitchRange: pitchRange)
         case let .trackingUserLocationWithCourse(zoom, pitch, pitchRange):
