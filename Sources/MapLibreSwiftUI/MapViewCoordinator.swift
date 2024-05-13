@@ -73,6 +73,11 @@ public class MapViewCoordinator: NSObject {
                                   zoomLevel: zoom,
                                   direction: direction,
                                   animated: animated)
+                
+                let camera = mapView.camera
+                camera.pitch = pitch
+                mapView.setCamera(camera, animated: false)
+                
             } else {
                 let camera = mapView.camera
                 camera.centerCoordinate = coordinate
@@ -96,6 +101,10 @@ public class MapViewCoordinator: NSObject {
                 
                 mapView.setZoomLevel(zoom, animated: false)
                 mapView.direction = direction
+                
+                let camera = mapView.camera
+                camera.pitch = pitch
+                mapView.setCamera(camera, animated: false)
 
             } else {
                 let camera = mapView.camera
@@ -112,17 +121,21 @@ public class MapViewCoordinator: NSObject {
             mapView.userTrackingMode = .followWithHeading
 
             if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                // On init, the mapView's frame is not set up yet, so altitude via camera is broken,
                 // so let's do something else instead.
                 // Needs to be non-animated or else it messes up following
                 
                 mapView.setZoomLevel(zoom, animated: false)
+                let camera = mapView.camera
+                camera.pitch = pitch
+                mapView.setCamera(camera, animated: false)
                 
             } else {
                 let camera = mapView.camera
                 
                 let altitude = MLNAltitudeForZoomLevel(zoom, pitch, mapView.camera.centerCoordinate.latitude, mapView.frame.size)
                 camera.altitude = altitude
+                camera.pitch = pitch
                 mapView.setCamera(camera, animated: animated)
             }
             
@@ -132,17 +145,21 @@ public class MapViewCoordinator: NSObject {
             mapView.userTrackingMode = .followWithCourse
 
             if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                // On init, the mapView's frame is not set up yet, so altitude via camera is broken,
                 // so let's do something else instead.
                 // Needs to be non-animated or else it messes up following
                 
                 mapView.setZoomLevel(zoom, animated: false)
+                let camera = mapView.camera
+                camera.pitch = pitch
+                mapView.setCamera(camera, animated: false)
                 
             } else {
                 let camera = mapView.camera
                 
                 let altitude = MLNAltitudeForZoomLevel(zoom, pitch, mapView.camera.centerCoordinate.latitude, mapView.frame.size)
                 camera.altitude = altitude
+                camera.pitch = pitch
                 mapView.setCamera(camera, animated: animated)
             }
             
