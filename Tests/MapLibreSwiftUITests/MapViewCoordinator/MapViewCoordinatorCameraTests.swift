@@ -45,7 +45,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
             .setterCalled(count: 2)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
@@ -81,11 +81,11 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
             .setterCalled(count: 2)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
             .setterCalled(count: 1)
@@ -116,11 +116,11 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
             .setterCalled(count: 2)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
             .setterCalled(count: 1)
@@ -151,11 +151,11 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
             .setterCalled(count: 2)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
             .setterCalled(count: 1)
@@ -186,11 +186,11 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
             .setterCalled(count: 2)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
-        
+
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
             .setterCalled(count: 1)
