@@ -1,1 +1,1 @@
-CameraState.trackingUserLocationWithCourse(zoom: (4.0, 0.0, MapLibreSwiftUI.CameraPitch.free))
+CameraState.trackingUserLocationWithCourse(zoom: (4.0, 0.0, MapLibreSwiftUI.CameraPitchRange.free))

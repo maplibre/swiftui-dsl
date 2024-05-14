@@ -5,4 +5,4 @@
     ▿ trackingUserLocationWithHeading: (3 elements)
       - zoom: 10.0
       - pitch: 0.0
-      - pitchRange: CameraPitch.free
+      - pitchRange: CameraPitchRange.free
