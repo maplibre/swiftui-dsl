@@ -10,6 +10,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
 
     override func setUp() async throws {
         maplibreMapView = MockMLNMapViewCameraUpdating()
+        given(maplibreMapView).frame.willReturn(.zero)
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
         coordinator = MapView.Coordinator(parent: mapView) { _, _ in
             // No action
@@ -39,8 +40,14 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .value(false))
             .called(count: 1)
 
+        // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
+        // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
+            .setterCalled(count: 2)
+
+        verify(maplibreMapView)
+            .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
 
         verify(maplibreMapView)
@@ -69,8 +76,14 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .value(false))
             .called(count: 1)
 
+        // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
+        // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
+            .setterCalled(count: 2)
+
+        verify(maplibreMapView)
+            .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
 
         verify(maplibreMapView)
@@ -98,8 +111,14 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .any)
             .called(count: 0)
 
+        // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
+        // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
+            .setterCalled(count: 2)
+
+        verify(maplibreMapView)
+            .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
 
         verify(maplibreMapView)
@@ -127,8 +146,14 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .any)
             .called(count: 0)
 
+        // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
+        // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
+            .setterCalled(count: 2)
+
+        verify(maplibreMapView)
+            .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
 
         verify(maplibreMapView)
@@ -156,8 +181,14 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .any)
             .called(count: 0)
 
+        // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
+        // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
+            .setterCalled(count: 2)
+
+        verify(maplibreMapView)
+            .maximumPitch(newValue: .value(0))
             .setterCalled(count: 1)
 
         verify(maplibreMapView)

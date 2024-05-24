@@ -58,6 +58,29 @@ extension MapView {
             return
         }
 
+        if let clusteredLayers {
+            if let gestureRecognizer = sender as? UITapGestureRecognizer, gestureRecognizer.numberOfTouches == 1 {
+                let point = gestureRecognizer.location(in: sender.view)
+                for clusteredLayer in clusteredLayers {
+                    let features = mapView.visibleFeatures(
+                        at: point,
+                        styleLayerIdentifiers: [clusteredLayer.layerIdentifier]
+                    )
+                    if let cluster = features.first as? MLNPointFeatureCluster,
+                       let source = mapView.style?
+                       .source(withIdentifier: clusteredLayer.sourceIdentifier) as? MLNShapeSource
+                    {
+                        let zoomLevel = source.zoomLevel(forExpanding: cluster)
+
+                        if zoomLevel > 0 {
+                            mapView.setCenter(cluster.coordinate, zoomLevel: zoomLevel, animated: true)
+                            break // since we can only zoom on one thing, we can abort the for loop here
+                        }
+                    }
+                }
+            }
+        }
+
         // Process the gesture into a context response.
         let context = processContextFromGesture(mapView, gesture: gesture, sender: sender)
         // Run the context through the gesture held on the MapView (emitting to the MapView modifier).
@@ -95,5 +118,16 @@ extension MapView {
                                  state: sender.state,
                                  point: point,
                                  coordinate: mapView.convert(point, toCoordinateFrom: mapView))
+    }
+}
+
+/// Provides the layer identifier and it's source identifier.
+public struct ClusterLayer {
+    public let layerIdentifier: String
+    public let sourceIdentifier: String
+
+    public init(layerIdentifier: String, sourceIdentifier: String) {
+        self.layerIdentifier = layerIdentifier
+        self.sourceIdentifier = sourceIdentifier
     }
 }

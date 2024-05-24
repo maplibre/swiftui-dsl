@@ -28,6 +28,8 @@ public struct MapView: UIViewRepresentable {
 
     private var locationManager: MLNLocationManager?
 
+    var clusteredLayers: [ClusterLayer]?
+
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),

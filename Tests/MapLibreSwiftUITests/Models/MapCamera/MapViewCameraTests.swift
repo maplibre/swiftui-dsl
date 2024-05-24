@@ -9,7 +9,7 @@ final class MapViewCameraTests: XCTestCase {
         let camera = MapViewCamera.center(
             CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4),
             zoom: 5,
-            pitch: .freeWithinRange(minimum: 12, maximum: 34),
+            pitch: 12,
             direction: 23
         )
 
@@ -17,21 +17,21 @@ final class MapViewCameraTests: XCTestCase {
     }
 
     func testTrackingUserLocation() {
-        let pitch: CameraPitch = .freeWithinRange(minimum: 12, maximum: 34)
-        let camera = MapViewCamera.trackUserLocation(zoom: 10, pitch: pitch)
+        let pitch: CameraPitchRange = .freeWithinRange(minimum: 12, maximum: 34)
+        let camera = MapViewCamera.trackUserLocation(zoom: 10, pitchRange: pitch)
 
         assertSnapshot(of: camera, as: .dump)
     }
 
     func testTrackUserLocationWithCourse() {
-        let pitch: CameraPitch = .freeWithinRange(minimum: 12, maximum: 34)
-        let camera = MapViewCamera.trackUserLocationWithCourse(zoom: 18, pitch: pitch)
+        let pitchRange: CameraPitchRange = .freeWithinRange(minimum: 12, maximum: 34)
+        let camera = MapViewCamera.trackUserLocationWithCourse(zoom: 18, pitchRange: pitchRange)
 
         assertSnapshot(of: camera, as: .dump)
     }
 
     func testTrackUserLocationWithHeading() {
-        let camera = MapViewCamera.trackUserLocationWithHeading(zoom: 10, pitch: .free)
+        let camera = MapViewCamera.trackUserLocationWithHeading(zoom: 10, pitch: 0)
 
         assertSnapshot(of: camera, as: .dump)
     }

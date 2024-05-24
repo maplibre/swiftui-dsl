@@ -16,7 +16,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
 #Preview("Track user location") {
     MapView(
         styleURL: demoTilesURL,
-        camera: .constant(.trackUserLocation(zoom: 4, pitch: .fixed(45))),
+        camera: .constant(.trackUserLocation(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
     .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
@@ -26,7 +26,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
 #Preview("Track user location with Course") {
     MapView(
         styleURL: demoTilesURL,
-        camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: .fixed(45))),
+        camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
     .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
