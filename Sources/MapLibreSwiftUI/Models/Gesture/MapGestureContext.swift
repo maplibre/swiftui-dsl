@@ -14,4 +14,11 @@ public struct MapGestureContext {
 
     /// The underlying geographic coordinate at the point of the gesture.
     public let coordinate: CLLocationCoordinate2D
+	
+	public init(gestureMethod: MapGesture.Method, state: UIGestureRecognizer.State, point: CGPoint, coordinate: CLLocationCoordinate2D) {
+		self.gestureMethod = gestureMethod
+		self.state = state
+		self.point = point
+		self.coordinate = coordinate
+	}
 }

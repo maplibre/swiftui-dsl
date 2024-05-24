@@ -23,6 +23,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.4.0"),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.3"),
+		.package(path: "~/Developer/maplibre-navigation-ios"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", exact: "0.0.3"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.15.3"),
@@ -34,6 +35,7 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibreSwiftDSL"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+				.product(name: "MapboxNavigation", package: "maplibre-navigation-ios"),
                 .product(name: "Mockable", package: "Mockable"),
             ],
             swiftSettings: [
