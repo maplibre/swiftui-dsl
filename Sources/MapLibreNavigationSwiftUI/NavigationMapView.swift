@@ -11,6 +11,7 @@ import MapboxDirections
 import MapboxNavigation
 import MapLibre
 import MapLibreSwiftDSL
+import MapLibreSwiftUI
 import SwiftUI
 
 public struct NavigationMapView: UIViewControllerRepresentable {

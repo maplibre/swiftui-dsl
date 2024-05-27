@@ -15,6 +15,9 @@ let package = Package(
             name: "MapLibreSwiftUI",
             targets: ["MapLibreSwiftUI"]
         ),
+		.library(name: "MapLibreNavigationSwiftUI",
+				 targets: ["MapLibreNavigationSwiftUI"]
+		),
         .library(
             name: "MapLibreSwiftDSL",
             targets: ["MapLibreSwiftDSL"]
@@ -43,6 +46,21 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
+		.target(
+			name: "MapLibreNavigationSwiftUI",
+			dependencies: [
+				.target(name: "InternalUtils"),
+				.target(name: "MapLibreSwiftDSL"),
+				.target(name: "MapLibreSwiftUI"),
+				.product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+				.product(name: "MapboxNavigation", package: "maplibre-navigation-ios"),
+				.product(name: "Mockable", package: "Mockable"),
+			],
+			swiftSettings: [
+				.define("MOCKING", .when(configuration: .debug)),
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
+		),
         .target(
             name: "MapLibreSwiftDSL",
             dependencies: [

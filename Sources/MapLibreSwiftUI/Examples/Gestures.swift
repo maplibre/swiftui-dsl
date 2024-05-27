@@ -18,7 +18,7 @@ import SwiftUI
             .iconColor(.white)
     }
     .onTapMapGesture(on: [tappableID], onTapChanged: { _, features in
-        print("Tapped on \(features.first)")
+		print("Tapped on \(features.first?.description ?? "<nil>")")
     })
     .ignoresSafeArea(.all)
 }
@@ -26,7 +26,7 @@ import SwiftUI
 #Preview("Tappable Countries") {
     MapView(styleURL: demoTilesURL)
         .onTapMapGesture(on: ["countries-fill"], onTapChanged: { _, features in
-            print("Tapped on \(features.first)")
+			print("Tapped on \(features.first?.description ?? "<nil>")")
         })
         .ignoresSafeArea(.all)
 }

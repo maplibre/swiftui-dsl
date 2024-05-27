@@ -8,6 +8,7 @@
 import Foundation
 import MapLibre
 import MapLibreSwiftDSL
+import MapLibreSwiftUI
 
 public class NavigationMapViewCoordinator: NSObject {
 	// This must be weak, the UIViewRepresentable owns the MLNMapView.
