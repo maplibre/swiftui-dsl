@@ -9,8 +9,16 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
+import MapboxNavigation
 
 public class NavigationMapViewCoordinator: NSObject {
+	
+	enum State {
+		case running
+		case ended
+	}
+	var state: State = .ended
+	
 	// This must be weak, the UIViewRepresentable owns the MLNMapView.
 	weak var mapView: MLNMapView?
 	var parent: NavigationMapView
@@ -309,12 +317,25 @@ public class NavigationMapViewCoordinator: NSObject {
 // MARK: - MLNMapViewDelegate
 
 extension NavigationMapViewCoordinator: MLNMapViewDelegate {
+	
 	public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
 		addLayers(to: mglStyle)
 		onStyleLoaded?(mglStyle)
 	}
+}
 
-	// MARK: MapViewCamera
+// MARK: - NavigationViewControllerDelegate
+
+extension NavigationMapViewCoordinator: NavigationViewControllerDelegate {
+	
+	public func navigationViewControllerDidFinish(_ navigationViewController: NavigationViewController) {
+		self.parent.route = nil
+	}
+}
+
+// MARK: MapViewCamera
+
+public extension NavigationMapViewCoordinator {
 
 	@MainActor private func updateParentCamera(mapView: MLNMapView, reason: MLNCameraChangeReason) {
 		// If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
@@ -357,26 +378,29 @@ extension NavigationMapViewCoordinator: MLNMapViewDelegate {
 	}
 
 	/// The MapView's region has changed with a specific reason.
-	public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+	func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
 		// FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
 		// TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
 		Task { @MainActor in
 			updateViewPort(mapView: mapView, reason: reason)
 		}
-
+		
 		guard !suppressCameraUpdatePropagation else {
 			return
 		}
-
+		
 		// FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
 		Task { @MainActor in
 			updateParentCamera(mapView: mapView, reason: reason)
 		}
 	}
+}
 
-	// MARK: MapViewPort
+// MARK: - Private
 
-	@MainActor private func updateViewPort(mapView: MLNMapView, reason: MLNCameraChangeReason) {
+private extension NavigationMapViewCoordinator {
+
+	@MainActor func updateViewPort(mapView: MLNMapView, reason: MLNCameraChangeReason) {
 		// Calculate the Raw "ViewPort"
 		let calculatedViewPort = MapViewPort(
 			center: mapView.centerCoordinate,
@@ -388,4 +412,3 @@ extension NavigationMapViewCoordinator: MLNMapViewDelegate {
 		onViewPortChanged(calculatedViewPort)
 	}
 }
-

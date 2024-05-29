@@ -18,6 +18,7 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	public typealias UIViewControllerType = NavigationViewController
 	
 	@Binding var camera: MapViewCamera
+	@Binding var route: Route?
 
 	let styleSource: MapStyleSource
 	let userLayers: [StyleLayerDefinition]
@@ -26,7 +27,6 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 
 	var onStyleLoaded: ((MLNStyle) -> Void)?
 	var onViewPortChanged: ((MapViewPort) -> Void)?
-	var route: Route?
 
 	public var mapViewContentInset: UIEdgeInsets = .zero
 
@@ -47,11 +47,13 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	public init(
 		styleSource: MapStyleSource,
 		camera: Binding<MapViewCamera> = .constant(.default()),
+		route: Binding<Route?>,
 		locationManager: MLNLocationManager? = nil,
 		@MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
 	) {
 		self.styleSource = styleSource
 		_camera = camera
+		_route = route
 		userLayers = makeMapContent()
 		self.locationManager = locationManager
 	}
@@ -70,6 +72,7 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 		// TODO: its not allowed to change the mapView delegate. find another way to link mapview with coordinator
 		// viewController.mapView?.delegate = context.coordinator
 		context.coordinator.mapView = viewController.mapView
+		viewController.delegate = context.coordinator
 		
 		// Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
 		// content insets can trigger a change)
@@ -95,7 +98,6 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 				self.registerGesture(mapView, context, gesture: gesture)
 			}
 		}
-		
 			
 		return viewController
 	}
@@ -116,19 +118,15 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 										 camera: $camera.wrappedValue,
 										 animated: isStyleLoaded)
 		
-		if let route {
+		if let route, context.coordinator.state != .running {
 			let locationManager = SimulatedLocationManager(route: route)
 			locationManager.speedMultiplier = 2
 			uiViewController.start(with: route, locationManager: locationManager)
-		} else {
+			context.coordinator.state = .running
+		} else if route == nil && context.coordinator.state != .ended {
 			uiViewController.endRoute()
+			context.coordinator.state = .ended
 		}
-	}
-	
-	public func assign(route: Route?) -> NavigationMapView {
-		var newMapView = self
-		newMapView.route = route
-		return newMapView
 	}
 }
 
