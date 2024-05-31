@@ -15,9 +15,9 @@ public class NavigationMapViewCoordinator: NSObject {
 	
 	enum State {
 		case running
-		case ended
+		case stopped
 	}
-	var state: State = .ended
+	var state: State = .stopped
 	
 	// This must be weak, the UIViewRepresentable owns the MLNMapView.
 	weak var mapView: MLNMapView?
@@ -70,6 +70,10 @@ public class NavigationMapViewCoordinator: NSObject {
 	@MainActor func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
 		guard camera != snapshotCamera else {
 			// No action - camera has not changed.
+			return
+		}
+		guard self.state == .stopped else {
+			// Navigation is in control of camera, abort
 			return
 		}
 

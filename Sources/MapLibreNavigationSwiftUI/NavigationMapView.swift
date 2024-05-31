@@ -125,7 +125,7 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 			context.coordinator.state = .running
 		} else if route == nil && context.coordinator.state != .ended {
 			uiViewController.endRoute()
-			context.coordinator.state = .ended
+			context.coordinator.state = .stopped
 		}
 	}
 }
