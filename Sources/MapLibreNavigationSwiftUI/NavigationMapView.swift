@@ -20,7 +20,8 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	@Binding var camera: MapViewCamera
 	@Binding var route: Route?
 
-	let styleSource: MapStyleSource
+	let dayStyle: Style
+	let nightStyle: Style
 	let userLayers: [StyleLayerDefinition]
 
 	var gestures = [MapGesture]()
@@ -45,13 +46,15 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	var clusteredLayers: [ClusterLayer]?
 
 	public init(
-		styleSource: MapStyleSource,
+		dayStyle: Style,
+		nightStyle: Style,
 		camera: Binding<MapViewCamera> = .constant(.default()),
 		route: Binding<Route?>,
 		locationManager: MLNLocationManager? = nil,
 		@MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
 	) {
-		self.styleSource = styleSource
+		self.dayStyle = dayStyle
+		self.nightStyle = nightStyle
 		_camera = camera
 		_route = route
 		userLayers = makeMapContent()
@@ -67,7 +70,7 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	}
 
 	public func makeUIViewController(context: Context) -> NavigationViewController {
-		let viewController = NavigationViewController(directions: Directions(accessToken: "empty"))
+		let viewController = NavigationViewController(dayStyle: self.dayStyle, nightStyle: self.nightStyle, directions: Directions(accessToken: "empty"))
 		
 		// TODO: its not allowed to change the mapView delegate. find another way to link mapview with coordinator
 		// viewController.mapView?.delegate = context.coordinator
@@ -77,8 +80,6 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 		// Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
 		// content insets can trigger a change)
 		if let mapView = viewController.mapView {
-			context.coordinator.updateStyleSource(styleSource, mapView: mapView)
-
 			context.coordinator.suppressCameraUpdatePropagation = true
 			applyModifiers(mapView, runUnsafe: false)
 			context.coordinator.suppressCameraUpdatePropagation = false
@@ -109,7 +110,6 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 		applyModifiers(mapView, runUnsafe: true)
 		
 		// FIXME: This should be a more selective update
-		context.coordinator.updateStyleSource(styleSource, mapView: mapView)
 		context.coordinator.updateLayers(mapView: mapView)
 		
 		// FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
@@ -119,12 +119,19 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 										 animated: isStyleLoaded)
 		
 		if let route, context.coordinator.state != .running {
-			let locationManager = SimulatedLocationManager(route: route)
-			locationManager.speedMultiplier = 2
-			uiViewController.start(with: route, locationManager: locationManager)
+			func locationManager() -> NavigationLocationManager? {
+				if UIDevice.isSimulator {
+					let locationManager = SimulatedLocationManager(route: route)
+					locationManager.speedMultiplier = 2
+					return locationManager
+				}
+				return nil
+			}
+			
+			uiViewController.startNavigation(with: route, locationManager: locationManager())
 			context.coordinator.state = .running
-		} else if route == nil && context.coordinator.state != .ended {
-			uiViewController.endRoute()
+		} else if route == nil && context.coordinator.state != .stopped {
+			uiViewController.endNavigation()
 			context.coordinator.state = .stopped
 		}
 	}
@@ -141,6 +148,15 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	// organized into (hopefully) useful groups
 }
 
+extension UIDevice {
+	static var isSimulator: Bool = {
+		#if targetEnvironment(simulator)
+		return true
+		#else
+		return false
+		#endif
+	}()
+}
 
 extension NavigationMapView {
 	

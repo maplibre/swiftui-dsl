@@ -218,19 +218,6 @@ public class NavigationMapViewCoordinator: NSObject {
 
 	// MARK: - Coordinator API - Styles + Layers
 
-	@MainActor func updateStyleSource(_ source: MapStyleSource, mapView: MLNMapView) {
-		switch (source, snapshotStyleSource) {
-		case let (.url(newURL), .url(oldURL)):
-			if newURL != oldURL {
-				mapView.styleURL = newURL
-			}
-		case let (.url(newURL), .none):
-			mapView.styleURL = newURL
-		}
-
-		snapshotStyleSource = source
-	}
-
 	@MainActor func updateLayers(mapView: MLNMapView) {
 		// TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
 
