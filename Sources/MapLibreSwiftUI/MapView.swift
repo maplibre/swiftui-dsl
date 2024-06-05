@@ -3,8 +3,8 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-public struct MapView: UIViewControllerRepresentable {
-	public typealias UIViewControllerType = MapViewController
+public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
+	public typealias UIViewControllerType = T
 
     @Binding var camera: MapViewCamera
 
@@ -44,17 +44,17 @@ public struct MapView: UIViewControllerRepresentable {
         self.locationManager = locationManager
     }
 
-    public func makeCoordinator() -> MapViewCoordinator {
-        MapViewCoordinator(
+    public func makeCoordinator() -> MapViewCoordinator<T> {
+        MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
             onViewPortChanged: { onViewPortChanged?($0) }
         )
     }
 
-	public func makeUIViewController(context: Context) -> MapViewController {
+	public func makeUIViewController(context: Context) -> T {
         // Create the map view
-        let controller = MapViewController()
+        let controller = T()
 		controller.mapView.delegate = context.coordinator
 		context.coordinator.mapView = controller.mapView
 
@@ -87,7 +87,7 @@ public struct MapView: UIViewControllerRepresentable {
 		return controller
     }
 
-	public func updateUIViewController(_ uiViewController: MapViewController, context: Context) {
+	public func updateUIViewController(_ uiViewController: T, context: Context) {
         context.coordinator.parent = self
 
 		applyModifiers(uiViewController.mapView, runUnsafe: true)
@@ -124,7 +124,7 @@ public struct MapView: UIViewControllerRepresentable {
 }
 
 #Preview {
-    MapView(styleURL: demoTilesURL)
+	MapView<MapViewController>(styleURL: demoTilesURL)
         .ignoresSafeArea(.all)
         .previewDisplayName("Vanilla Map")
 

@@ -2,10 +2,10 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
-public class MapViewCoordinator: NSObject {
+public class MapViewCoordinator<T: WrappedViewController>: NSObject, MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
-    var parent: MapView
+    var parent: MapView<T>
 
     // Storage of variables as they were previously; these are snapshot
     // every update cycle so we can avoid unnecessary updates
@@ -22,7 +22,7 @@ public class MapViewCoordinator: NSObject {
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewPortChanged: (MapViewPort) -> Void
 
-    init(parent: MapView,
+    init(parent: MapView<T>,
          onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
          onViewPortChanged: @escaping (MapViewPort) -> Void)
     {
@@ -296,11 +296,9 @@ public class MapViewCoordinator: NSObject {
             }
         }
     }
-}
 
-// MARK: - MLNMapViewDelegate
+	// MARK: - MLNMapViewDelegate
 
-extension MapViewCoordinator: MLNMapViewDelegate {
     public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)

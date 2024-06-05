@@ -10,9 +10,13 @@ import MapLibre
 import MapboxNavigation
 import MapboxCoreNavigation
 
-public final class MapViewController: UIViewController {
+public protocol WrappedViewController: UIViewController {
+	var mapView: MLNMapView { get }
+}
+
+public final class MapViewController: UIViewController, WrappedViewController {
 	
-	var mapView: MLNMapView {
+	public var mapView: MLNMapView {
 		return self.view as! MLNMapView
 	}
 	

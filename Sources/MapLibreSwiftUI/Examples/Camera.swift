@@ -9,7 +9,7 @@ struct CameraDirectManipulationPreview: View {
     var targetCameraAfterDelay: MapViewCamera? = nil
 
     var body: some View {
-        MapView(styleURL: styleURL, camera: $camera)
+        MapView<MapViewController>(styleURL: styleURL, camera: $camera)
             .onStyleLoaded { _ in
                 onStyleLoaded?()
             }

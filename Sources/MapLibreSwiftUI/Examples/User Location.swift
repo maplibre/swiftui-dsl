@@ -14,7 +14,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
 ))
 
 #Preview("Track user location") {
-    MapView(
+    MapView<MapViewController>(
         styleURL: demoTilesURL,
         camera: .constant(.trackUserLocation(zoom: 4, pitch: 45)),
         locationManager: locationManager
@@ -24,7 +24,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
 }
 
 #Preview("Track user location with Course") {
-    MapView(
+    MapView<MapViewController>(
         styleURL: demoTilesURL,
         camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: 45)),
         locationManager: locationManager
