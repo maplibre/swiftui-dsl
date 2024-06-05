@@ -13,15 +13,16 @@ import MapboxNavigation
 
 public class NavigationMapViewCoordinator: NSObject {
 	
-	enum State {
+	enum NavigationState {
 		case running
 		case stopped
 	}
-	var state: State = .stopped
+	var navigationState: NavigationState = .stopped
 	
 	// This must be weak, the UIViewRepresentable owns the MLNMapView.
 	weak var mapView: MLNMapView?
 	var parent: NavigationMapView
+	var styleLoaded: Bool = false
 
 	// Storage of variables as they were previously; these are snapshot
 	// every update cycle so we can avoid unnecessary updates
@@ -72,7 +73,7 @@ public class NavigationMapViewCoordinator: NSObject {
 			// No action - camera has not changed.
 			return
 		}
-		guard self.state == .stopped else {
+		guard self.navigationState == .stopped else {
 			// Navigation is in control of camera, abort
 			return
 		}
@@ -310,8 +311,9 @@ public class NavigationMapViewCoordinator: NSObject {
 extension NavigationMapViewCoordinator: MLNMapViewDelegate {
 	
 	public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
-		addLayers(to: mglStyle)
-		onStyleLoaded?(mglStyle)
+		self.styleLoaded = true
+		self.addLayers(to: mglStyle)
+		self.onStyleLoaded?(mglStyle)
 	}
 }
 

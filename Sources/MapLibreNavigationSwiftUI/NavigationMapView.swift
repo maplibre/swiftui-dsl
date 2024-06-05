@@ -112,13 +112,12 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 		// FIXME: This should be a more selective update
 		context.coordinator.updateLayers(mapView: mapView)
 		
-		// FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
-		let isStyleLoaded = mapView.style != nil
+		let isStyleLoaded = context.coordinator.styleLoaded
 		context.coordinator.updateCamera(mapView: mapView,
 										 camera: $camera.wrappedValue,
 										 animated: isStyleLoaded)
 		
-		if let route, context.coordinator.state != .running {
+		if let route, context.coordinator.navigationState != .running {
 			func locationManager() -> NavigationLocationManager? {
 				if UIDevice.isSimulator {
 					let locationManager = SimulatedLocationManager(route: route)
@@ -129,10 +128,10 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 			}
 			
 			uiViewController.startNavigation(with: route, locationManager: locationManager())
-			context.coordinator.state = .running
-		} else if route == nil && context.coordinator.state != .stopped {
+			context.coordinator.navigationState = .running
+		} else if route == nil && context.coordinator.navigationState != .stopped {
 			uiViewController.endNavigation()
-			context.coordinator.state = .stopped
+			context.coordinator.navigationState = .stopped
 		}
 	}
 }
