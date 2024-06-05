@@ -24,7 +24,7 @@ public struct NavigationMapView: UIViewControllerRepresentable {
 	let nightStyle: Style
 	let userLayers: [StyleLayerDefinition]
 
-	var gestures = [MapGesture]()
+	var gestures = [MapGesture]() 
 
 	var onStyleLoaded: ((MLNStyle) -> Void)?
 	var onViewPortChanged: ((MapViewPort) -> Void)?

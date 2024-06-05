@@ -3,7 +3,9 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-public struct MapView: UIViewRepresentable {
+public struct MapView: UIViewControllerRepresentable {
+	public typealias UIViewControllerType = MapViewController
+
     @Binding var camera: MapViewCamera
 
     let styleSource: MapStyleSource
@@ -50,54 +52,54 @@ public struct MapView: UIViewRepresentable {
         )
     }
 
-    public func makeUIView(context: Context) -> MLNMapView {
+	public func makeUIViewController(context: Context) -> MapViewController {
         // Create the map view
-        let mapView = MLNMapView(frame: .zero)
-        mapView.delegate = context.coordinator
-        context.coordinator.mapView = mapView
+        let controller = MapViewController()
+		controller.mapView.delegate = context.coordinator
+		context.coordinator.mapView = controller.mapView
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
         context.coordinator.suppressCameraUpdatePropagation = true
-        applyModifiers(mapView, runUnsafe: false)
+		self.applyModifiers(controller.mapView, runUnsafe: false)
         context.coordinator.suppressCameraUpdatePropagation = false
 
-        mapView.locationManager = locationManager
+		controller.mapView.locationManager = locationManager
 
         switch styleSource {
         case let .url(styleURL):
-            mapView.styleURL = styleURL
+			controller.mapView.styleURL = styleURL
         }
 
-        context.coordinator.updateCamera(mapView: mapView,
+		context.coordinator.updateCamera(mapView: controller.mapView,
                                          camera: $camera.wrappedValue,
                                          animated: false)
-        mapView.locationManager = mapView.locationManager
+		controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
         context.coordinator.onStyleLoaded = onStyleLoaded
 
         // Add all gesture recognizers
         for gesture in gestures {
-            registerGesture(mapView, context, gesture: gesture)
+			registerGesture(controller.mapView, context, gesture: gesture)
         }
 
-        return mapView
+		return controller
     }
 
-    public func updateUIView(_ mapView: MLNMapView, context: Context) {
+	public func updateUIViewController(_ uiViewController: MapViewController, context: Context) {
         context.coordinator.parent = self
 
-        applyModifiers(mapView, runUnsafe: true)
+		applyModifiers(uiViewController.mapView, runUnsafe: true)
 
         // FIXME: This should be a more selective update
-        context.coordinator.updateStyleSource(styleSource, mapView: mapView)
-        context.coordinator.updateLayers(mapView: mapView)
+		context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)
+		context.coordinator.updateLayers(mapView: uiViewController.mapView)
 
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
-        let isStyleLoaded = mapView.style != nil
+		let isStyleLoaded = uiViewController.mapView.style != nil
 
-        context.coordinator.updateCamera(mapView: mapView,
+		context.coordinator.updateCamera(mapView: uiViewController.mapView,
                                          camera: $camera.wrappedValue,
                                          animated: isStyleLoaded)
     }
