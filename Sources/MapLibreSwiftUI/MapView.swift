@@ -5,7 +5,8 @@ import SwiftUI
 
 public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 	public typealias UIViewControllerType = T
-
+	var cameraDisabled: Bool = true
+	
     @Binding var camera: MapViewCamera
 
     let styleSource: MapStyleSource
@@ -20,7 +21,9 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     /// 'Escape hatch' to MLNMapView until we have more modifiers.
     /// See ``unsafeMapViewModifier(_:)``
-    var unsafeMapViewModifier: ((MLNMapView) -> Void)?
+	var unsafeMapViewModifier: ((T.MapType) -> Void)?
+	
+	var unsafeMapViewControllerModifier: ((T) -> Void)?
 
     var controls: [MapControl] = [
         CompassView(),
@@ -54,14 +57,14 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
 	public func makeUIViewController(context: Context) -> T {
         // Create the map view
-        let controller = T()
+		let controller = T()
 		controller.mapView.delegate = context.coordinator
 		context.coordinator.mapView = controller.mapView
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
         context.coordinator.suppressCameraUpdatePropagation = true
-		self.applyModifiers(controller.mapView, runUnsafe: false)
+		self.applyModifiers(controller, runUnsafe: false)
         context.coordinator.suppressCameraUpdatePropagation = false
 
 		controller.mapView.locationManager = locationManager
@@ -72,16 +75,16 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
         }
 
 		context.coordinator.updateCamera(mapView: controller.mapView,
-                                         camera: $camera.wrappedValue,
+										 camera: self.$camera.wrappedValue,
                                          animated: false)
 		controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
-        context.coordinator.onStyleLoaded = onStyleLoaded
+		context.coordinator.onStyleLoaded = self.onStyleLoaded
 
         // Add all gesture recognizers
         for gesture in gestures {
-			registerGesture(controller.mapView, context, gesture: gesture)
+			self.registerGesture(controller.mapView, context, gesture: gesture)
         }
 
 		return controller
@@ -90,7 +93,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 	public func updateUIViewController(_ uiViewController: T, context: Context) {
         context.coordinator.parent = self
 
-		applyModifiers(uiViewController.mapView, runUnsafe: true)
+		self.applyModifiers(uiViewController, runUnsafe: true)
 
         // FIXME: This should be a more selective update
 		context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)
@@ -99,28 +102,36 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
 		let isStyleLoaded = uiViewController.mapView.style != nil
 
-		context.coordinator.updateCamera(mapView: uiViewController.mapView,
-                                         camera: $camera.wrappedValue,
-                                         animated: isStyleLoaded)
+		if self.cameraDisabled == false {
+			context.coordinator.updateCamera(mapView: uiViewController.mapView,
+											 camera: self.$camera.wrappedValue,
+											 animated: isStyleLoaded)
+		}
     }
 
-    @MainActor private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
-        mapView.contentInset = mapViewContentInset
+	@MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
+		mapViewController.mapView.contentInset = self.mapViewContentInset
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
-        mapView.logoView.isHidden = true
-        mapView.compassView.isHidden = true
-        mapView.attributionButton.isHidden = true
+		mapViewController.mapView.logoView.isHidden = true
+		mapViewController.mapView.compassView.isHidden = true
+		mapViewController.mapView.attributionButton.isHidden = true
 
         // Apply each control configuration
         for control in controls {
-            control.configureMapView(mapView)
+			control.configureMapView(mapViewController.mapView)
         }
 
         if runUnsafe {
-            unsafeMapViewModifier?(mapView)
+			unsafeMapViewControllerModifier?(mapViewController)
         }
     }
+	
+//	func cameraModifierDisabled(_ disabled: Bool) -> Self {
+//		var view = self
+//		view.cameraDisabled = disabled
+//		return view
+//	}
 }
 
 #Preview {

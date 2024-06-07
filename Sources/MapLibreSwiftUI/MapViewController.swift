@@ -7,11 +7,12 @@
 
 import UIKit
 import MapLibre
-import MapboxNavigation
-import MapboxCoreNavigation
+//import MapboxNavigation
+//import MapboxCoreNavigation
 
 public protocol WrappedViewController: UIViewController {
-	var mapView: MLNMapView { get }
+	associatedtype MapType: MLNMapView
+	var mapView: MapType { get }
 }
 
 public final class MapViewController: UIViewController, WrappedViewController {
@@ -24,3 +25,7 @@ public final class MapViewController: UIViewController, WrappedViewController {
 		self.view = MLNMapView(frame: .zero)
 	}
 }
+
+//extension NavigationViewController: WrappedViewController {
+//	public typealias MapType = NavigationMapView
+//}

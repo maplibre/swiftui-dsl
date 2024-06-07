@@ -15,9 +15,6 @@ let package = Package(
             name: "MapLibreSwiftUI",
             targets: ["MapLibreSwiftUI"]
         ),
-		.library(name: "MapLibreNavigationSwiftUI",
-				 targets: ["MapLibreNavigationSwiftUI"]
-		),
         .library(
             name: "MapLibreSwiftDSL",
             targets: ["MapLibreSwiftDSL"]
@@ -26,7 +23,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.4.0"),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.3"),
-		.package(path: "~/Developer/maplibre-navigation-ios"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", exact: "0.0.3"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.15.3"),
@@ -38,7 +34,6 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibreSwiftDSL"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-				.product(name: "MapboxNavigation", package: "maplibre-navigation-ios"),
                 .product(name: "Mockable", package: "Mockable"),
             ],
             swiftSettings: [
@@ -46,21 +41,6 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
-		.target(
-			name: "MapLibreNavigationSwiftUI",
-			dependencies: [
-				.target(name: "InternalUtils"),
-				.target(name: "MapLibreSwiftDSL"),
-				.target(name: "MapLibreSwiftUI"),
-				.product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-				.product(name: "MapboxNavigation", package: "maplibre-navigation-ios"),
-				.product(name: "Mockable", package: "Mockable"),
-			],
-			swiftSettings: [
-				.define("MOCKING", .when(configuration: .debug)),
-				.enableExperimentalFeature("StrictConcurrency"),
-			]
-		),
         .target(
             name: "MapLibreSwiftDSL",
             dependencies: [
