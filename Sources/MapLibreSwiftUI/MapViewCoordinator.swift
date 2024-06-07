@@ -297,7 +297,7 @@ public class MapViewCoordinator<T: WrappedViewController>: NSObject, MLNMapViewD
         }
     }
 
-	// MARK: - MLNMapViewDelegate
+    // MARK: - MLNMapViewDelegate
 
     public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)

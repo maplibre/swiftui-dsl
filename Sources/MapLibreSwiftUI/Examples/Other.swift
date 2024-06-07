@@ -31,7 +31,7 @@ import SwiftUI
         // Not all properties have modifiers yet. Until they do, you can use this 'escape hatch' to the underlying
         // MLNMapView. Be careful: if you modify properties that the DSL controls already, they may be overridden. This
         // modifier is a "hack", not a final function.
-		viewController.mapView.logoView.isHidden = false
-		viewController.mapView.compassViewPosition = .topLeft
+        viewController.mapView.logoView.isHidden = false
+        viewController.mapView.compassViewPosition = .topLeft
     }
 }

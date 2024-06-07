@@ -19,7 +19,7 @@ public enum CameraChangeReason: Hashable {
     /// If you need a full history of the full bit range, use MLNCameraChangeReason directly
     ///
     /// - Parameter mlnCameraChangeReason: The camera change reason options list from the MapLibre MapViewDelegate
-	public init?(_ mlnCameraChangeReason: MLNCameraChangeReason) {
+    public init?(_ mlnCameraChangeReason: MLNCameraChangeReason) {
         switch mlnCameraChangeReason.largestBitwiseReason {
         case .programmatic:
             self = .programmatic

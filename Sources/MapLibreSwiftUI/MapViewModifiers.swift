@@ -38,11 +38,11 @@ public extension MapView {
     ///     }
     /// ```
     ///
-	func unsafeMapViewControllerModifier(_ modifier: @escaping (T) -> Void) -> MapView {
-		var newMapView = self
-		newMapView.unsafeMapViewControllerModifier = modifier
-		return newMapView
-	}
+    func unsafeMapViewControllerModifier(_ modifier: @escaping (T) -> Void) -> MapView {
+        var newMapView = self
+        newMapView.unsafeMapViewControllerModifier = modifier
+        return newMapView
+    }
 
     // MARK: Default Gestures
 
@@ -135,10 +135,10 @@ public extension MapView {
         result.onViewPortChanged = onViewPortChanged
         return result
     }
-	
-	func cameraModifierDisabled(_ disabled: Bool) -> Self {
-		var view = self
-		view.cameraDisabled = disabled
-		return view
-	}
+
+    func cameraModifierDisabled(_ disabled: Bool) -> Self {
+        var view = self
+        view.cameraDisabled = disabled
+        return view
+    }
 }

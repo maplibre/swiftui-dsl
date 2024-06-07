@@ -17,7 +17,7 @@ public class MapGesture: NSObject {
     }
 
     /// The Gesture's method, this is used to register it for the correct user interaction on the MapView.
-	public let method: Method
+    public let method: Method
 
     /// The onChange action that runs when the gesture changes on the map view.
     public let onChange: GestureAction
@@ -30,7 +30,7 @@ public class MapGesture: NSObject {
     /// - Parameters:
     ///   - method: The gesture recognizer method
     ///   - onChange: The action to perform when the gesture is changed
-	public init(method: Method, onChange: GestureAction) {
+    public init(method: Method, onChange: GestureAction) {
         self.method = method
         self.onChange = onChange
     }
