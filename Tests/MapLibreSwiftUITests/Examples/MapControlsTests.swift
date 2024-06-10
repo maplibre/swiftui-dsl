@@ -6,7 +6,7 @@ import XCTest
 final class MapControlsTests: XCTestCase {
     func testEmptyControls() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     // No controls
                 }
@@ -15,7 +15,7 @@ final class MapControlsTests: XCTestCase {
 
     func testLogoOnly() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     LogoView()
                 }
@@ -24,7 +24,7 @@ final class MapControlsTests: XCTestCase {
 
     func testLogoChangePosition() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     LogoView()
                         .position(.topLeft)
@@ -34,7 +34,7 @@ final class MapControlsTests: XCTestCase {
 
     func testCompassOnly() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     CompassView()
                 }
@@ -43,7 +43,7 @@ final class MapControlsTests: XCTestCase {
 
     func testCompassChangePosition() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     CompassView()
                         .position(.topLeft)
@@ -53,7 +53,7 @@ final class MapControlsTests: XCTestCase {
 
     func testAttributionOnly() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     AttributionButton()
                 }
@@ -62,7 +62,7 @@ final class MapControlsTests: XCTestCase {
 
     func testAttributionChangePosition() {
         assertView {
-            MapView(styleURL: demoTilesURL)
+            MapView<MapViewController>(styleURL: demoTilesURL)
                 .mapControls {
                     AttributionButton()
                         .position(.topLeft)
