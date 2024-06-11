@@ -9,6 +9,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     @Binding var camera: MapViewCamera
 
+	let makeViewController: (() -> T)?
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
@@ -36,16 +37,31 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
     var clusteredLayers: [ClusterLayer]?
 
     public init(
+		makeViewController: @autoclosure @escaping () -> T,
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
+		self.makeViewController = makeViewController
         styleSource = .url(styleURL)
         _camera = camera
         userLayers = makeMapContent()
         self.locationManager = locationManager
     }
+	
+	public init(
+		styleURL: URL,
+		camera: Binding<MapViewCamera> = .constant(.default()),
+		locationManager: MLNLocationManager? = nil,
+		@MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+	) {
+		self.makeViewController = nil
+		styleSource = .url(styleURL)
+		_camera = camera
+		userLayers = makeMapContent()
+		self.locationManager = locationManager
+	}
 
     public func makeCoordinator() -> MapViewCoordinator<T> {
         MapViewCoordinator<T>(
@@ -57,7 +73,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     public func makeUIViewController(context: Context) -> T {
         // Create the map view
-        let controller = T()
+		let controller = self.makeViewController?() ?? T()
         controller.mapView.delegate = context.coordinator
         context.coordinator.mapView = controller.mapView
 
@@ -129,7 +145,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 }
 
 #Preview {
-    MapView<MapViewController>(styleURL: demoTilesURL)
+	MapView<MapViewController>(styleURL: demoTilesURL)
         .ignoresSafeArea(.all)
         .previewDisplayName("Vanilla Map")
 
