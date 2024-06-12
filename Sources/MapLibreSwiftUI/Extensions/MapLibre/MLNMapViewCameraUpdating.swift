@@ -10,6 +10,9 @@ protocol MLNMapViewCameraUpdating: AnyObject {
     @MainActor var minimumPitch: CGFloat { get set }
     @MainActor var maximumPitch: CGFloat { get set }
     @MainActor var direction: CLLocationDirection { get set }
+    @MainActor var camera: MLNMapCamera { get set }
+    @MainActor var frame: CGRect { get set }
+    @MainActor func setCamera(_ camera: MLNMapCamera, animated: Bool)
     @MainActor func setCenter(_ coordinate: CLLocationCoordinate2D,
                               zoomLevel: Double,
                               direction: CLLocationDirection,
