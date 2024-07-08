@@ -8,7 +8,7 @@ struct PolylinePreview: View {
 
     var body: some View {
         MapView(styleURL: styleURL,
-                                   camera: .constant(.center(samplePedestrianWaypoints.first!, zoom: 14)))
+                camera: .constant(.center(samplePedestrianWaypoints.first!, zoom: 14)))
         {
             // Note: This line does not add the source to the style as if it
             // were a statement in an imperative programming language.

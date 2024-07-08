@@ -9,7 +9,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     @Binding var camera: MapViewCamera
 
-    let makeViewController: (() -> T)
+    let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
@@ -132,7 +132,6 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 }
 
 public extension MapView where T == MapViewController {
-    
     @MainActor
     init(
         styleURL: URL,
@@ -141,8 +140,7 @@ public extension MapView where T == MapViewController {
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         makeViewController = {
-            return MapViewController()
-            
+            MapViewController()
         }
         styleSource = .url(styleURL)
         _camera = camera

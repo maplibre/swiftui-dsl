@@ -4,7 +4,6 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapControlsTests: XCTestCase {
-    
     @MainActor
     func testEmptyControls() {
         assertView {
