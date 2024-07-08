@@ -4,27 +4,31 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapControlsTests: XCTestCase {
+    
+    @MainActor
     func testEmptyControls() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     // No controls
                 }
         }
     }
 
+    @MainActor
     func testLogoOnly() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     LogoView()
                 }
         }
     }
 
+    @MainActor
     func testLogoChangePosition() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     LogoView()
                         .position(.topLeft)
@@ -32,18 +36,20 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testCompassOnly() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     CompassView()
                 }
         }
     }
 
+    @MainActor
     func testCompassChangePosition() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     CompassView()
                         .position(.topLeft)
@@ -51,18 +57,20 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testAttributionOnly() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     AttributionButton()
                 }
         }
     }
 
+    @MainActor
     func testAttributionChangePosition() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL)
+            MapView(styleURL: demoTilesURL)
                 .mapControls {
                     AttributionButton()
                         .position(.topLeft)

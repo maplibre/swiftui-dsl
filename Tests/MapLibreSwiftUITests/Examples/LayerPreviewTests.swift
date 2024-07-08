@@ -23,9 +23,10 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRoseTint() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL) {
+            MapView(styleURL: demoTilesURL) {
                 // Silly example: a background layer on top of everything to create a tint effect
                 BackgroundLayer(identifier: "rose-colored-glasses")
                     .backgroundColor(.systemPink.withAlphaComponent(0.3))
@@ -34,9 +35,10 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testSimpleSymbol() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL) {
+            MapView(styleURL: demoTilesURL) {
                 // Simple symbol layer demonstration with an icon
                 SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
                     .iconImage(UIImage(systemName: "mappin")!)
@@ -44,9 +46,10 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRotatedSymbolConst() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL) {
+            MapView(styleURL: demoTilesURL) {
                 // Simple symbol layer demonstration with an icon
                 SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
                     .iconImage(UIImage(systemName: "location.north.circle.fill")!)
@@ -55,9 +58,10 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRotatedSymboleDynamic() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL) {
+            MapView(styleURL: demoTilesURL) {
                 // Simple symbol layer demonstration with an icon
                 SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
                     .iconImage(UIImage(systemName: "location.north.circle.fill")!)
@@ -66,9 +70,10 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testCirclesWithSymbols() {
         assertView {
-            MapView<MapViewController>(styleURL: demoTilesURL) {
+            MapView(styleURL: demoTilesURL) {
                 // Simple symbol layer demonstration with an icon
                 CircleStyleLayer(identifier: "simple-circles", source: pointSource)
                     .radius(16)

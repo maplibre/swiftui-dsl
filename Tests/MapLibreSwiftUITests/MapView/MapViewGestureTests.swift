@@ -5,7 +5,9 @@ import XCTest
 
 final class MapViewGestureTests: XCTestCase {
     let maplibreMapView = MLNMapView()
-    let mapView = MapView<MapViewController>(styleURL: URL(string: "https://maplibre.org")!)
+    
+    @MainActor
+    let mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
 
     // MARK: Gesture View Modifiers
 

@@ -9,7 +9,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     @Binding var camera: MapViewCamera
 
-    let makeViewController: (() -> T)?
+    let makeViewController: (() -> T)
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
@@ -50,19 +50,6 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
         self.locationManager = locationManager
     }
 
-    public init(
-        styleURL: URL,
-        camera: Binding<MapViewCamera> = .constant(.default()),
-        locationManager: MLNLocationManager? = nil,
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
-    ) {
-        makeViewController = nil
-        styleSource = .url(styleURL)
-        _camera = camera
-        userLayers = makeMapContent()
-        self.locationManager = locationManager
-    }
-
     public func makeCoordinator() -> MapViewCoordinator<T> {
         MapViewCoordinator<T>(
             parent: self,
@@ -73,7 +60,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
 
     public func makeUIViewController(context: Context) -> T {
         // Create the map view
-        let controller = makeViewController?() ?? T()
+        let controller = makeViewController()
         controller.mapView.delegate = context.coordinator
         context.coordinator.mapView = controller.mapView
 
@@ -144,8 +131,28 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
     }
 }
 
+public extension MapView where T == MapViewController {
+    
+    @MainActor
+    init(
+        styleURL: URL,
+        camera: Binding<MapViewCamera> = .constant(.default()),
+        locationManager: MLNLocationManager? = nil,
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
+        makeViewController = {
+            return MapViewController()
+            
+        }
+        styleSource = .url(styleURL)
+        _camera = camera
+        userLayers = makeMapContent()
+        self.locationManager = locationManager
+    }
+}
+
 #Preview {
-    MapView<MapViewController>(styleURL: demoTilesURL)
+    MapView(styleURL: demoTilesURL)
         .ignoresSafeArea(.all)
         .previewDisplayName("Vanilla Map")
 

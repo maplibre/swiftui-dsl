@@ -5,7 +5,7 @@ import SwiftUI
 
 #Preview("Tappable Circles") {
     let tappableID = "simple-circles"
-    return MapView<MapViewController>(styleURL: demoTilesURL) {
+    return MapView(styleURL: demoTilesURL) {
         // Simple symbol layer demonstration with an icon
         CircleStyleLayer(identifier: tappableID, source: pointSource)
             .radius(16)
@@ -24,7 +24,7 @@ import SwiftUI
 }
 
 #Preview("Tappable Countries") {
-    MapView<MapViewController>(styleURL: demoTilesURL)
+    MapView(styleURL: demoTilesURL)
         .onTapMapGesture(on: ["countries-fill"], onTapChanged: { _, features in
             print("Tapped on \(features.first?.description ?? "<nil>")")
         })

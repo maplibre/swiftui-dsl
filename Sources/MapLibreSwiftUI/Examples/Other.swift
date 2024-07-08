@@ -4,7 +4,7 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 #Preview("Unsafe MapView Modifier") {
-    MapView<MapViewController>(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL) {
         // A collection of points with various
         // attributes
         let pointSource = ShapeSource(identifier: "points") {
