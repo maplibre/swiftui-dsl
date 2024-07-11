@@ -161,3 +161,13 @@ public extension StyleLayer {
         modified(self) { $0.insertionPosition = .belowOthers }
     }
 }
+
+public extension StyleLayerDefinition {
+    func minimumZoomLevel(_ value: Float) -> Self {
+        modified(self) { $0.minimumZoomLevel = value }
+    }
+    
+    func maximumZoomLevel(_ value: Float) -> Self {
+        modified(self) { $0.maximumZoomLevel = value }
+    }
+}

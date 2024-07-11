@@ -160,6 +160,14 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.textHaloBlur = definition.textHaloBlur
         
         result.predicate = definition.predicate
+        
+        if let minimumZoomLevel = definition.minimumZoomLevel {
+            result.minimumZoomLevel = minimumZoomLevel
+        }
+        
+        if let maximumZoomLevel = definition.maximumZoomLevel {
+            result.maximumZoomLevel = maximumZoomLevel
+        }
 
         return result
     }
