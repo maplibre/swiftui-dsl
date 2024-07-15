@@ -3,7 +3,7 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
+public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
     var cameraDisabled: Bool = true
 
