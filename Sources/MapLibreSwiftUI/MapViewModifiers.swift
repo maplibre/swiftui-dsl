@@ -135,10 +135,11 @@ public extension MapView {
         result.onViewPortChanged = onViewPortChanged
         return result
     }
-	
-	/// Prevent Maplibre-DSL from updating the camera, useful when the underlying ViewController is managing the camera, for example during navigation when Maplibre-Navigation is used.
-	/// - Parameter disabled: if true, prevents Maplibre-DSL from updating the camera
-	/// - Returns: The modified MapView
+
+    /// Prevent Maplibre-DSL from updating the camera, useful when the underlying ViewController is managing the camera,
+    /// for example during navigation when Maplibre-Navigation is used.
+    /// - Parameter disabled: if true, prevents Maplibre-DSL from updating the camera
+    /// - Returns: The modified MapView
     func cameraModifierDisabled(_ disabled: Bool) -> Self {
         var view = self
         view.cameraDisabled = disabled
