@@ -25,6 +25,7 @@ can move fast without breaking anything important.
     * Overlays
     * Dynamic styling
     * Camera control / animation??
+    * Navigation
 2. Prevent most common classes of mistakes that users make with the lower level APIs (ex: adding the same source twice)
 3. Deeper SwiftUI integration (ex: SwiftUI callout views)
 
@@ -45,6 +46,45 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
 
 Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
 or more detailed [Examples](Sources/MapLibreSwiftUI/Examples) to see how it works in practice.
+
+## Navigation
+
+If you need to support navigation add https://github.com/HudHud-Maps/maplibre-navigation-ios.git to your Package.swift and add this code:
+
+```swift
+import MapboxCoreNavigation
+import MapboxNavigation
+
+extension NavigationViewController: MapViewHostViewController {
+    public typealias MapType = NavigationMapView
+}
+
+
+@State var route: Route?
+@State var navigationInProgress: Bool = false
+
+@ViewBuilder
+var mapView: some View {
+    MapView<NavigationViewController>(makeViewController: NavigationViewController(dayStyleURL: self.styleURL), styleURL: self.styleURL, camera: self.$mapStore.camera) {
+
+    }
+    .unsafeMapViewControllerModifier { navigationViewController in
+        navigationViewController.delegate = self.mapStore
+        if let route = self.route, self.navigationInProgress == false {
+            let locationManager = SimulatedLocationManager(route: route)
+            navigationViewController.startNavigation(with: route, locationManager: locationManager)
+            self.navigationInProgress = true
+        } else if self.route == nil, self.navigationInProgress == true {
+            navigationViewController.endNavigation()
+            self.navigationInProgress = false
+        }
+
+        navigationViewController.mapView.showsUserLocation = self.showUserLocation && self.mapStore.streetView == .disabled
+    }
+    .cameraModifierDisabled(self.route != nil)
+}
+```
+We choose this approach so MapLibreSwiftUI is not depdending on maplibre-navigation as most users don't need it.
 
 ## Developer Quick Start
 

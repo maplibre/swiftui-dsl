@@ -124,7 +124,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
             .predicate(NSPredicate(format: "cluster != YES"))
     }
     .onTapMapGesture(on: ["simple-circles-non-clusters"], onTapChanged: { _, features in
-        print("Tapped on \(features.first)")
+        print("Tapped on \(features.first?.debugDescription ?? "<nil>")")
     })
     .expandClustersOnTapping(clusteredLayers: [ClusterLayer(
         layerIdentifier: "simple-circles-clusters",

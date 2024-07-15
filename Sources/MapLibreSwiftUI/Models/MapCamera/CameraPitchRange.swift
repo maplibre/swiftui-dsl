@@ -15,7 +15,7 @@ public enum CameraPitchRange: Hashable, Sendable {
     /// The range of acceptable pitch values.
     ///
     /// This is applied to the map view on camera updates.
-    var rangeValue: ClosedRange<Double> {
+    public var rangeValue: ClosedRange<Double> {
         switch self {
         case .free:
             0 ... 60 // TODO: set this to a maplibre constant (this is available on Android, but maybe not iOS)?

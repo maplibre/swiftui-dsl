@@ -3,9 +3,13 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-public struct MapView: UIViewRepresentable {
+public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
+    public typealias UIViewControllerType = T
+    var cameraDisabled: Bool = true
+
     @Binding var camera: MapViewCamera
 
+    let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
@@ -16,9 +20,7 @@ public struct MapView: UIViewRepresentable {
 
     public var mapViewContentInset: UIEdgeInsets = .zero
 
-    /// 'Escape hatch' to MLNMapView until we have more modifiers.
-    /// See ``unsafeMapViewModifier(_:)``
-    var unsafeMapViewModifier: ((MLNMapView) -> Void)?
+    var unsafeMapViewControllerModifier: ((T) -> Void)?
 
     var controls: [MapControl] = [
         CompassView(),
@@ -31,93 +33,115 @@ public struct MapView: UIViewRepresentable {
     var clusteredLayers: [ClusterLayer]?
 
     public init(
+        makeViewController: @autoclosure @escaping () -> T,
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
+        self.makeViewController = makeViewController
         styleSource = .url(styleURL)
         _camera = camera
         userLayers = makeMapContent()
         self.locationManager = locationManager
     }
 
-    public func makeCoordinator() -> MapViewCoordinator {
-        MapViewCoordinator(
+    public func makeCoordinator() -> MapViewCoordinator<T> {
+        MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
             onViewPortChanged: { onViewPortChanged?($0) }
         )
     }
 
-    public func makeUIView(context: Context) -> MLNMapView {
+    public func makeUIViewController(context: Context) -> T {
         // Create the map view
-        let mapView = MLNMapView(frame: .zero)
-        mapView.delegate = context.coordinator
-        context.coordinator.mapView = mapView
+        let controller = makeViewController()
+        controller.mapView.delegate = context.coordinator
+        context.coordinator.mapView = controller.mapView
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
         context.coordinator.suppressCameraUpdatePropagation = true
-        applyModifiers(mapView, runUnsafe: false)
+        applyModifiers(controller, runUnsafe: false)
         context.coordinator.suppressCameraUpdatePropagation = false
 
-        mapView.locationManager = locationManager
+        controller.mapView.locationManager = locationManager
 
         switch styleSource {
         case let .url(styleURL):
-            mapView.styleURL = styleURL
+            controller.mapView.styleURL = styleURL
         }
 
-        context.coordinator.updateCamera(mapView: mapView,
+        context.coordinator.updateCamera(mapView: controller.mapView,
                                          camera: $camera.wrappedValue,
                                          animated: false)
-        mapView.locationManager = mapView.locationManager
+        controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
         context.coordinator.onStyleLoaded = onStyleLoaded
 
         // Add all gesture recognizers
         for gesture in gestures {
-            registerGesture(mapView, context, gesture: gesture)
+            registerGesture(controller.mapView, context, gesture: gesture)
         }
 
-        return mapView
+        return controller
     }
 
-    public func updateUIView(_ mapView: MLNMapView, context: Context) {
+    public func updateUIViewController(_ uiViewController: T, context: Context) {
         context.coordinator.parent = self
 
-        applyModifiers(mapView, runUnsafe: true)
+        applyModifiers(uiViewController, runUnsafe: true)
 
         // FIXME: This should be a more selective update
-        context.coordinator.updateStyleSource(styleSource, mapView: mapView)
-        context.coordinator.updateLayers(mapView: mapView)
+        context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)
+        context.coordinator.updateLayers(mapView: uiViewController.mapView)
 
         // FIXME: This isn't exactly telling us if the *map* is loaded, and the docs for setCenter say it needs to be.
-        let isStyleLoaded = mapView.style != nil
+        let isStyleLoaded = uiViewController.mapView.style != nil
 
-        context.coordinator.updateCamera(mapView: mapView,
-                                         camera: $camera.wrappedValue,
-                                         animated: isStyleLoaded)
+        if cameraDisabled == false {
+            context.coordinator.updateCamera(mapView: uiViewController.mapView,
+                                             camera: $camera.wrappedValue,
+                                             animated: isStyleLoaded)
+        }
     }
 
-    @MainActor private func applyModifiers(_ mapView: MLNMapView, runUnsafe: Bool) {
-        mapView.contentInset = mapViewContentInset
+    @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
+        mapViewController.mapView.contentInset = mapViewContentInset
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
-        mapView.logoView.isHidden = true
-        mapView.compassView.isHidden = true
-        mapView.attributionButton.isHidden = true
+        mapViewController.mapView.logoView.isHidden = true
+        mapViewController.mapView.compassView.isHidden = true
+        mapViewController.mapView.attributionButton.isHidden = true
 
         // Apply each control configuration
         for control in controls {
-            control.configureMapView(mapView)
+            control.configureMapView(mapViewController.mapView)
         }
 
         if runUnsafe {
-            unsafeMapViewModifier?(mapView)
+            unsafeMapViewControllerModifier?(mapViewController)
         }
+    }
+}
+
+public extension MapView where T == MLNMapViewController {
+    @MainActor
+    init(
+        styleURL: URL,
+        camera: Binding<MapViewCamera> = .constant(.default()),
+        locationManager: MLNLocationManager? = nil,
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+    ) {
+        makeViewController = {
+            MLNMapViewController()
+        }
+        styleSource = .url(styleURL)
+        _camera = camera
+        userLayers = makeMapContent()
+        self.locationManager = locationManager
     }
 }
 

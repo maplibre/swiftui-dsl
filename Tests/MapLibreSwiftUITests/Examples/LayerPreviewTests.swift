@@ -23,6 +23,7 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRoseTint() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -34,6 +35,7 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testSimpleSymbol() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -44,6 +46,7 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRotatedSymbolConst() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -55,6 +58,7 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRotatedSymboleDynamic() {
         assertView {
             MapView(styleURL: demoTilesURL) {
@@ -66,6 +70,7 @@ final class LayerPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testCirclesWithSymbols() {
         assertView {
             MapView(styleURL: demoTilesURL) {

@@ -5,7 +5,7 @@ import Mockable
 
 // NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
 @Mockable
-protocol MLNMapViewCameraUpdating: AnyObject {
+public protocol MLNMapViewCameraUpdating: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
     @MainActor var minimumPitch: CGFloat { get set }
     @MainActor var maximumPitch: CGFloat { get set }

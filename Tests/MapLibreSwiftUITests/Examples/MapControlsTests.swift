@@ -4,6 +4,7 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapControlsTests: XCTestCase {
+    @MainActor
     func testEmptyControls() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -13,6 +14,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testLogoOnly() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -22,6 +24,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testLogoChangePosition() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -32,6 +35,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testCompassOnly() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -41,6 +45,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testCompassChangePosition() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -51,6 +56,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testAttributionOnly() {
         assertView {
             MapView(styleURL: demoTilesURL)
@@ -60,6 +66,7 @@ final class MapControlsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testAttributionChangePosition() {
         assertView {
             MapView(styleURL: demoTilesURL)
