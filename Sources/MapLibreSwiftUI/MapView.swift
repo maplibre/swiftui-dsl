@@ -20,10 +20,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     public var mapViewContentInset: UIEdgeInsets = .zero
 
-    /// 'Escape hatch' to MLNMapView until we have more modifiers.
-    /// See ``unsafeMapViewModifier(_:)``
-    var unsafeMapViewModifier: ((T.MapType) -> Void)?
-
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
     var controls: [MapControl] = [
