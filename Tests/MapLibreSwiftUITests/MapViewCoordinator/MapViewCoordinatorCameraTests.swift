@@ -23,6 +23,13 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
     @MainActor func testUnchangedCamera() {
         let camera: MapViewCamera = .default()
 
+        given(maplibreMapView)
+            .setCenter(.any,
+                       zoomLevel: .any,
+                       direction: .any,
+                       animated: .any)
+            .willReturn()
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: camera, animated: false)
         // Run a second update. We're testing that the snapshotCamera correctly exits the function
         // when nothing changed.
@@ -32,173 +39,192 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         // This verifies the comment above.
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.none))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setCenter(.value(MapViewCamera.Defaults.coordinate),
                        zoomLevel: .value(10),
                        direction: .value(0),
                        animated: .value(false))
-            .called(count: 1)
+            .called(1)
 
         // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
         // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
-            .setterCalled(count: 2)
+            .setCalled(2)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
-            .called(count: 0)
+            .called(0)
     }
 
     @MainActor func testCenterCameraUpdate() {
         let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let newCamera: MapViewCamera = .center(coordinate, zoom: 13)
 
+        given(maplibreMapView)
+            .setCenter(.any,
+                       zoomLevel: .any,
+                       direction: .any,
+                       animated: .any)
+            .willReturn()
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.none))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setCenter(.value(coordinate),
                        zoomLevel: .value(13),
                        direction: .value(0),
                        animated: .value(false))
-            .called(count: 1)
+            .called(1)
 
         // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
         // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
-            .setterCalled(count: 2)
+            .setCalled(2)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
-            .called(count: 0)
+            .called(0)
     }
 
     @MainActor func testUserTrackingCameraUpdate() {
         let newCamera: MapViewCamera = .trackUserLocation()
 
+        given(maplibreMapView)
+            .setZoomLevel(.any, animated: .any)
+            .willReturn()
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.follow))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setCenter(.any,
                        zoomLevel: .any,
                        direction: .any,
                        animated: .any)
-            .called(count: 0)
+            .called(0)
 
         // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
         // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
-            .setterCalled(count: 2)
+            .setCalled(2)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setZoomLevel(.value(10), animated: .value(false))
-            .called(count: 1)
+            .called(1)
     }
 
     @MainActor func testUserTrackingWithCourseCameraUpdate() {
         let newCamera: MapViewCamera = .trackUserLocationWithCourse()
 
+        given(maplibreMapView)
+            .setZoomLevel(.any, animated: .any)
+            .willReturn()
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.followWithCourse))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setCenter(.any,
                        zoomLevel: .any,
                        direction: .any,
                        animated: .any)
-            .called(count: 0)
+            .called(0)
 
         // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
         // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
-            .setterCalled(count: 2)
+            .setCalled(2)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setZoomLevel(.value(10), animated: .value(false))
-            .called(count: 1)
+            .called(1)
     }
 
     @MainActor func testUserTrackingWithHeadingUpdate() {
         let newCamera: MapViewCamera = .trackUserLocationWithHeading()
 
+        given(maplibreMapView)
+            .setZoomLevel(.any, animated: .any)
+            .willReturn()
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
             .userTrackingMode(newValue: .value(.followWithHeading))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setCenter(.any,
                        zoomLevel: .any,
                        direction: .any,
                        animated: .any)
-            .called(count: 0)
+            .called(0)
 
         // Due to the .frame == .zero workaround, min/max pitch setting is called twice, once to set the
         // pitch, and then once to set the actual range.
         verify(maplibreMapView)
             .minimumPitch(newValue: .value(0))
-            .setterCalled(count: 2)
+            .setCalled(2)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(0))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .maximumPitch(newValue: .value(60))
-            .setterCalled(count: 1)
+            .setCalled(1)
 
         verify(maplibreMapView)
             .setZoomLevel(.value(10), animated: .value(false))
-            .called(count: 1)
+            .called(1)
     }
 
     // TODO: Test Rect & Showcase once we build it!
