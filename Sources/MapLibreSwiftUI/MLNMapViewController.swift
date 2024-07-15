@@ -6,7 +6,7 @@ public protocol MapViewHostViewController: UIViewController {
     var mapView: MapType { get }
 }
 
-public final class MapViewController: UIViewController, MapViewHostViewController {
+public final class MLNMapViewController: UIViewController, MapViewHostViewController {
     public var mapView: MLNMapView {
         view as! MLNMapView
     }

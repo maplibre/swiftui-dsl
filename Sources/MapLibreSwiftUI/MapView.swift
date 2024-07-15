@@ -131,7 +131,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 }
 
-public extension MapView where T == MapViewController {
+public extension MapView where T == MLNMapViewController {
     @MainActor
     init(
         styleURL: URL,
@@ -140,7 +140,7 @@ public extension MapView where T == MapViewController {
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         makeViewController = {
-            MapViewController()
+            MLNMapViewController()
         }
         styleSource = .url(styleURL)
         _camera = camera
