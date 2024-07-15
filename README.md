@@ -47,9 +47,21 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
 Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
 or more detailed [Examples](Sources/MapLibreSwiftUI/Examples) to see how it works in practice.
 
-## Navigation
+## Common integrations
 
-If you need to support navigation add https://github.com/HudHud-Maps/maplibre-navigation-ios.git to your Package.swift and add this code:
+### Ferrostar
+
+[Ferrostar](https://github.com/stadiamaps/ferrostar) has a MapLibre UI module as part of its Swift Package
+which is already built on this!
+See the [SwiftUI customization](https://stadiamaps.github.io/ferrostar/swiftui-customization.html)
+part of the Ferrostar user guide for details on how to customize the map.
+
+### MapLibre Navigation iOS
+
+This package can help bridge the gap between MapLibre Navigation iOS and SwiftUI! 
+
+Add the Swift Package froh Hudhud (https://github.com/HudHud-Maps/maplibre-navigation-ios.git) to your Package.swift
+and add code like this:
 
 ```swift
 import MapboxCoreNavigation
@@ -84,21 +96,24 @@ var mapView: some View {
     .cameraModifierDisabled(self.route != nil)
 }
 ```
-We choose this approach so MapLibreSwiftUI is not depdending on maplibre-navigation as most users don't need it.
 
 ## Developer Quick Start
 
-This project uses [`swiftformat`](https://github.com/nicklockwood/SwiftFormat) to automatically handle basic swift formatting
-as well as to lint and ensure conformance in PRs. Check out the swiftformat [Install Guide](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
-to add swiftformat to your machine.
+This project is a standard Swift package.
+The only special thing you might need besides Xcode is [`swiftformat`](https://github.com/nicklockwood/SwiftFormat).
+We use it to automatically handle basic formatting and to linting
+so the code has a standard style.
 
+Check out the swiftformat [Install Guide](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
+to add swiftformat to your machine.
 Once installed, you can autoformat code using the command:
 
 ```sh
 swiftformat .
 ```
 
-Swiftformat can occasionally poorly resolve a formatting issue (e.g. when you've already line-broken a large comment). Issues like this are typically easy to manually correct.
+Swiftformat can occasionally poorly resolve a formatting issue (e.g. when you've already line-broken a large comment).
+Issues like this are typically easy to manually correct.
 
 ## Structure
 
@@ -126,17 +141,7 @@ The code has a number of TODOs, most of which can be tackled by any intermediate
 issues should all be tracked in GitHub. DISCUSS comments (should migrate to GitHub issues/discussions) are deeper
 questions. Input welcome.
 
-WARNING: This section is slightly out of date. We are targeting MapLibre 6.0 pre-releases, so the docs are not totally
-up to date.
-
 The skeleton is already in place for several of the core concepts, including style layers and sources, but
 these are incomplete. You can help by opening a PR that fills these in. For example, if you wanted to fill out the
 API for the line style layer, head over to [the docs](https://maplibre.org/maplibre-native/ios/api/Classes/MGLLineStyleLayer.html)
 and get to work filling out the remaining properties and modifiers.
-
-Note that some Swift 5.9 improvements like macros will make things a bit easier, so it may make sense to punt on
-things like fleshing out the expressions API helpers (which will be highly repetitive) till that lands. When in doubt,
-check out the issue tracker, as these sholud be noted there.
-
-TODO: Look at PointFree's Snapshot testing that generates images of SwiftUI views. Also look at inline snapshotting.
-https://github.com/pointfreeco/swift-snapshot-testing
