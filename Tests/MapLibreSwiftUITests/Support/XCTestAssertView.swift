@@ -3,7 +3,6 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-// TODO: This is a WIP that needs some additional eyes
 extension XCTestCase {
     func assertView(
         named name: String? = nil,
@@ -18,7 +17,7 @@ extension XCTestCase {
         let view = content()
             .frame(width: frame.width, height: frame.height)
 
-        assertSnapshot(matching: view,
+        assertSnapshot(of: view,
                        as: .image(precision: 0.9, perceptualPrecision: 0.95),
                        named: name,
                        record: record,

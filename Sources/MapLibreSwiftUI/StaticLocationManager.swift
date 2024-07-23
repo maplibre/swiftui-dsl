@@ -10,7 +10,8 @@ import MapLibre
 ///
 /// You can provide a new location by setting the ``lastLocation`` property.
 ///
-/// This class does not ever perform any authorization checks. That is the responsibility of the caller.
+/// While this class is required to implement authorization status per the underlying protocol,
+/// it does not ever actually check whether you have access to Core Location services.
 public final class StaticLocationManager: NSObject, @unchecked Sendable {
     public var delegate: (any MLNLocationManagerDelegate)?
 
