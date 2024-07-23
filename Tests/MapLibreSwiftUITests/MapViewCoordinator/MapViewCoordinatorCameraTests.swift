@@ -5,8 +5,8 @@ import XCTest
 
 final class MapViewCoordinatorCameraTests: XCTestCase {
     var maplibreMapView: MockMLNMapViewCameraUpdating!
-    var mapView: MapView<MapViewController>!
-    var coordinator: MapView<MapViewController>.Coordinator!
+    var mapView: MapView<MLNMapViewController>!
+    var coordinator: MapView<MLNMapViewController>.Coordinator!
 
     @MainActor
     override func setUp() async throws {

@@ -2,7 +2,7 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
-public class MapViewCoordinator<T: WrappedViewController>: NSObject, MLNMapViewDelegate {
+public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
     var parent: MapView<T>

@@ -1,12 +1,12 @@
 import MapLibre
 import UIKit
 
-public protocol WrappedViewController: UIViewController {
+public protocol MapViewHostViewController: UIViewController {
     associatedtype MapType: MLNMapView
     var mapView: MapType { get }
 }
 
-public final class MapViewController: UIViewController, WrappedViewController {
+public final class MLNMapViewController: UIViewController, MapViewHostViewController {
     public var mapView: MLNMapView {
         view as! MLNMapView
     }

@@ -3,7 +3,7 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
+public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
     var cameraDisabled: Bool = true
 
@@ -19,10 +19,6 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
     var onViewPortChanged: ((MapViewPort) -> Void)?
 
     public var mapViewContentInset: UIEdgeInsets = .zero
-
-    /// 'Escape hatch' to MLNMapView until we have more modifiers.
-    /// See ``unsafeMapViewModifier(_:)``
-    var unsafeMapViewModifier: ((T.MapType) -> Void)?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
@@ -131,7 +127,7 @@ public struct MapView<T: WrappedViewController>: UIViewControllerRepresentable {
     }
 }
 
-public extension MapView where T == MapViewController {
+public extension MapView where T == MLNMapViewController {
     @MainActor
     init(
         styleURL: URL,
@@ -140,7 +136,7 @@ public extension MapView where T == MapViewController {
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         makeViewController = {
-            MapViewController()
+            MLNMapViewController()
         }
         styleSource = .url(styleURL)
         _camera = camera
