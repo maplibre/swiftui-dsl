@@ -9,7 +9,9 @@ import MapLibreSwiftMacros
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
 @MLNStyleProperty<Float>("lineWidth", supportsInterpolation: true)
 public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
+    
     public let identifier: String
+    public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
     public var isVisible: Bool = true
     public var maximumZoomLevel: Float? = nil
@@ -21,11 +23,13 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public init(identifier: String, source: Source) {
         self.identifier = identifier
         self.source = .source(source)
+        self.sourceLayerIdentifier = nil
     }
 
-    public init(identifier: String, source: MLNSource) {
+    public init(identifier: String, source: MLNSource, sourceLayerIdentifier: String? = nil) {
         self.identifier = identifier
         self.source = .mglSource(source)
+        self.sourceLayerIdentifier = sourceLayerIdentifier
     }
 
     public func makeStyleLayer(style: MLNStyle) -> StyleLayer {

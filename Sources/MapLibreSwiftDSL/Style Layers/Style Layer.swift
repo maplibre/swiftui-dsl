@@ -75,6 +75,8 @@ public protocol StyleLayerDefinition {
 
 public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
     var source: StyleLayerSource { get set }
+    
+    var sourceLayerIdentifier: String? { get }
 }
 
 /// Based on MLNVectorStyleLayer
