@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "039ef525064a685c291db5118f6b5f6e8b090bb0",
-        "version" : "6.5.2"
+        "revision" : "a40e82162772e53180a2e0b1052e454db43a297d",
+        "version" : "6.5.1"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "ccec0efd3e4a48b85b5407f788916de265c986dc"
+        "revision" : "81ccaead99a3c038c09345caa2888ae74b644ee9",
+        "version" : "0.0.9"
       }
     },
     {
