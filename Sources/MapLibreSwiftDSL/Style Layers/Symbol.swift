@@ -71,19 +71,6 @@ public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
         return copy
     }
 
-    // FIXME: This appears to be broken upstream; waiting for a new release
-//    public func iconImage(attribute: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self
-//    {
-//        return modified(self) { it in
-//            it.iconImageName = NSExpression(forMLNMatchingKey: NSExpression(forConstantValue: attribute),
-//                                            in: Dictionary(uniqueKeysWithValues: mappings.map({ (k, v) in
-//                (NSExpression(forConstantValue: k), NSExpression(forConstantValue: v.sha256()))
-//            })),
-//                                            default: NSExpression(forConstantValue: defaultImage.sha256()))
-//            it.iconImages = mappings.values + [defaultImage]
-//        }
-//    }
-
     /// Add an icon image that can be dynamic and use UIImages in your app, based on a feature property of the source.
     /// For example, your feature could have a property called "icon-name". This name is then resolved against the key
     /// in the mappings dictionary and used to find a UIImage to display on the map for that feature.
