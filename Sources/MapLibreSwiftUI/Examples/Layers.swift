@@ -133,17 +133,18 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
     .ignoresSafeArea(.all)
 }
 
-// TODO: Fixme
+// This example does not work within a package? But it does work when in a real app
 // #Preview("Multiple Symbol Icons") {
 //    MapView(styleURL: demoTilesURL) {
 //        // Simple symbol layer demonstration with an icon
 //        SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
-//            .iconImage(attribute: "icon",
+//            .iconImage(featurePropertyNamed: "icon",
 //                       mappings: [
-//                        "missing": UIImage(systemName: "mappin.slash")!,
-//                        "club": UIImage(systemName: "figure.dance")!
+//                           "missing": UIImage(systemName: "mappin.slash")!,
+//                           "club": UIImage(systemName: "figure.dance")!,
 //                       ],
 //                       default: UIImage(systemName: "mappin")!)
+//            .iconColor(.red)
 //    }
-//    .edgesIgnoringSafeArea(.all)
+//    .ignoresSafeArea(.all)
 // }

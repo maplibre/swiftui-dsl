@@ -32,7 +32,7 @@ public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
 
     public init(identifier: String, source: Source) {
         self.identifier = identifier
-        self.sourceLayerIdentifier = nil
+        sourceLayerIdentifier = nil
         self.source = .source(source)
     }
 
@@ -40,7 +40,6 @@ public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
         self.identifier = identifier
         self.sourceLayerIdentifier = sourceLayerIdentifier
         self.source = .mglSource(source)
-        
     }
 
     public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
@@ -65,7 +64,7 @@ public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
             it.iconImages = [image]
         }
     }
-    
+
     public func iconImage(featurePropertyNamed keyPath: String) -> Self {
         var copy = self
         copy.iconImageName = NSExpression(forKeyPath: keyPath)
@@ -84,21 +83,29 @@ public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
 //            it.iconImages = mappings.values + [defaultImage]
 //        }
 //    }
-    
-    /// Add an icon image that can be dynamic and use UIImages in your app, based on a feature property of the source. For example, your feature could have a property called "icon-name". This name is then resolved against the key in the mappings dictionary and used to find a UIImage to display on the map for that feature.
+
+    /// Add an icon image that can be dynamic and use UIImages in your app, based on a feature property of the source.
+    /// For example, your feature could have a property called "icon-name". This name is then resolved against the key
+    /// in the mappings dictionary and used to find a UIImage to display on the map for that feature.
     /// - Parameters:
     ///   - keyPath: The keypath to the feature property containing the icon to use, for example "icon-name".
-    ///   - mappings: A lookup dictionary containing the keys found in "keyPath" and a UIImage for each keyPath. The key of the mappings dictionary needs to match the value type stored at keyPath, for example `String`.
-    ///   - defaultImage: A UIImage that MapLibre should fall back to if the key in your feature is not found in the mappings table
-    public func iconImage(featurePropertyNamed keyPath: String, mappings: [AnyHashable: UIImage], default defaultImage: UIImage) -> Self {
-        return modified(self) { it in
+    ///   - mappings: A lookup dictionary containing the keys found in "keyPath" and a UIImage for each keyPath. The key
+    /// of the mappings dictionary needs to match the value type stored at keyPath, for example `String`.
+    ///   - defaultImage: A UIImage that MapLibre should fall back to if the key in your feature is not found in the
+    /// mappings table
+    public func iconImage(
+        featurePropertyNamed keyPath: String,
+        mappings: [AnyHashable: UIImage],
+        default defaultImage: UIImage
+    ) -> Self {
+        modified(self) { it in
             let attributeExpression = NSExpression(forKeyPath: keyPath)
             let mappingExpressions = mappings.mapValues { image in
                 NSExpression(forConstantValue: image.sha256())
             }
             let mappingDictionary = NSDictionary(dictionary: mappingExpressions)
             let defaultExpression = NSExpression(forConstantValue: defaultImage.sha256())
-            
+
             it.iconImageName = NSExpression(
                 forMLNMatchingKey: attributeExpression,
                 in: mappingDictionary as! [NSExpression: NSExpression],
@@ -142,29 +149,29 @@ private struct SymbolStyleLayerInternal: StyleLayer {
     public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNSymbolStyleLayer(identifier: identifier, source: mglSource)
         result.sourceLayerIdentifier = definition.sourceLayerIdentifier
-        
+
         result.iconImageName = definition.iconImageName
         result.iconRotation = definition.iconRotation
         result.iconAllowsOverlap = definition.iconAllowsOverlap
         result.iconColor = definition.iconColor
-        
+
         result.text = definition.text
         result.textColor = definition.textColor
         result.textFontSize = definition.textFontSize
         result.maximumTextWidth = definition.maximumTextWidth
         result.textAnchor = definition.textAnchor
         result.textOffset = definition.textOffset
-        
+
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
         result.textHaloBlur = definition.textHaloBlur
-        
+
         result.predicate = definition.predicate
-        
+
         if let minimumZoomLevel = definition.minimumZoomLevel {
             result.minimumZoomLevel = minimumZoomLevel
         }
-        
+
         if let maximumZoomLevel = definition.maximumZoomLevel {
             result.maximumZoomLevel = maximumZoomLevel
         }

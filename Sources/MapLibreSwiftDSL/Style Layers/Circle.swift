@@ -21,7 +21,7 @@ public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public init(identifier: String, source: Source) {
         self.identifier = identifier
         self.source = .source(source)
-        self.sourceLayerIdentifier = nil
+        sourceLayerIdentifier = nil
     }
 
     public init(identifier: String, source: MLNSource, sourceLayerIdentifier: String? = nil) {

@@ -75,7 +75,7 @@ public protocol StyleLayerDefinition {
 
 public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
     var source: StyleLayerSource { get set }
-    
+
     var sourceLayerIdentifier: String? { get }
 }
 
@@ -168,7 +168,7 @@ public extension StyleLayerDefinition {
     func minimumZoomLevel(_ value: Float) -> Self {
         modified(self) { $0.minimumZoomLevel = value }
     }
-    
+
     func maximumZoomLevel(_ value: Float) -> Self {
         modified(self) { $0.maximumZoomLevel = value }
     }
