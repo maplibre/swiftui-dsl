@@ -9,6 +9,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("strokeColor", supportsInterpolation: false)
 public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
+    public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .aboveOthers
     public var isVisible: Bool = true
     public var maximumZoomLevel: Float? = nil
@@ -20,11 +21,13 @@ public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public init(identifier: String, source: Source) {
         self.identifier = identifier
         self.source = .source(source)
+        sourceLayerIdentifier = nil
     }
 
-    public init(identifier: String, source: MLNSource) {
+    public init(identifier: String, source: MLNSource, sourceLayerIdentifier: String? = nil) {
         self.identifier = identifier
         self.source = .mglSource(source)
+        self.sourceLayerIdentifier = sourceLayerIdentifier
     }
 
     public func makeStyleLayer(style: MLNStyle) -> StyleLayer {
@@ -69,6 +72,7 @@ private struct CircleStyleLayerInternal: StyleLayer {
     public func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNCircleStyleLayer(identifier: identifier, source: mglSource)
 
+        result.sourceLayerIdentifier = definition.sourceLayerIdentifier
         result.circleRadius = definition.radius
         result.circleColor = definition.color
 
