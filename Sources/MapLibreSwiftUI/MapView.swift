@@ -18,7 +18,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onViewPortChanged: ((MapViewPort) -> Void)?
 
-    public var mapViewContentInset: UIEdgeInsets = .zero
+    var mapViewContentInset: UIEdgeInsets? = .zero
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
@@ -103,13 +103,16 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
         if cameraDisabled == false {
             context.coordinator.updateCamera(mapView: uiViewController.mapView,
-                                             camera: $camera.wrappedValue,
+                                             camera: camera,
                                              animated: isStyleLoaded)
         }
     }
 
     @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
-        mapViewController.mapView.contentInset = mapViewContentInset
+        if let mapViewContentInset {
+            mapViewController.mapView.automaticallyAdjustsContentInset = false
+            mapViewController.mapView.contentInset = mapViewContentInset
+        }
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
         mapViewController.mapView.logoView.isHidden = true
