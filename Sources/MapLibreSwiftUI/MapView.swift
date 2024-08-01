@@ -5,7 +5,7 @@ import SwiftUI
 
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
-    var cameraDisabled: Bool = true
+    var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
 
