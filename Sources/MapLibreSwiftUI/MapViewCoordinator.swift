@@ -351,7 +351,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         MainActor.assumeIsolated {
             updateViewPort(mapView: mapView, reason: reason)
-            
+
             guard !suppressCameraUpdatePropagation else {
                 return
             }
