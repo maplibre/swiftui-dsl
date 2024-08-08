@@ -3,10 +3,11 @@ import UIKit
 
 public protocol MapViewHostViewController: UIViewController {
     associatedtype MapType: MLNMapView
-    var mapView: MapType { get }
+    @MainActor var mapView: MapType { get }
 }
 
 public final class MLNMapViewController: UIViewController, MapViewHostViewController {
+    @MainActor
     public var mapView: MLNMapView {
         view as! MLNMapView
     }

@@ -350,7 +350,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
         // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             updateViewPort(mapView: mapView, reason: reason)
         }
 
@@ -359,7 +359,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         }
 
         // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             updateParentCamera(mapView: mapView, reason: reason)
         }
     }
