@@ -348,18 +348,14 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
     /// The MapView's region has changed with a specific reason.
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-        // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             updateViewPort(mapView: mapView, reason: reason)
-        }
 
-        guard !suppressCameraUpdatePropagation else {
-            return
-        }
+            guard !suppressCameraUpdatePropagation else {
+                return
+            }
 
-        // FIXME: CI complains about MainActor.assumeIsolated being unavailable before iOS 17, despite building on iOS 17.2... This is an epic hack to fix it for now. I can only assume this is an issue with Xcode pre-15.3
-        Task { @MainActor in
             updateParentCamera(mapView: mapView, reason: reason)
         }
     }
