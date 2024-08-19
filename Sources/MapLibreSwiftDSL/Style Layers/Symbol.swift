@@ -10,6 +10,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
 @MLNStyleProperty<String>("text", supportsInterpolation: false)
+@MLNStyleProperty<[String]?>("textFontNames", supportsInterpolation: false)
 // An enum would probably be better?
 @MLNStyleProperty<String>("textAnchor", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("textOffset", supportsInterpolation: true)
@@ -148,6 +149,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.maximumTextWidth = definition.maximumTextWidth
         result.textAnchor = definition.textAnchor
         result.textOffset = definition.textOffset
+        result.textFontNames = definition.textFontNames
 
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
