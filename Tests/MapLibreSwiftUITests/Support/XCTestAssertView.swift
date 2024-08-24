@@ -7,6 +7,7 @@ extension XCTestCase {
     func assertView(
         named name: String? = nil,
         record: Bool = false,
+        colorScheme: ColorScheme = .light,
         frame: CGSize = CGSize(width: 430, height: 932),
         expectation _: XCTestExpectation? = nil,
         @ViewBuilder content: () -> some View,
@@ -15,7 +16,9 @@ extension XCTestCase {
         line: UInt = #line
     ) {
         let view = content()
+            .environment(\.colorScheme, colorScheme)
             .frame(width: frame.width, height: frame.height)
+            .background(Color(red: 130 / 255, green: 203 / 255, blue: 114 / 255))
 
         assertSnapshot(of: view,
                        as: .image(precision: 0.9, perceptualPrecision: 0.95),
