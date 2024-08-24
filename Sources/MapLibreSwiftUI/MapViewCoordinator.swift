@@ -310,8 +310,6 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
         // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
         // matches the mapView's userTrackingMode
-        // NOTE: The use of assumeIsolated is just to make Swift strict concurrency checks happy.
-        // This invariant is upheld by the MLNMapView.
         let userTrackingMode = mapView.userTrackingMode
         let isProgrammaticallyTracking: Bool = switch parent.camera.state {
         case .trackingUserLocation:
