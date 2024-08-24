@@ -4,7 +4,7 @@ import XCTest
 
 final class CameraPreviewTests: XCTestCase {
     func testCameraPreview() {
-        assertView(named: "CameraPreview") {
+        assertView {
             CameraDirectManipulationPreview(
                 styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!
             )
