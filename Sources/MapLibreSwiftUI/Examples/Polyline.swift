@@ -3,22 +3,22 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-struct PolylinePreview: View {
+struct PolylineMapView: View {
     let styleURL: URL
+    let waypoints: [CLLocationCoordinate2D]
 
     var body: some View {
         MapView(styleURL: styleURL,
-                camera: .constant(.center(samplePedestrianWaypoints.first!, zoom: 14)))
+                camera: .constant(.center(waypoints.first!, zoom: 14)))
         {
-            // Note: This line does not add the source to the style as if it
-            // were a statement in an imperative programming language.
-            // The source is added automatically if a layer references it.
-            let polylineSource = ShapeSource(identifier: "pedestrian-polyline") {
-                MLNPolylineFeature(coordinates: samplePedestrianWaypoints)
+            // Define a data source.
+            // It will be automatically if a layer references it.
+            let polylineSource = ShapeSource(identifier: "polyline") {
+                MLNPolylineFeature(coordinates: waypoints)
             }
 
             // Add a polyline casing for a stroke effect
-            LineStyleLayer(identifier: "route-line-casing", source: polylineSource)
+            LineStyleLayer(identifier: "polyline-casing", source: polylineSource)
                 .lineCap(.round)
                 .lineJoin(.round)
                 .lineColor(.white)
@@ -28,7 +28,7 @@ struct PolylinePreview: View {
                            stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
 
             // Add an inner (blue) polyline
-            LineStyleLayer(identifier: "route-line-inner", source: polylineSource)
+            LineStyleLayer(identifier: "polyline-inner", source: polylineSource)
                 .lineCap(.round)
                 .lineJoin(.round)
                 .lineColor(.systemBlue)
@@ -37,13 +37,12 @@ struct PolylinePreview: View {
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
         }
-        .previewDisplayName("Polyline")
     }
 }
 
 struct Polyline_Previews: PreviewProvider {
     static var previews: some View {
-        PolylinePreview(styleURL: demoTilesURL)
+        PolylineMapView(styleURL: demoTilesURL, waypoints: samplePedestrianWaypoints)
             .ignoresSafeArea(.all)
     }
 }
