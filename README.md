@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://maplibre.org/img/maplibre-logo-big.svg" alt="MapLibre Logo">
+</p>
+
 # MapLibreSwiftUI
 
 Swift DSLs for [MapLibre Native](https://github.com/maplibre/maplibre-native), a free open-source renderer
@@ -5,27 +9,24 @@ for interactive vector maps, to enable better integration with SwiftUI and gener
 
 ![A screen recording demonstrating the declarative SwiftUI DSL reacting to changes live](demo.gif)
 
-This package is a playground (read: not yet stable) to experiment with Swift DSLs and SwiftUI without constraints.
-As more people try this out with their own use cases, the community should eventuallly stabilize on a
-reasonably optimal DSL for working with MapLibre in Swift. The package name is currently MapLibreSwiftUI, but it's
-possible that the SwiftUI and DSL layers are separable.
-
-If successful, some version this project should eventually either get merged into MapLibre Native or at the least
-merged into the MapLibre organization more formally. It is being developed as a separate package initially so we
-can move fast without breaking anything important.
-
-**NOTE: This currently only works on iOS, as that's the only architecture currently published in the dynamic framework.**
+This package is a reimagining of the MapLibre API with a modern DSLs for SwiftUI.
+The pre-1.0 status means only that we are not yet committed to API stability yet,
+since we care deeply about finding the best way to express things for SwfitUI users.
+The package is robust for the subset of the MapLibre iOS API that it supports.
+Any breaking API changes will be reflected in release notes.
 
 ## Goals
 
-1. Primary: Make common use cases easy and make complicated ones possible
+1. Primary: Make common use cases easy and [make complicated ones possible](Sources/MapLibreSwiftUI/Examples/Other.swift)
     * Easy integration of MapLibre into a modern SwiftUI app
-    * Add markers and similar annotations
+    * Add [markers](Sources/MapLibreSwiftUI/Examples/Gestures.swift), [polylines](Sources/MapLibreSwiftUI/Examples/Polyline.swift) and similar annotations
+    * Interaction with features through [gestures](Sources/MapLibreSwiftUI/Examples/Gestures.swift)
     * Clustering (common use case that's rather difficult for first timers)
-    * Overlays
+    * [Overlays]](Sources/MapLibreSwiftUI/Examples/)
     * Dynamic styling
-    * Camera control / animation??
-    * Navigation
+    * [Camera control](Sources/MapLibreSwiftUI/Examples/Camera.swift)
+    * Turn-by-turn Navigation (see the showcase integrations below)
+    * Animation
 2. Prevent most common classes of mistakes that users make with the lower level APIs (ex: adding the same source twice)
 3. Deeper SwiftUI integration (ex: SwiftUI callout views)
 
@@ -44,28 +45,104 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
 ```
 
-Check out the (super basic) [previews at the bottom of MapView.swift](Sources/MapLibreSwiftUI/MapView.swift)
-or more detailed [Examples](Sources/MapLibreSwiftUI/Examples) to see how it works in practice.
+Then, you can use it in a SwiftUI view body like this:
 
-## Common integrations
+```swift
+import MapLibre
+import MapLibreSwiftDSL
+import SwiftUI
+import CoreLocation
+
+struct PolylineMapView: View {
+    // You'll need a MapLibre Style for this to work.
+    // You can use https://demotiles.maplibre.org/style.json for basic testing.
+    // For a list of commercially supported tile providers, check out https://wiki.openstreetmap.org/wiki/Vector_tiles#Providers.
+    // These providers all have their own "house styles" as well as custom styling.
+    // You can create your own style or modify others (subject to license restrictions) using https://maplibre.org/maputnik/. 
+    let styleURL: URL
+    
+    // Just a list of waypoints (ex: a route to follow)
+    let waypoints: [CLLocationCoordinate2D]
+
+    var body: some View {
+        MapView(styleURL: styleURL,
+                camera: .constant(.center(waypoints.first!, zoom: 14)))
+        {
+            // Define a data source.
+            // It will be automatically if a layer references it.
+            let polylineSource = ShapeSource(identifier: "polyline") {
+                MLNPolylineFeature(coordinates: waypoints)
+            }
+
+            // Add a polyline casing for a stroke effect
+            LineStyleLayer(identifier: "polyline-casing", source: polylineSource)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.white)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
+
+            // Add an inner (blue) polyline
+            LineStyleLayer(identifier: "polyline-inner", source: polylineSource)
+                .lineCap(.round)
+                .lineJoin(.round)
+                .lineColor(.systemBlue)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
+        }
+    }
+}
+```
+
+Check out more [Examples](Sources/MapLibreSwiftUI/Examples) to go deeper.
+
+**NOTE: This currently only works on iOS, as the dynamic framework doesn't yet include macOS.**
+
+## How can you help?
+
+The first thing you can do is try it out!
+Check out the [Examples](Sources/MapLibreSwiftUI/Examples) for inspiration,
+swap it into your own SwiftUI app, or check out some showcase integrations for inspiration.
+Putting it "through the paces" is the best way for us to converge on the "right" APIs as a community.
+Your use case probably isn't supported today, in which case you can either open an issue or contribute a PR.
+
+The code has a number of TODOs, most of which can be tackled by any intermediate Swift programmer.
+The important issues should all be tracked in GitHub.
+We also have a `#maplibre-swiftui-compose-playground` channel in the
+[OpenStreetMap US Slack](https://slack.openstreetmap.us/).
+
+The skeleton is already in place for several of the core concepts, including style layers and sources, but
+these are incomplete. You can help by opening a PR that fills these in.
+For example, if you wanted to fill out the API for the line style layer,
+head over to [the docs](https://maplibre.org/maplibre-native/ios/api/Classes/MGLLineStyleLayer.html)
+and just start filling out the remaining properties and modifiers.
+
+## Showcase integrations
 
 ### Ferrostar
 
-[Ferrostar](https://github.com/stadiamaps/ferrostar) has a MapLibre UI module as part of its Swift Package
-which is already built on this!
+[Ferrostar](https://github.com/stadiamaps/ferrostar) has a MapLibre UI module as part of its Swift Package.
+That was actually the impetus for building this package,
+and the core devs are eating their own dogfood.
 See the [SwiftUI customization](https://stadiamaps.github.io/ferrostar/swiftui-customization.html)
 part of the Ferrostar user guide for details on how to customize the map.
 
 ### MapLibre Navigation iOS
 
-This package can help bridge the gap between MapLibre Navigation iOS and SwiftUI! 
+This package also helps to bridge the gap between MapLibre Navigation iOS and SwiftUI!
+Thanks to developers from [HudHud](https://hudhud.sa/en) for their contributions which made this possible!
 
-Add the Swift Package froh Hudhud (https://github.com/HudHud-Maps/maplibre-navigation-ios.git) to your Package.swift
-and add code like this:
+Add the [Swift Package](https://github.com/maplibre/maplibre-navigation-ios) to your project.
+Then add some code like this:
 
 ```swift
 import MapboxCoreNavigation
 import MapboxNavigation
+import MapLibreSwiftUI
 
 extension NavigationViewController: MapViewHostViewController {
     public typealias MapType = NavigationMapView
@@ -78,7 +155,7 @@ extension NavigationViewController: MapViewHostViewController {
 @ViewBuilder
 var mapView: some View {
     MapView<NavigationViewController>(makeViewController: NavigationViewController(dayStyleURL: self.styleURL), styleURL: self.styleURL, camera: self.$mapStore.camera) {
-
+        // TODO: Your customizations here; add more layers or whatever you like!
     }
     .unsafeMapViewControllerModifier { navigationViewController in
         navigationViewController.delegate = self.mapStore
@@ -96,52 +173,3 @@ var mapView: some View {
     .cameraModifierDisabled(self.route != nil)
 }
 ```
-
-## Developer Quick Start
-
-This project is a standard Swift package.
-The only special thing you might need besides Xcode is [`swiftformat`](https://github.com/nicklockwood/SwiftFormat).
-We use it to automatically handle basic formatting and to linting
-so the code has a standard style.
-
-Check out the swiftformat [Install Guide](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
-to add swiftformat to your machine.
-Once installed, you can autoformat code using the command:
-
-```sh
-swiftformat .
-```
-
-Swiftformat can occasionally poorly resolve a formatting issue (e.g. when you've already line-broken a large comment).
-Issues like this are typically easy to manually correct.
-
-## Structure
-
-This package is structured into a few targets. `InternalUtils` is pretty much what it says. `MapLibreSwiftDSL` and
-`MapLibreSwiftUI` are published products, and make up the bulk of the project. Finally, `Examples` is a collection of
-SwiftUI previews. 
-
-The DSL provides a more Swift-y layer on top of the lower level MapLibre APIs, and features a number of
-result builders which enable more modern expressive APIs.
-
-The SwiftUI layer publishes a SwiftUI view with the end goal of being a universal view that can be adapted to a wide
-variety of use cases, much like MapKit's SwiftUI views. 
-
-The `Examples` should serve as a rough indication of development progress. While much of the code in the UI layer
-isn't formally tested, this acts as our test, and for all intents and purposes, we're following a practical variant of
-TDD as we build out functionality.
-
-## How can you help?
-
-The first thing you can do is try out the library! Check out the detailed [Examples](Sources/MapLibreSwiftUI/Examples)
-for inspiration. Putting it "through the paces" is the best way for us to converge on the "right" APIs as a community.
-Your use case probably isn't supported today, in which case you can either open an issue or contribute a PR.
-
-The code has a number of TODOs, most of which can be tackled by any intermediate Swift programmer. The important
-issues should all be tracked in GitHub. DISCUSS comments (should migrate to GitHub issues/discussions) are deeper
-questions. Input welcome.
-
-The skeleton is already in place for several of the core concepts, including style layers and sources, but
-these are incomplete. You can help by opening a PR that fills these in. For example, if you wanted to fill out the
-API for the line style layer, head over to [the docs](https://maplibre.org/maplibre-native/ios/api/Classes/MGLLineStyleLayer.html)
-and get to work filling out the remaining properties and modifiers.
