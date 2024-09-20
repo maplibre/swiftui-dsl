@@ -7,6 +7,10 @@
 Swift DSLs for [MapLibre Native](https://github.com/maplibre/maplibre-native), a free open-source renderer
 for interactive vector maps, to enable better integration with SwiftUI and generally enable easier use of MapLibre.
 
+**NOTE: This package has migrated from Stadia Maps to the MapLibre organization 🎉**
+If you previously installed this package,
+see the [`CHANGELOG`](CHANGELOG.md) for steps to ensure Xcode stays happy.
+
 ![A screen recording demonstrating the declarative SwiftUI DSL reacting to changes live](demo.gif)
 
 This package is a reimagining of the MapLibre API with a modern DSLs for SwiftUI.
@@ -32,18 +36,28 @@ Any breaking API changes will be reflected in release notes.
 
 ## Quick start
 
+### In a normal Xcode project
+
+If you're building an app using an Xcode project,
+the easiest way to add package dependencies is in the File menu.
+Search for the package using the repository URL: `https://github.com/maplibre/swiftui-dsl`.
+
+### In a Swift package 
+
 Add the following to the main dependencies section of your `Package.swift`.
 
 ```swift
-        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+    .package(url: "https://github.com/maplibre/swiftui-dsl", branch: "main"),
 ```
 
 Then, for each target add either the DSL (for just the DSL) or both (for the SwiftUI view):
 
 ```swift
-                .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
-                .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
+    .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
+    .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
 ```
+
+### Simple example: polyline rendering
 
 Then, you can use it in a SwiftUI view body like this:
 
