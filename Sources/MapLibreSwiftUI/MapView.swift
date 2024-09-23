@@ -148,10 +148,9 @@ public extension MapView where T == MLNMapViewController {
     }
 }
 
-#Preview {
+#Preview("Vanilla Map") {
     MapView(styleURL: demoTilesURL)
         .ignoresSafeArea(.all)
-        .previewDisplayName("Vanilla Map")
 
     // For a larger selection of previews,
     // check out the Examples directory, which

@@ -26,7 +26,7 @@ Any breaking API changes will be reflected in release notes.
     * Add [markers](Sources/MapLibreSwiftUI/Examples/Gestures.swift), [polylines](Sources/MapLibreSwiftUI/Examples/Polyline.swift) and similar annotations
     * Interaction with features through [gestures](Sources/MapLibreSwiftUI/Examples/Gestures.swift)
     * Clustering (common use case that's rather difficult for first timers)
-    * [Overlays]](Sources/MapLibreSwiftUI/Examples/)
+    * [Overlays](Sources/MapLibreSwiftUI/Examples/)
     * Dynamic styling
     * [Camera control](Sources/MapLibreSwiftUI/Examples/Camera.swift)
     * Turn-by-turn Navigation (see the showcase integrations below)
