@@ -128,20 +128,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             mapView.minimumPitch = pitchRange.rangeValue.lowerBound
             mapView.maximumPitch = pitchRange.rangeValue.upperBound
         case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
-            mapView.userTrackingMode = .followWithHeading
+            mapView.setUserTrackingMode(.followWithHeading, animated: animated) {
+                mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                mapView.maximumPitch = pitchRange.rangeValue.upperBound
 
-            if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                // Needs to be non-animated or else it messes up following
-
-                mapView.setZoomLevel(zoom, animated: false)
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-
-            } else {
                 let camera = mapView.camera
-
                 let altitude = MLNAltitudeForZoomLevel(
                     zoom,
                     pitch,
@@ -152,24 +143,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 camera.pitch = pitch
                 mapView.setCamera(camera, animated: animated)
             }
-
-            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-            mapView.maximumPitch = pitchRange.rangeValue.upperBound
         case let .trackingUserLocationWithCourse(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
-            mapView.userTrackingMode = .followWithCourse
-
-            if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                // Needs to be non-animated or else it messes up following
-
-                mapView.setZoomLevel(zoom, animated: false)
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-
-            } else {
+            mapView.setUserTrackingMode(.followWithCourse, animated: animated) {
+                mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                mapView.maximumPitch = pitchRange.rangeValue.upperBound
                 let camera = mapView.camera
-
                 let altitude = MLNAltitudeForZoomLevel(
                     zoom,
                     pitch,
@@ -180,9 +158,6 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 camera.pitch = pitch
                 mapView.setCamera(camera, animated: animated)
             }
-
-            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-            mapView.maximumPitch = pitchRange.rangeValue.upperBound
         case let .rect(boundingBox, padding):
             mapView.setVisibleCoordinateBounds(boundingBox,
                                                edgePadding: padding,
