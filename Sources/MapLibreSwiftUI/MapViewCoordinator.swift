@@ -334,13 +334,20 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
         // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
         // state propagation.
+
+        // Determine camera pitch range based on current MapView settings
+        let pitchRange: CameraPitchRange = if mapView.minimumPitch == 0 && mapView.maximumPitch > 59.9 {
+            .free
+        } else if mapView.minimumPitch == mapView.maximumPitch {
+            .fixed(mapView.minimumPitch)
+        } else {
+            .freeWithinRange(minimum: mapView.minimumPitch, maximum: mapView.maximumPitch)
+        }
+
         let newCamera: MapViewCamera = .center(mapView.centerCoordinate,
                                                zoom: mapView.zoomLevel,
                                                pitch: mapView.camera.pitch,
-                                               pitchRange: .freeWithinRange(
-                                                   minimum: mapView.minimumPitch,
-                                                   maximum: mapView.maximumPitch
-                                               ),
+                                               pitchRange: pitchRange,
                                                direction: mapView.direction,
                                                reason: CameraChangeReason(reason))
         snapshotCamera = newCamera
