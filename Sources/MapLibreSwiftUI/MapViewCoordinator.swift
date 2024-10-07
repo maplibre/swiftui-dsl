@@ -108,6 +108,8 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 mapView.setZoomLevel(zoom, animated: false)
                 mapView.direction = direction
 
+                mapView.minimumPitch = pitch
+                mapView.maximumPitch = pitch
                 mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                 mapView.maximumPitch = pitchRange.rangeValue.upperBound
 
@@ -137,6 +139,8 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
                 mapView.userTrackingMode = .followWithHeading
                 mapView.setZoomLevel(zoom, animated: false)
+                mapView.minimumPitch = pitch
+                mapView.maximumPitch = pitch
                 mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                 mapView.maximumPitch = pitchRange.rangeValue.upperBound
 
@@ -165,6 +169,8 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 // Needs to be non-animated or else it messes up following
 
                 mapView.setZoomLevel(zoom, animated: false)
+                mapView.minimumPitch = pitch
+                mapView.maximumPitch = pitch
                 mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                 mapView.maximumPitch = pitchRange.rangeValue.upperBound
 
