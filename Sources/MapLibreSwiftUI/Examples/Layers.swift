@@ -89,7 +89,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Clustered Circles with Symbols") {
-    return MapView(styleURL: demoTilesURL, camera: .constant(MapViewCamera.center(
+    MapView(styleURL: demoTilesURL, camera: .constant(MapViewCamera.center(
         CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3719),
         zoom: 5,
         direction: 0
