@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -22,7 +22,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.4.0"),
-        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.3"),
+        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", exact: "0.0.10"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.2"),

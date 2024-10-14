@@ -1,4 +1,5 @@
 {
+  "originHash" : "eb291c5878b6a430da1ca556743fd0109f383ad28c681401e0b93a12b03ca77d",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
       "state" : {
-        "revision" : "236215c13bff962009e0f0257d6d8349be33442f",
-        "version" : "0.0.4"
+        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
+        "version" : "0.0.5"
       }
     },
     {
@@ -41,10 +42,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
+        "version" : "510.0.3"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
