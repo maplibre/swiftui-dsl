@@ -106,6 +106,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
                                              camera: camera,
                                              animated: isStyleLoaded)
         }
+        uiViewController.mapView.locationManager = locationManager
     }
 
     @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
