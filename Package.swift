@@ -54,9 +54,9 @@ let package = Package(
         ),
         .target(
             name: "InternalUtils",
-			dependencies: [
-				.product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-			],
+            dependencies: [
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+            ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
