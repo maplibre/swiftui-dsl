@@ -11,9 +11,6 @@ jobs:
     runs-on: macos-15
 
     steps:
-    - name: Install tools
-      run: brew install swiftformat
-      
     - name: Checkout maplibre-swiftui-dsl-playground
       uses: actions/checkout@v4
 
@@ -30,6 +27,7 @@ jobs:
         destination: [
           # TODO: Add more destinations
           'platform=iOS Simulator,name=iPhone 16,OS=18.1'
+          'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.0'
         ]
 
     steps:
