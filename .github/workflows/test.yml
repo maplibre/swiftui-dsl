@@ -26,9 +26,9 @@ jobs:
         ]
         destination: [
           # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 16,OS=18.1',
-          'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.0'
+          'platform=iOS Simulator,name=iPhone 16,OS=18.1'
         ]
+    name: ${{ matrix.destination }}
 
     steps:
     - name: Install tools
