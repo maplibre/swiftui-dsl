@@ -65,7 +65,7 @@ extension CameraState: CustomDebugStringConvertible {
     }
 }
 
-extension MLNCoordinateBounds: Equatable, Hashable {
+extension MLNCoordinateBounds: @retroactive Equatable, @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ne)
         hasher.combine(sw)
@@ -76,7 +76,7 @@ extension MLNCoordinateBounds: Equatable, Hashable {
     }
 }
 
-extension UIEdgeInsets: Hashable {
+extension UIEdgeInsets: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(left)
         hasher.combine(right)
