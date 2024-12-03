@@ -357,7 +357,9 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                                                direction: mapView.direction,
                                                reason: CameraChangeReason(reason))
         snapshotCamera = newCamera
-        parent.camera = newCamera
+        DispatchQueue.main.async {
+            self.parent.camera = newCamera
+        }
     }
 
     /// The MapView's region has changed with a specific reason.
