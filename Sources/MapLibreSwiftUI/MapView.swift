@@ -18,7 +18,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onViewPortChanged: ((MapViewPort) -> Void)?
 
-    var mapViewContentInset: UIEdgeInsets? = .zero
+    var mapViewContentInset: UIEdgeInsets?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
