@@ -130,9 +130,9 @@ public extension MapView {
         return result
     }
 
-    func onMapViewPortUpdate(_ onViewPortChanged: @escaping (MapViewPort) -> Void) -> Self {
+    func onMapViewProxyUpdate(_ onViewProxyChanged: @escaping (MapViewProxy) -> Void) -> Self {
         var result = self
-        result.onViewPortChanged = onViewPortChanged
+        result.onViewProxyChanged = onViewProxyChanged
         return result
     }
 

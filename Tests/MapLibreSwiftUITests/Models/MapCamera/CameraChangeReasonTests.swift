@@ -2,6 +2,7 @@ import MapLibre
 import XCTest
 @testable import MapLibreSwiftUI
 
+@MainActor
 final class CameraChangeReasonTests: XCTestCase {
     func testProgrammatic() {
         let mlnReason: MLNCameraChangeReason = [.programmatic]
