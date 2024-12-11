@@ -20,15 +20,15 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
-    var onViewPortChanged: (MapViewPort) -> Void
+    var onViewProxyChanged: (MapViewProxy) -> Void
 
     init(parent: MapView<T>,
          onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
-         onViewPortChanged: @escaping (MapViewPort) -> Void)
+         onViewProxyChanged: @escaping (MapViewProxy) -> Void)
     {
         self.parent = parent
         self.onGesture = onGesture
-        self.onViewPortChanged = onViewPortChanged
+        self.onViewProxyChanged = onViewProxyChanged
     }
 
     // MARK: Core UIView Functionality
@@ -366,7 +366,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         MainActor.assumeIsolated {
-            updateViewPort(mapView: mapView, reason: reason)
+            updateViewProxy(mapView: mapView, reason: reason)
 
             guard !suppressCameraUpdatePropagation else {
                 return
@@ -376,17 +376,16 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         }
     }
 
-    // MARK: MapViewPort
+    // MARK: MapViewProxy
 
-    @MainActor private func updateViewPort(mapView: MLNMapView, reason: MLNCameraChangeReason) {
-        // Calculate the Raw "ViewPort"
-        let calculatedViewPort = MapViewPort(
-            center: mapView.centerCoordinate,
-            zoom: mapView.zoomLevel,
-            direction: mapView.direction,
+    
+    @MainActor private func updateViewProxy(mapView: MLNMapView, reason: MLNCameraChangeReason) {
+        // Calculate the Raw "ViewProxy"
+        let calculatedViewProxy = MapViewProxy(mapView: mapView,
             lastReasonForChange: CameraChangeReason(reason)
         )
 
-        onViewPortChanged(calculatedViewPort)
+        onViewProxyChanged(calculatedViewProxy)
     }
+     
 }
