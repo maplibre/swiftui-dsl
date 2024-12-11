@@ -378,14 +378,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
     // MARK: MapViewProxy
 
-    
     @MainActor private func updateViewProxy(mapView: MLNMapView, reason: MLNCameraChangeReason) {
         // Calculate the Raw "ViewProxy"
         let calculatedViewProxy = MapViewProxy(mapView: mapView,
-            lastReasonForChange: CameraChangeReason(reason)
-        )
+                                               lastReasonForChange: CameraChangeReason(reason))
 
         onViewProxyChanged(calculatedViewProxy)
     }
-     
 }

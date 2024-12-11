@@ -13,53 +13,52 @@ import MapLibre
 /// You can use `MapView.onMapViewProxyUpdate(_ onViewProxyChanged: @escaping (MapViewProxy) -> Void)` to
 /// recieve access to the MapViewProxy.
 ///
-/// For more information about the properties and functions, see https://maplibre.org/maplibre-native/ios/latest/documentation/maplibre/mlnmapview
+/// For more information about the properties and functions, see
+/// https://maplibre.org/maplibre-native/ios/latest/documentation/maplibre/mlnmapview
 @MainActor
 public struct MapViewProxy: Hashable, Equatable {
     /// The current center coordinate of the MapView
     public var centerCoordinate: CLLocationCoordinate2D {
-        return mapView.centerCoordinate
+        mapView.centerCoordinate
     }
 
     /// The current zoom value of the MapView
     public var zoomLevel: Double {
-        return mapView.zoomLevel
+        mapView.zoomLevel
     }
 
     /// The current compass direction of the MapView
     public var direction: CLLocationDirection {
-        return mapView.direction
+        mapView.direction
     }
-    
+
     public var visibleCoordinateBounds: MLNCoordinateBounds {
-        return mapView.visibleCoordinateBounds
+        mapView.visibleCoordinateBounds
     }
-    
+
     public var mapViewSize: CGSize {
-        return mapView.frame.size
+        mapView.frame.size
     }
-    
+
     public var contentInset: UIEdgeInsets {
-        return mapView.contentInset
+        mapView.contentInset
     }
 
     /// The reason the view port was changed.
     public let lastReasonForChange: CameraChangeReason?
-    
+
     private let mapView: MLNMapView
 
     public func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint {
-        return mapView.convert(coordinate, toPointTo: toPointTo)
-        
+        mapView.convert(coordinate, toPointTo: toPointTo)
     }
+
     public init(mapView: MLNMapView,
                 lastReasonForChange: CameraChangeReason?)
     {
         self.mapView = mapView
         self.lastReasonForChange = lastReasonForChange
-        
     }
-
 }
 
 public extension MapViewProxy {
