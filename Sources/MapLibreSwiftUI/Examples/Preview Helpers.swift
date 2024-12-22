@@ -11,6 +11,6 @@ let austriaPolygon: [CLLocationCoordinate2D] = [
     CLLocationCoordinate2D(latitude: 47.5237, longitude: 10.4350),
     CLLocationCoordinate2D(latitude: 46.4000, longitude: 12.1500),
     CLLocationCoordinate2D(latitude: 46.8700, longitude: 16.5900),
-    CLLocationCoordinate2D(latitude: 48.1234, longitude: 16.9600), 
-    CLLocationCoordinate2D(latitude: 49.0200, longitude: 16.9600)  // Closing point (same as start)
+    CLLocationCoordinate2D(latitude: 48.1234, longitude: 16.9600),
+    CLLocationCoordinate2D(latitude: 49.0200, longitude: 16.9600), // Closing point (same as start)
 ]

@@ -1,13 +1,6 @@
-//
-//  FillPreview.swift
-//  MapLibreSwiftUI
-//
-//  Created by patrick on 22.12.24.
-//
-
-import SwiftUI
 import MapLibre
 import MapLibreSwiftDSL
+import SwiftUI
 
 @available(iOS 17.0, *)
 #Preview {
@@ -20,6 +13,6 @@ import MapLibreSwiftDSL
             .fillOpacity(0.5)
             .fillOutlineColor(.blue)
     }
-        
-        .ignoresSafeArea(.all)
+
+    .ignoresSafeArea(.all)
 }
