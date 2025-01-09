@@ -1,6 +1,7 @@
 import Foundation
 import MapLibre
 
+@MainActor
 public enum CameraChangeReason: Hashable {
     case programmatic
     case resetNorth
