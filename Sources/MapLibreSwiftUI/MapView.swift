@@ -16,9 +16,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var gestures = [MapGesture]()
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
-    var onViewPortChanged: ((MapViewPort) -> Void)?
+    var onViewProxyChanged: ((MapViewProxy) -> Void)?
 
-    var mapViewContentInset: UIEdgeInsets? = .zero
+    var mapViewContentInset: UIEdgeInsets?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
@@ -50,7 +50,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
-            onViewPortChanged: { onViewPortChanged?($0) }
+            onViewProxyChanged: { onViewProxyChanged?($0) }
         )
     }
 
