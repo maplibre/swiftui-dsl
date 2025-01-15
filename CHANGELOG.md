@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version 0.6.0 - 2025-01-14
 
-- Potentially BREAKING: Upgrades Mockable to 0.2.0. If you're using mockable in your project, this may require you to upgrad there as well.
+- Potentially BREAKING: Upgrades Mockable to 0.2.0. If you're using mockable in your project, this may require you to upgrade there as well.
 
 ## Version 0.5.0 - 2025-01-09
 
