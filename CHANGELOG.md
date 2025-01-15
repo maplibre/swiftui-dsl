@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Version 0.6.0 - 2025-01-14
+
+- Potentially BREAKING: Upgrades Mockable to 0.2.0. If you're using mockable in your project, this may require you to upgrad there as well.
+
 ## Version 0.5.0 - 2025-01-09
 
 ### Added
