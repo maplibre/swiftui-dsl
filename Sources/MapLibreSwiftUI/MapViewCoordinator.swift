@@ -268,6 +268,10 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     }
 
     func addLayers(to mglStyle: MLNStyle) {
+        let firstSymbolLayer = mglStyle.layers.first { layer in
+            layer is MLNSymbolStyleLayer
+        }
+
         for layerSpec in parent.userLayers {
             // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
             let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMLNStyleLayer()
@@ -302,6 +306,12 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 mglStyle.addLayer(newLayer)
             case .belowOthers:
                 mglStyle.insertLayer(newLayer, at: 0)
+            case .belowSymbols:
+                if let firstSymbolLayer = firstSymbolLayer {
+                    mglStyle.insertLayer(newLayer, below: firstSymbolLayer)
+                } else {
+                    mglStyle.addLayer(newLayer)
+                }
             }
         }
     }

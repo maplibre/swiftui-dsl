@@ -15,6 +15,10 @@ public enum LayerInsertionPosition: Equatable {
     case aboveOthers
     /// The layer should be inserted below other existing layers.
     case belowOthers
+    /// The layer should be inserted below the first symbol layer (used for labels and iconography).
+    ///
+    /// If there are no symbol layers in the style, the layer is inserted above other existing layers.
+    case belowSymbols
 }
 
 /// Internal style enum that wraps a source reference.
@@ -132,7 +136,7 @@ public extension StyleLayer {
     }
 }
 
-public extension StyleLayer {
+public extension StyleLayerDefinition {
     // MARK: - Common modifiers
 
     func visible(_ value: Bool) -> Self {
@@ -162,14 +166,8 @@ public extension StyleLayer {
     func renderBelowOthers() -> Self {
         modified(self) { $0.insertionPosition = .belowOthers }
     }
-}
 
-public extension StyleLayerDefinition {
-    func minimumZoomLevel(_ value: Float) -> Self {
-        modified(self) { $0.minimumZoomLevel = value }
-    }
-
-    func maximumZoomLevel(_ value: Float) -> Self {
-        modified(self) { $0.maximumZoomLevel = value }
+    func renderBelowSymbols() -> Self {
+        modified(self) { $0.insertionPosition = .belowSymbols }
     }
 }
