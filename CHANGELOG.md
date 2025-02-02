@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Version 0.7.0 - 2025-02-02
+
+### Added
+
+- Adds support for a `belowSymbols` layer order. The `renderBelowSymbols` modifier on layers will insert the new layer below the first symbol layer in the style. This allows for rendering below labels and icons.
+- Potentially BREAKING: `belowSymbols` is now the default on the `LineStyleLayer`. This is probbaly what most users want.
+
+### Fixed
+
+- Moved modifiers on `StyleLayer` to `StyleLayerDefinition`. The previous extension of `StyleLayer` was a mistake, since `StyleLayerDefinition` is the supertype, and none of the behavior was specific to `StyleLayer`.
+
 ## Version 0.6.0 - 2025-01-14
 
 - Potentially BREAKING: Upgrades Mockable to 0.2.0. If you're using mockable in your project, this may require you to upgrade there as well.

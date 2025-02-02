@@ -307,7 +307,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             case .belowOthers:
                 mglStyle.insertLayer(newLayer, at: 0)
             case .belowSymbols:
-                if let firstSymbolLayer = firstSymbolLayer {
+                if let firstSymbolLayer {
                     mglStyle.insertLayer(newLayer, below: firstSymbolLayer)
                 } else {
                     mglStyle.addLayer(newLayer)
