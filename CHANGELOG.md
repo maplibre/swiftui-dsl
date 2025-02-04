@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adds support for a `belowSymbols` layer order. The `renderBelowSymbols` modifier on layers will insert the new layer below the first symbol layer in the style. This allows for rendering below labels and icons.
-- Potentially BREAKING: `belowSymbols` is now the default on the `LineStyleLayer`. This is probbaly what most users want.
+- BREAKING: Refactored the layer position modifiers to accept enum variants to enable better extensibility.
 
 ### Fixed
 

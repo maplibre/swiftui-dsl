@@ -288,25 +288,26 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             }
 
             switch layerSpec.insertionPosition {
-            case let .above(layerID: id):
+            case let .above(.layer(layerId: id)):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, above: layer)
                 } else {
                     NSLog("Failed to find layer with ID \(id). Adding layer on top.")
                     mglStyle.addLayer(newLayer)
                 }
-            case let .below(layerID: id):
+            case .above(.all):
+                mglStyle.addLayer(newLayer)
+
+            case let .below(.layer(layerId: id)):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, below: layer)
                 } else {
                     NSLog("Failed to find layer with ID \(id). Adding layer on top.")
                     mglStyle.addLayer(newLayer)
                 }
-            case .aboveOthers:
-                mglStyle.addLayer(newLayer)
-            case .belowOthers:
+            case .below(.all):
                 mglStyle.insertLayer(newLayer, at: 0)
-            case .belowSymbols:
+            case .below(.symbols):
                 if let firstSymbolLayer {
                     mglStyle.insertLayer(newLayer, below: firstSymbolLayer)
                 } else {

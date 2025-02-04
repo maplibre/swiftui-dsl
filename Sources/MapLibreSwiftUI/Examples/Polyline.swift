@@ -26,8 +26,7 @@ struct PolylineMapView: View {
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
-                // Not required as this is the default; demonstration to be explicit
-                .renderBelowSymbols()
+                .renderBelow(.symbols)
 
             // Add an inner (blue) polyline
             LineStyleLayer(identifier: "polyline-inner", source: polylineSource)
@@ -38,8 +37,7 @@ struct PolylineMapView: View {
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-                // Not required as this is the default; demonstration to be explicit
-                .renderBelowSymbols()
+                .renderBelow(.symbols)
         }
     }
 }
