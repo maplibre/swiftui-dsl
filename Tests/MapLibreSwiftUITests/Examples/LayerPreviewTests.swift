@@ -30,7 +30,7 @@ final class LayerPreviewTests: XCTestCase {
                 // Silly example: a background layer on top of everything to create a tint effect
                 BackgroundLayer(identifier: "rose-colored-glasses")
                     .backgroundColor(.systemPink.withAlphaComponent(0.3))
-                    .renderAboveOthers()
+                    .renderAbove(.all)
             }
         }
     }

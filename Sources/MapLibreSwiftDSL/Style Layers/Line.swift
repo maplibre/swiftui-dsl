@@ -11,7 +11,7 @@ import MapLibreSwiftMacros
 public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
     public let sourceLayerIdentifier: String?
-    public var insertionPosition: LayerInsertionPosition = .aboveOthers
+    public var insertionPosition: LayerInsertionPosition = .above(.all)
     public var isVisible: Bool = true
     public var maximumZoomLevel: Float? = nil
     public var minimumZoomLevel: Float? = nil

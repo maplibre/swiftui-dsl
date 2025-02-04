@@ -268,6 +268,10 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     }
 
     func addLayers(to mglStyle: MLNStyle) {
+        let firstSymbolLayer = mglStyle.layers.first { layer in
+            layer is MLNSymbolStyleLayer
+        }
+
         for layerSpec in parent.userLayers {
             // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
             let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMLNStyleLayer()
@@ -284,24 +288,30 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             }
 
             switch layerSpec.insertionPosition {
-            case let .above(layerID: id):
+            case let .above(.layer(layerId: id)):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, above: layer)
                 } else {
                     NSLog("Failed to find layer with ID \(id). Adding layer on top.")
                     mglStyle.addLayer(newLayer)
                 }
-            case let .below(layerID: id):
+            case .above(.all):
+                mglStyle.addLayer(newLayer)
+            case let .below(.layer(layerId: id)):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, below: layer)
                 } else {
                     NSLog("Failed to find layer with ID \(id). Adding layer on top.")
                     mglStyle.addLayer(newLayer)
                 }
-            case .aboveOthers:
-                mglStyle.addLayer(newLayer)
-            case .belowOthers:
+            case .below(.all):
                 mglStyle.insertLayer(newLayer, at: 0)
+            case .below(.symbols):
+                if let firstSymbolLayer {
+                    mglStyle.insertLayer(newLayer, below: firstSymbolLayer)
+                } else {
+                    mglStyle.addLayer(newLayer)
+                }
             }
         }
     }

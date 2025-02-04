@@ -1,20 +1,34 @@
 import InternalUtils
 import MapLibre
 
+/// A layer reference specifying which layer we should insert a new layer above.
+public enum LayerReferenceAbove: Equatable {
+    /// A specific layer, referenced by ID.
+    case layer(layerId: String)
+    /// The group of all layers currently in the style.
+    case all
+}
+
+/// A layer reference specifying which layer we should insert a new layer below.
+public enum LayerReferenceBelow: Equatable {
+    /// A specific layer, referenced by ID.
+    case layer(layerId: String)
+    /// The group of all layers currently in the style.
+    case all
+    /// The group of symbol layers currently in the style.
+    case symbols
+}
+
 /// Specifies a preference for where the layer should be inserted in the hierarchy.
 public enum LayerInsertionPosition: Equatable {
     /// The layer should be inserted above the layer with ID ``layerID``.
     ///
     /// If no such layer exists, the layer will be added above others and an error will be logged.
-    case above(layerID: String)
+    case above(LayerReferenceAbove)
     /// The layer should be inserted below the layer with ID ``layerID``.
     ///
     /// If no such layer exists, the layer will be added above others and an error will be logged.
-    case below(layerID: String)
-    /// The layer should be inserted above other existing layers.
-    case aboveOthers
-    /// The layer should be inserted below other existing layers.
-    case belowOthers
+    case below(LayerReferenceBelow)
 }
 
 /// Internal style enum that wraps a source reference.
@@ -132,7 +146,7 @@ public extension StyleLayer {
     }
 }
 
-public extension StyleLayer {
+public extension StyleLayerDefinition {
     // MARK: - Common modifiers
 
     func visible(_ value: Bool) -> Self {
@@ -147,29 +161,11 @@ public extension StyleLayer {
         modified(self) { $0.maximumZoomLevel = value }
     }
 
-    func renderAbove(_ layerID: String) -> Self {
-        modified(self) { $0.insertionPosition = .above(layerID: layerID) }
+    func renderAbove(_ layerReference: LayerReferenceAbove) -> Self {
+        modified(self) { $0.insertionPosition = .above(layerReference) }
     }
 
-    func renderBelow(_ layerID: String) -> Self {
-        modified(self) { $0.insertionPosition = .below(layerID: layerID) }
-    }
-
-    func renderAboveOthers() -> Self {
-        modified(self) { $0.insertionPosition = .aboveOthers }
-    }
-
-    func renderBelowOthers() -> Self {
-        modified(self) { $0.insertionPosition = .belowOthers }
-    }
-}
-
-public extension StyleLayerDefinition {
-    func minimumZoomLevel(_ value: Float) -> Self {
-        modified(self) { $0.minimumZoomLevel = value }
-    }
-
-    func maximumZoomLevel(_ value: Float) -> Self {
-        modified(self) { $0.maximumZoomLevel = value }
+    func renderBelow(_ layerReference: LayerReferenceBelow) -> Self {
+        modified(self) { $0.insertionPosition = .below(layerReference) }
     }
 }
