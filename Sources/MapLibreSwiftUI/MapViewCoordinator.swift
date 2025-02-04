@@ -297,7 +297,6 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
                 }
             case .above(.all):
                 mglStyle.addLayer(newLayer)
-
             case let .below(.layer(layerId: id)):
                 if let layer = mglStyle.layer(withIdentifier: id) {
                     mglStyle.insertLayer(newLayer, below: layer)
