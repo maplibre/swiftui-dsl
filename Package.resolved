@@ -1,5 +1,5 @@
 {
-  "originHash" : "38dcbeee72b24bdfa4a2996241d74854484c6c169c780ccbb848c5b91e1f16ce",
+  "originHash" : "a15d9b98afd2dc248ab286d8de4a05772da256d3ca505719a66352f0ae25e0c6",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -11,21 +11,21 @@
       }
     },
     {
-      "identity" : "maplibre-swift-macros",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
-      "state" : {
-        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
-        "version" : "0.0.5"
-      }
-    },
-    {
       "identity" : "mockable",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
         "revision" : "e1b311b01c11415099341eee49769185e965ac4c",
         "version" : "0.2.0"
+      }
+    },
+    {
+      "identity" : "swift-macro-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-macro-testing",
+      "state" : {
+        "revision" : "0b80a098d4805a21c412b65f01ffde7b01aab2fa",
+        "version" : "0.6.0"
       }
     },
     {
