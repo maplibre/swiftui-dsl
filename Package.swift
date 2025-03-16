@@ -22,12 +22,12 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"
+            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.12.1"
         ),
-        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
+        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.6"),
         // Testing
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.2.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.7"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.1"),
     ],
     targets: [
         .target(
