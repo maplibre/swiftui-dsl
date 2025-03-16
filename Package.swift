@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -21,7 +21,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
+        .package(
+            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.2.0"),
@@ -49,16 +50,16 @@ let package = Package(
                 .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros"),
             ],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "InternalUtils",
             dependencies: [
-                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution")
             ],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
 
@@ -75,7 +76,7 @@ let package = Package(
         .testTarget(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
-                "MapLibreSwiftDSL",
+                "MapLibreSwiftDSL"
             ]
         ),
     ]

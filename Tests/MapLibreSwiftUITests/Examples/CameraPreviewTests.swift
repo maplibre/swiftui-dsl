@@ -2,6 +2,7 @@ import SnapshotTesting
 import XCTest
 @testable import MapLibreSwiftUI
 
+@MainActor
 final class CameraPreviewTests: XCTestCase {
     func testCameraPreview() {
         assertView {

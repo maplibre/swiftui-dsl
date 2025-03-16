@@ -3,10 +3,10 @@ import Mockable
 import XCTest
 @testable import MapLibreSwiftUI
 
+@MainActor
 final class MapViewGestureTests: XCTestCase {
     let maplibreMapView = MLNMapView()
-
-    @MainActor
+    
     let mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
 
     // MARK: Gesture View Modifiers

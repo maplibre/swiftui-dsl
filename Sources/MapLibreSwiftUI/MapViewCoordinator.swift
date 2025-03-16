@@ -2,7 +2,7 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
-public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapViewDelegate {
+public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
     var parent: MapView<T>
@@ -267,7 +267,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
         }
     }
 
-    func addLayers(to mglStyle: MLNStyle) {
+    @MainActor func addLayers(to mglStyle: MLNStyle) {
         let firstSymbolLayer = mglStyle.layers.first { layer in
             layer is MLNSymbolStyleLayer
         }
@@ -318,7 +318,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
     // MARK: - MLNMapViewDelegate
 
-    public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+    @MainActor public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
@@ -373,9 +373,9 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     }
 
     /// The MapView's region has changed with a specific reason.
-    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-        // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
-        MainActor.assumeIsolated {
+    @MainActor public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+//        // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
+//        MainActor.assumeIsolated {
             updateViewProxy(mapView: mapView, reason: reason)
 
             guard !suppressCameraUpdatePropagation else {
@@ -383,7 +383,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             }
 
             updateParentCamera(mapView: mapView, reason: reason)
-        }
+//        }
     }
 
     // MARK: MapViewProxy
