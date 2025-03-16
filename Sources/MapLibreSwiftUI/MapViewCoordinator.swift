@@ -373,7 +373,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     }
 
     /// The MapView's region has changed with a specific reason.
-    @MainActor public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+    @MainActor public func mapView(
+        _ mapView: MLNMapView,
+        regionDidChangeWith reason: MLNCameraChangeReason,
+        animated _: Bool
+    ) {
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         updateViewProxy(mapView: mapView, reason: reason)
 

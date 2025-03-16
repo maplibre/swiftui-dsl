@@ -22,7 +22,8 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
+            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"
+        ),
         .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
         // Testing
         .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.2.0"),
@@ -52,7 +53,7 @@ let package = Package(
         .target(
             name: "InternalUtils",
             dependencies: [
-                .product(name: "MapLibre", package: "maplibre-gl-native-distribution")
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
             ]
         ),
 
@@ -69,7 +70,7 @@ let package = Package(
         .testTarget(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
-                "MapLibreSwiftDSL"
+                "MapLibreSwiftDSL",
             ]
         ),
     ]
