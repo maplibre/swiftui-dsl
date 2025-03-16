@@ -68,9 +68,9 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
-        
+
         // MARK: Macro
-        
+
         .macro(
             name: "MapLibreSwiftMacrosImpl",
             dependencies: [
@@ -98,9 +98,9 @@ let package = Package(
                 "MapLibreSwiftDSL",
             ]
         ),
-        
+
         // MARK: Macro Tests
-        
+
         .testTarget(
             name: "MapLibreSwiftMacrosTests",
             dependencies: [
