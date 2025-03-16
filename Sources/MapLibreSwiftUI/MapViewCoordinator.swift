@@ -374,16 +374,14 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 
     /// The MapView's region has changed with a specific reason.
     @MainActor public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
-//        // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
-//        MainActor.assumeIsolated {
-            updateViewProxy(mapView: mapView, reason: reason)
+        // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
+        updateViewProxy(mapView: mapView, reason: reason)
 
-            guard !suppressCameraUpdatePropagation else {
-                return
-            }
+        guard !suppressCameraUpdatePropagation else {
+            return
+        }
 
-            updateParentCamera(mapView: mapView, reason: reason)
-//        }
+        updateParentCamera(mapView: mapView, reason: reason)
     }
 
     // MARK: MapViewProxy
