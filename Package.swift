@@ -39,7 +39,6 @@ let package = Package(
             ],
             swiftSettings: [
                 .define("MOCKING", .when(configuration: .debug)),
-                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .target(
@@ -48,18 +47,12 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
                 .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "InternalUtils",
             dependencies: [
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution")
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
 
