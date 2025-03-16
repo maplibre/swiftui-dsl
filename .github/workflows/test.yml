@@ -2,45 +2,67 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   format-lint:
     runs-on: macos-15
 
     steps:
-    - name: Checkout maplibre-swiftui-dsl-playground
-      uses: actions/checkout@v4
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
 
-    - name: Check format
-      run: swiftformat . --lint
+      - name: Check format
+        run: swiftformat . --lint
 
   test:
     runs-on: macos-15
     strategy:
       matrix:
-        scheme: [
-          MapLibreSwiftUI-Package
-        ]
+        scheme: [MapLibreSwiftUI-Package]
         destination: [
-          # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 16,OS=18.1'
-        ]
+            # TODO: Add more destinations
+            "platform=iOS Simulator,name=iPhone 16,OS=18.1",
+          ]
     name: ${{ matrix.destination }}
 
     steps:
-    - name: Install tools
-      run: brew update && brew upgrade xcbeautify
+      - name: Install tools
+        run: brew update && brew upgrade xcbeautify
 
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
-    - name: Checkout maplibre-swiftui-dsl-playground
-      uses: actions/checkout@v4
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
 
-    - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
-      
+      - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
+        run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+
+  test-macros:
+    runs-on: macos-14
+    strategy:
+      matrix:
+        scheme: [MapLibreSwiftMacros]
+        destination: [
+            # 'platform=watchOS Simulator,name=Apple Watch Ultra 2 (49mm)',
+            "platform=iOS Simulator,name=iPad (10th generation),OS=16.4",
+            "platform=iOS Simulator,name=iPhone 15,OS=17.2",
+          ]
+
+    steps:
+      - name: Install tools
+        run: brew update && brew upgrade xcbeautify
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Checkout maplibre-swift-macros
+        uses: actions/checkout@v4
+
+      - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
+        run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
