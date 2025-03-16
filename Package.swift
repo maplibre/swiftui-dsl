@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -21,11 +21,13 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
-        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
+        .package(
+            url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.12.1"
+        ),
+        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.6"),
         // Testing
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.2.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.7"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.1"),
     ],
     targets: [
         .target(
@@ -38,7 +40,6 @@ let package = Package(
             ],
             swiftSettings: [
                 .define("MOCKING", .when(configuration: .debug)),
-                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .target(
@@ -47,18 +48,12 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
                 .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .target(
             name: "InternalUtils",
             dependencies: [
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
 
