@@ -412,8 +412,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 public enum ProxyUpdateMode {
     /// Causes the `MapViewProxy`to be updated in realtime, including during map view scrolling and animations.
     /// This will cause multiple updates per seconds. Use only if you really need to run code in realtime while users
-    /// are
-    /// changing the shown region.
+    /// are changing the shown region.
     case realtime
     /// Default. Causes `MapViewProxy` to be only be updated when a map view scroll or animation completes.
     case onFinish

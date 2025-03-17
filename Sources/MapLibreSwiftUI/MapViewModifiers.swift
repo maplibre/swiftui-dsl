@@ -135,10 +135,8 @@ public extension MapView {
     /// `MapView` such as its bounds, center and insets.
     /// - Parameters:
     ///   - updateMode: How frequently the `MapViewProxy` is updated. Per default this is set to `.onFinish`, so updates
-    /// are only
-    ///   sent when the map finally completes updating due to animations or scrolling. Can be set to `.realtime` to
-    /// recieve updates during
-    ///   the animations and scrolling too.
+    /// are only sent when the map finally completes updating due to animations or scrolling. Can be set to `.realtime`
+    /// to recieve updates during the animations and scrolling too.
     ///   - onViewProxyChanged: The closure containing the `MapViewProxy`. Use this to run code based on the current
     /// mapView state.
     ///
