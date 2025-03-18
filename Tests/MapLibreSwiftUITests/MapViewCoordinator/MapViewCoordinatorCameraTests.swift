@@ -13,11 +13,11 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         maplibreMapView = MockMLNMapViewCameraUpdating()
         given(maplibreMapView).frame.willReturn(.zero)
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
-        coordinator = MapView.Coordinator(parent: mapView) { _, _ in
+        coordinator = MapView.Coordinator(parent: mapView, onGesture: { _, _ in
             // No action
-        } onViewProxyChanged: { _ in
+        }, onViewProxyChanged: { _ in
             // No action
-        }
+        }, proxyUpdateMode: .onFinish)
     }
 
     @MainActor func testUnchangedCamera() {
