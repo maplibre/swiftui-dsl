@@ -19,13 +19,20 @@ let package = Package(
             name: "MapLibreSwiftDSL",
             targets: ["MapLibreSwiftDSL"]
         ),
+        .library(
+            name: "MapLibreSwiftMacros",
+            targets: ["MapLibreSwiftMacros"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
-        .package(url: "https://github.com/stadiamaps/maplibre-swift-macros.git", from: "0.0.5"),
+        // Macros
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "601.0.0"),
         // Testing
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.2.0"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.7"),
+        // Macro Testing
+        .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.0")),
     ],
     targets: [
         .target(
@@ -46,7 +53,7 @@ let package = Package(
             dependencies: [
                 .target(name: "InternalUtils"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-                .product(name: "MapLibreSwiftMacros", package: "maplibre-swift-macros"),
+                "MapLibreSwiftMacros",
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
@@ -62,6 +69,19 @@ let package = Package(
             ]
         ),
 
+        // MARK: Macro
+
+        .macro(
+            name: "MapLibreSwiftMacrosImpl",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ]
+        ),
+
+        // Library that exposes a macro as part of its API, which is used in client programs.
+        .target(name: "MapLibreSwiftMacros", dependencies: ["MapLibreSwiftMacrosImpl"]),
+
         // MARK: Tests
 
         .testTarget(
@@ -76,6 +96,17 @@ let package = Package(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
                 "MapLibreSwiftDSL",
+            ]
+        ),
+
+        // MARK: Macro Tests
+
+        .testTarget(
+            name: "MapLibreSwiftMacrosTests",
+            dependencies: [
+                "MapLibreSwiftMacrosImpl",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                .product(name: "MacroTesting", package: "swift-macro-testing"),
             ]
         ),
     ]
