@@ -17,6 +17,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
+    var proxyUpdateMode: ProxyUpdateMode?
 
     var mapViewContentInset: UIEdgeInsets?
 
@@ -50,7 +51,8 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
-            onViewProxyChanged: { onViewProxyChanged?($0) }
+            onViewProxyChanged: { onViewProxyChanged?($0) },
+            proxyUpdateMode: proxyUpdateMode ?? .onFinish
         )
     }
 

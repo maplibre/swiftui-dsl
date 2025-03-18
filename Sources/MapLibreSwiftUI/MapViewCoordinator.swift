@@ -2,7 +2,7 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
-public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapViewDelegate {
+public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
     var parent: MapView<T>
@@ -21,14 +21,17 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
+    var proxyUpdateMode: ProxyUpdateMode
 
     init(parent: MapView<T>,
          onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
-         onViewProxyChanged: @escaping (MapViewProxy) -> Void)
+         onViewProxyChanged: @escaping (MapViewProxy) -> Void,
+         proxyUpdateMode: ProxyUpdateMode)
     {
         self.parent = parent
         self.onGesture = onGesture
         self.onViewProxyChanged = onViewProxyChanged
+        self.proxyUpdateMode = proxyUpdateMode
     }
 
     // MARK: Core UIView Functionality
@@ -376,6 +379,8 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         MainActor.assumeIsolated {
+            // regionIsChangingWith is not called for the final update, so we need to call updateViewProxy
+            // in both modes here.
             updateViewProxy(mapView: mapView, reason: reason)
 
             guard !suppressCameraUpdatePropagation else {
@@ -383,6 +388,13 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
             }
 
             updateParentCamera(mapView: mapView, reason: reason)
+        }
+    }
+
+    @MainActor
+    public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
+        if proxyUpdateMode == .realtime {
+            updateViewProxy(mapView: mapView, reason: reason)
         }
     }
 
@@ -395,4 +407,13 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, MLNMapV
 
         onViewProxyChanged(calculatedViewProxy)
     }
+}
+
+public enum ProxyUpdateMode {
+    /// Causes the `MapViewProxy`to be updated in realtime, including during map view scrolling and animations.
+    /// This will cause multiple updates per seconds. Use only if you really need to run code in realtime while users
+    /// are changing the shown region.
+    case realtime
+    /// Default. Causes `MapViewProxy` to be only be updated when a map view scroll or animation completes.
+    case onFinish
 }
