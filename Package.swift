@@ -29,7 +29,7 @@ let package = Package(
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "601.0.0"),
         // Testing
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.0"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.1"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.7"),
         // Macro Testing
         .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.0")),
