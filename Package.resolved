@@ -1,5 +1,5 @@
 {
-  "originHash" : "ae3cb1b91507a995278c246967b9ed8ab5e461f85a15c75b3a7f584ebefbc70d",
+  "originHash" : "e5123889438e3e8a4097dfcd17eaffeef3252f808a02de32d517dd5e9c8ead14",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1"
+        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1",
+        "version" : "0.3.1"
       }
     },
     {
