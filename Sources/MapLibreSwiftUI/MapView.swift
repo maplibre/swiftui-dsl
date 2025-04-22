@@ -4,11 +4,20 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 /// Identifies the activity this ``MapView`` is being used for. Useful for debugging purposes.
-public enum MapActivity: Int {
+public enum MapActivity: Int, CustomStringConvertible {
     /// Navigation in a standard window. Default.
     case standard = 0
     /// Navigation in a CarPlay template.
     case carplay = 2025
+
+    public var description: String {
+        switch self {
+        case .standard:
+            "standard"
+        case .carplay:
+            "carplay"
+        }
+    }
 }
 
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {

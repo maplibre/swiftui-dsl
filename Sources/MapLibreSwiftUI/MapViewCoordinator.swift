@@ -2,6 +2,27 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
+extension MLNCameraChangeReason: @retroactive CustomStringConvertible {
+    private static let descriptions: [(Self, String)] = [
+        (.programmatic, "programmatic"),
+        (.resetNorth, "resetNorth"),
+        (.gesturePan, "gesturePan"),
+        (.gesturePinch, "gesturePinch"),
+        (.gestureRotate, "gestureRotate"),
+        (.gestureZoomIn, "gestureZoomIn"),
+        (.gestureZoomOut, "gestureZoomOut"),
+        (.gestureOneFingerZoom, "gestureOneFingerZoom"),
+        (.gestureTilt, "gestureTilt"),
+        (.transitionCancelled, "transitionCancelled"),
+    ]
+
+    public var description: String {
+        var names = Self.descriptions.filter { contains($0.0) }.map(\.1)
+        if names.isEmpty { names = ["none"] }
+        return names.joined(separator: ",")
+    }
+}
+
 public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency
 MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
