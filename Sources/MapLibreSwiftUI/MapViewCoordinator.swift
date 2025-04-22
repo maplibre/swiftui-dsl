@@ -1,6 +1,33 @@
 import Foundation
 import MapLibre
 import MapLibreSwiftDSL
+import os
+
+private extension Logger {
+    static let mlnMapViewDelegate = Logger(category: "MLNMapViewDelegate")
+    static let cameraUpdate = Logger(category: "cameraUpdate")
+}
+
+extension MLNCameraChangeReason: CustomStringConvertible {
+    private static var descriptions: [(Self, String)] = [
+        (.programmatic, "programmatic"),
+        (.resetNorth, "resetNorth"),
+        (.gesturePan, "gesturePan"),
+        (.gesturePinch, "gesturePinch"),
+        (.gestureRotate, "gestureRotate"),
+        (.gestureZoomIn, "gestureZoomIn"),
+        (.gestureZoomOut, "gestureZoomOut"),
+        (.gestureOneFingerZoom, "gestureOneFingerZoom"),
+        (.gestureTilt, "gestureTilt"),
+        (.transitionCancelled, "transitionCancelled"),
+    ]
+
+    public var description: String {
+        var names = Self.descriptions.filter { contains($0.0) }.map(\.1)
+        if names.isEmpty { names = ["none"] }
+        return names.joined(separator: ",")
+    }
+}
 
 public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
@@ -64,6 +91,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         defer {
             suppressCameraUpdatePropagation = false
         }
+
+        Logger.cameraUpdate
+            .info(
+                "camera: \(camera, privacy: .public) frame: \(NSCoder.string(for: mapView.frame), privacy: .public) animated: \(animated, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
+            )
 
         switch camera.state {
         case let .centered(
@@ -321,7 +353,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 
     // MARK: - MLNMapViewDelegate
 
-    public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+    public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
+        Logger.mlnMapViewDelegate
+            .info(
+                "\(#function, privacy: .public) style: \(mglStyle, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
+            )
         addLayers(to: mglStyle)
         onStyleLoaded?(mglStyle)
     }
@@ -376,7 +412,11 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     }
 
     /// The MapView's region has changed with a specific reason.
-    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated: Bool) {
+        Logger.mlnMapViewDelegate
+            .info(
+                "\(#function, privacy: .public) reason: \(reason, privacy: .public) animated: \(animated, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
+            )
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         MainActor.assumeIsolated {
             // regionIsChangingWith is not called for the final update, so we need to call updateViewProxy
@@ -393,6 +433,10 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 
     @MainActor
     public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
+        Logger.mlnMapViewDelegate
+            .info(
+                "\(#function, privacy: .public) reason: \(reason, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
+            )
         if proxyUpdateMode == .realtime {
             updateViewProxy(mapView: mapView, reason: reason)
         }

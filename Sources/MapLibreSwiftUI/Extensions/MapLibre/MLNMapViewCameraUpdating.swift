@@ -26,8 +26,12 @@ public protocol MLNMapViewCameraUpdating: AnyObject {
         animated: Bool,
         completionHandler: (() -> Void)?
     )
+
+    var activityIdentifier: String { get }
 }
 
 extension MLNMapView: MLNMapViewCameraUpdating {
-    // No definition
+    public var activityIdentifier: String {
+        MapActivity.loggingValue(tag)
+    }
 }

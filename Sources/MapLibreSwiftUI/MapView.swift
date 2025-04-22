@@ -1,14 +1,33 @@
 import InternalUtils
 import MapLibre
 import MapLibreSwiftDSL
+import os
 import SwiftUI
 
+private extension Logger {
+    static let uiViewControllerRepresentable = Logger(category: "UIViewControllerRepresentable")
+}
+
 /// Identifies the activity this ``MapView`` is being used for. Useful for debugging purposes.
-public enum MapActivity: Int {
+public enum MapActivity: Int, CustomStringConvertible {
     /// Navigation in a standard window. Default.
     case standard = 0
     /// Navigation in a CarPlay template.
     case carplay = 2025
+
+    public var description: String {
+        switch self {
+        case .standard:
+            "standard"
+        case .carplay:
+            "carplay"
+        }
+    }
+
+    static func loggingValue(_ rawValue: Self.RawValue) -> String {
+        guard let activity = MapActivity(rawValue: rawValue) else { return String(rawValue) }
+        return activity.description
+    }
 }
 
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
@@ -60,7 +79,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 
     public func makeCoordinator() -> MapViewCoordinator<T> {
-        MapViewCoordinator<T>(
+        Logger.uiViewControllerRepresentable
+            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
+        return MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
             onViewProxyChanged: { onViewProxyChanged?($0) },
@@ -69,6 +90,8 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 
     public func makeUIViewController(context: Context) -> T {
+        Logger.uiViewControllerRepresentable
+            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
         // Create the map view
         let controller = makeViewController()
         controller.mapView.delegate = context.coordinator
@@ -104,6 +127,8 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 
     public func updateUIViewController(_ uiViewController: T, context: Context) {
+        Logger.uiViewControllerRepresentable
+            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
         context.coordinator.parent = self
 
         applyModifiers(uiViewController, runUnsafe: true)
