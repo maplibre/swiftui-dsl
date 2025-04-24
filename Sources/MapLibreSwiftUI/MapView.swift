@@ -140,13 +140,13 @@ public extension MapView where T == MLNMapViewController {
         locationManager: MLNLocationManager? = nil,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
-        makeViewController = {
-            MLNMapViewController()
-        }
-        styleSource = .url(styleURL)
-        _camera = camera
-        userLayers = makeMapContent()
-        self.locationManager = locationManager
+        self.init(
+            makeViewController: MLNMapViewController(),
+            styleURL: styleURL,
+            camera: camera,
+            locationManager: locationManager,
+            makeMapContent
+        )
     }
 }
 
