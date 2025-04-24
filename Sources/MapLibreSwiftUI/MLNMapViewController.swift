@@ -7,6 +7,8 @@ public protocol MapViewHostViewController: UIViewController {
 }
 
 public final class MLNMapViewController: UIViewController, MapViewHostViewController {
+    var activity: MapActivity = .standard
+
     @MainActor
     public var mapView: MLNMapView {
         view as! MLNMapView
@@ -14,5 +16,6 @@ public final class MLNMapViewController: UIViewController, MapViewHostViewContro
 
     override public func loadView() {
         view = MLNMapView(frame: .zero)
+        view.tag = activity.rawValue
     }
 }
