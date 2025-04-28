@@ -8,8 +8,7 @@ Swift DSLs for [MapLibre Native](https://github.com/maplibre/maplibre-native), a
 for interactive vector maps, to enable better integration with SwiftUI and generally enable easier use of MapLibre.
 
 **NOTE: This package has migrated from Stadia Maps to the MapLibre organization 🎉**
-If you previously installed this package,
-see the [`CHANGELOG`](CHANGELOG.md) for steps to ensure Xcode stays happy.
+If you previously installed this package, refer to [MIGRATING.md](MIGRATING.md).
 
 ![A screen recording demonstrating the declarative SwiftUI DSL reacting to changes live](demo.gif)
 
