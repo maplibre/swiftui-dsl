@@ -3,6 +3,14 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
+/// Identifies the activity this ``MapView`` is being used for. Useful for debugging purposes.
+public enum MapActivity: Int {
+    /// Navigation in a standard window. Default.
+    case standard = 0
+    /// Navigation in a CarPlay template.
+    case carplay = 2025
+}
+
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
     var cameraDisabled: Bool = false
@@ -33,11 +41,14 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     var clusteredLayers: [ClusterLayer]?
 
+    let activity: MapActivity
+
     public init(
         makeViewController: @autoclosure @escaping () -> T,
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
+        activity: MapActivity = .standard,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.makeViewController = makeViewController
@@ -45,6 +56,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         _camera = camera
         userLayers = makeMapContent()
         self.locationManager = locationManager
+        self.activity = activity
     }
 
     public func makeCoordinator() -> MapViewCoordinator<T> {
@@ -138,13 +150,19 @@ public extension MapView where T == MLNMapViewController {
         styleURL: URL,
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
+        activity: MapActivity = .standard,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.init(
-            makeViewController: MLNMapViewController(),
+            makeViewController: {
+                let vc = MLNMapViewController()
+                vc.activity = activity
+                return vc
+            }(),
             styleURL: styleURL,
             camera: camera,
             locationManager: locationManager,
+            activity: activity,
             makeMapContent
         )
     }
