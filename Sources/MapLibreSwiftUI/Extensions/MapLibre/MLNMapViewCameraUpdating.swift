@@ -27,7 +27,7 @@ public protocol MLNMapViewCameraUpdating: AnyObject {
         completionHandler: (() -> Void)?
     )
 
-    var activityIdentifier: String { get }
+    @MainActor var activityIdentifier: String { get }
 }
 
 extension MLNMapView: MLNMapViewCameraUpdating {
