@@ -8,7 +8,7 @@ private extension Logger {
     static let cameraUpdate = Logger(category: "cameraUpdate")
 }
 
-extension MLNCameraChangeReason: CustomStringConvertible {
+extension MLNCameraChangeReason: @retroactive CustomStringConvertible {
     private static let descriptions: [(Self, String)] = [
         (.programmatic, "programmatic"),
         (.resetNorth, "resetNorth"),
