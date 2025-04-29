@@ -9,7 +9,7 @@ private extension Logger {
 }
 
 extension MLNCameraChangeReason: CustomStringConvertible {
-    private static var descriptions: [(Self, String)] = [
+    private static let descriptions: [(Self, String)] = [
         (.programmatic, "programmatic"),
         (.resetNorth, "resetNorth"),
         (.gesturePan, "gesturePan"),
