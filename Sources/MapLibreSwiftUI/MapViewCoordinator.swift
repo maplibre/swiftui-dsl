@@ -353,6 +353,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 
     // MARK: - MLNMapViewDelegate
 
+    @MainActor
     public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         Logger.mlnMapViewDelegate
             .info(
@@ -412,6 +413,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     }
 
     /// The MapView's region has changed with a specific reason.
+    @MainActor
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated: Bool) {
         Logger.mlnMapViewDelegate
             .info(
