@@ -5,7 +5,7 @@ import MapLibre
 /// The SwiftUI MapViewCamera.
 ///
 /// This manages the camera state within the MapView.
-public struct MapViewCamera: Hashable {
+public struct MapViewCamera: Hashable, Equatable, Sendable {
     public enum Defaults {
         public static let coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         public static let zoom: Double = 10
