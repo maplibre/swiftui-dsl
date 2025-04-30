@@ -93,7 +93,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             camera: camera,
             animated: false
         )
-        
+
         controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.

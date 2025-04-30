@@ -3,8 +3,7 @@ import MapLibre
 import MapLibreSwiftDSL
 
 public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency
-    MLNMapViewDelegate
-{
+MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
     var parent: MapView<T>
@@ -179,7 +178,6 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
             }
 
             switch changeReason {
-
             case .gesturePan, .gesturePinch, .gestureRotate,
                  .gestureZoomIn, .gestureZoomOut, .gestureOneFingerZoom,
                  .gestureTilt:
@@ -190,7 +188,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         }
     }
 
-    public func mapViewDidBecomeIdle(_ mapView: MLNMapView) {
+    public func mapViewDidBecomeIdle(_: MLNMapView) {
         cameraUpdateContinuation?.resume()
         cameraUpdateContinuation = nil
         cameraUpdateTask = nil
@@ -209,7 +207,8 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         // Calculate the Raw "ViewProxy"
         let calculatedViewProxy = MapViewProxy(
             mapView: mapView,
-            lastReasonForChange: CameraChangeReason(reason))
+            lastReasonForChange: CameraChangeReason(reason)
+        )
 
         onViewProxyChanged(calculatedViewProxy)
     }

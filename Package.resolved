@@ -1,5 +1,5 @@
 {
-  "originHash" : "e5123889438e3e8a4097dfcd17eaffeef3252f808a02de32d517dd5e9c8ead14",
+  "originHash" : "3ef0341fce60ebda3bd350b1bafb9cebcd8654136f438ae028750da294ee7bf8",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -20,6 +20,15 @@
       }
     },
     {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump",
+      "state" : {
+        "revision" : "82645ec760917961cfa08c9c0c7104a57a0fa4b1",
+        "version" : "1.3.3"
+      }
+    },
+    {
       "identity" : "swift-macro-testing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-macro-testing",
@@ -33,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "2e6a85b73fc14e27d7542165ae73b1a10516ca9a",
-        "version" : "1.17.7"
+        "revision" : "1be8144023c367c5de701a6313ed29a3a10bf59b",
+        "version" : "1.18.3"
       }
     },
     {
