@@ -76,9 +76,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
-        // context.coordinator.suppressCameraUpdatePropagation = true
         applyModifiers(controller, runUnsafe: false)
-        // context.coordinator.suppressCameraUpdatePropagation = false
 
         controller.mapView.locationManager = locationManager
 
@@ -87,7 +85,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             controller.mapView.styleURL = styleURL
         }
 
-        print("MapView setting initial camera to \(camera.state)")
         context.coordinator.applyCameraChangeFromStateUpdate(
             controller.mapView,
             camera: camera,
