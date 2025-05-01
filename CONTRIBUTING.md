@@ -33,6 +33,20 @@ variety of use cases, much like MapKit's SwiftUI views.
 
 ## Testing
 
+You can run the test suite from Xcode using the standard process:
+Product menu > Test, or Cmd + U.
+If you're having trouble getting a test option / there are no tests,
+make sure that the `MapLibreSwiftUI-Package` target is active.
+
+Most of the unit tests are pretty straightforward, but you may notice a few things besides the vanilla testing tools.
+We employ snapshot tests liberally to record the state of objects after some operations.
+In case you change somtehing which triggers a snapshot change,
+you'll get a test failure with some nominally useful info (usually paths to the new and old snapshot).
+
+To record a new snapshot, you can either delete the existing snapshot file on disk
+or pass a keyword argument `record: true` to the assertion function.
+Then re-run the tests and a new snapshot will be generated (tests will fail one last time with a note that a new snapshot was recorded).
+
 We do not currently have full UI tests.
 These are a bit tricky due to the async nature of MapLibre and integrating this into an Xcode UI test is challenging.
 If you have any suggestions, we welcome them!
