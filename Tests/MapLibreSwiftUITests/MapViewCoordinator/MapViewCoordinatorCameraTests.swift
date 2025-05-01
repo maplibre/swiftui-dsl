@@ -30,6 +30,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .any)
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: camera, animated: false)
         // Run a second update. We're testing that the snapshotCamera correctly exits the function
         // when nothing changed.
@@ -78,6 +82,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
                        animated: .any)
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
@@ -116,6 +124,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         given(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
             .willReturn()
+
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
@@ -156,6 +168,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .setZoomLevel(.any, animated: .any)
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
         verify(maplibreMapView)
@@ -194,6 +210,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         given(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
             .willReturn()
+
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
 
         coordinator.updateCamera(mapView: maplibreMapView, camera: newCamera, animated: false)
 
