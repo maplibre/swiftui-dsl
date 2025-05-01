@@ -47,6 +47,8 @@ To record a new snapshot, you can either delete the existing snapshot file on di
 or pass a keyword argument `record: true` to the assertion function.
 Then re-run the tests and a new snapshot will be generated (tests will fail one last time with a note that a new snapshot was recorded).
 
+You can learn more about the snapshot testing library we use [here](https://github.com/pointfreeco/swift-snapshot-testing).
+
 We do not currently have full UI tests.
 These are a bit tricky due to the async nature of MapLibre and integrating this into an Xcode UI test is challenging.
 If you have any suggestions, we welcome them!
