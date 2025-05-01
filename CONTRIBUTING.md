@@ -40,7 +40,7 @@ make sure that the `MapLibreSwiftUI-Package` target is active.
 
 Most of the unit tests are pretty straightforward, but you may notice a few things besides the vanilla testing tools.
 We employ snapshot tests liberally to record the state of objects after some operations.
-In case you change somtehing which triggers a snapshot change,
+In case you change something which triggers a snapshot change,
 you'll get a test failure with some nominally useful info (usually paths to the new and old snapshot).
 
 To record a new snapshot, you can either delete the existing snapshot file on disk
