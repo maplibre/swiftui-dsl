@@ -93,7 +93,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         }
 
         Logger.cameraUpdate
-            .info(
+            .debug(
                 "camera: \(camera, privacy: .public) frame: \(NSCoder.string(for: mapView.frame), privacy: .public) animated: \(animated, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
             )
 
@@ -356,7 +356,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     @MainActor
     public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
         Logger.mlnMapViewDelegate
-            .info(
+            .debug(
                 "\(#function, privacy: .public) style: \(mglStyle, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
             )
         addLayers(to: mglStyle)
@@ -416,7 +416,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     @MainActor
     public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated: Bool) {
         Logger.mlnMapViewDelegate
-            .info(
+            .debug(
                 "\(#function, privacy: .public) reason: \(reason, privacy: .public) animated: \(animated, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
             )
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
@@ -436,7 +436,7 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     @MainActor
     public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
         Logger.mlnMapViewDelegate
-            .info(
+            .debug(
                 "\(#function, privacy: .public) reason: \(reason, privacy: .public) activity: \(mapView.activityIdentifier, privacy: .public)"
             )
         if proxyUpdateMode == .realtime {

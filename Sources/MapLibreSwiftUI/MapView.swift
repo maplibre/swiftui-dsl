@@ -80,7 +80,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     public func makeCoordinator() -> MapViewCoordinator<T> {
         Logger.uiViewControllerRepresentable
-            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
+            .debug("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
         return MapViewCoordinator<T>(
             parent: self,
             onGesture: { processGesture($0, $1) },
@@ -91,7 +91,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     public func makeUIViewController(context: Context) -> T {
         Logger.uiViewControllerRepresentable
-            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
+            .debug("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
         // Create the map view
         let controller = makeViewController()
         controller.mapView.delegate = context.coordinator
@@ -128,7 +128,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     public func updateUIViewController(_ uiViewController: T, context: Context) {
         Logger.uiViewControllerRepresentable
-            .info("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
+            .debug("\(#function, privacy: .public), activity: \(activity, privacy: .public)")
         context.coordinator.parent = self
 
         applyModifiers(uiViewController, runUnsafe: true)
