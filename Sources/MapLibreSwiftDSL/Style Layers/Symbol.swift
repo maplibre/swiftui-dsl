@@ -8,9 +8,6 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("iconOffset", supportsInterpolation: true)
 
-// If you came here to add iconHalo*, halos on icons are only supported for SDFs, and thats not how we generate icons.
-// https://github.com/maplibre/maplibre-native/issues/2175
-
 @MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
 @MLNStyleProperty<String>("text", supportsInterpolation: false)
