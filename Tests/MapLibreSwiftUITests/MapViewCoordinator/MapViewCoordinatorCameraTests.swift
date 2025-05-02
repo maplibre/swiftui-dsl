@@ -279,7 +279,7 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             action()
 
             // Simulate the map becoming idle after a short delay
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(nanoseconds: 100 * NSEC_PER_MSEC)
             coordinator.cameraUpdateContinuation?.resume(returning: ())
 
             // Wait for the update task to complete
