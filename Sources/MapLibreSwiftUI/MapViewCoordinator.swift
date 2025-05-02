@@ -16,7 +16,7 @@ MLNMapViewDelegate {
 
     /// An asyncronous task that applies the camera update and awaits the map to reach idle state.
     var cameraUpdateTask: Task<Void, Never>?
-    
+
     /// This continuation is closed with the MapView becomes idle at the end of a camera update.
     /// A canceled camera update (think a gesture midway through another camera update)
     /// should cancel and reset this.
@@ -161,7 +161,7 @@ MLNMapViewDelegate {
     }
 
     // MARK: - Camera
-    
+
     /// Apply a camera change based on the current @State of the camera.
     ///
     /// - Parameters:
@@ -385,8 +385,7 @@ MLNMapViewDelegate {
             }
         }
     }
-    
-    
+
     // MARK: - MLNMapViewDelegate
 
     public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
