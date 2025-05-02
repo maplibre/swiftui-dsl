@@ -2,7 +2,8 @@ import Foundation
 import MapLibre
 import MapLibreSwiftDSL
 
-public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency MLNMapViewDelegate {
+public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency
+MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
     weak var mapView: MLNMapView?
     var parent: MapView<T>
@@ -13,21 +14,25 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
     private var snapshotCamera: MapViewCamera?
     private var snapshotStyleSource: MapStyleSource?
 
-    // Indicates whether we are currently in a push-down camera update cycle.
-    // This is necessary in order to ensure we don't keep trying to reset a state value which we were already processing
-    // an update for.
-    var suppressCameraUpdatePropagation = false
+    /// An asyncronous task that applies the camera update and awaits the map to reach idle state.
+    var cameraUpdateTask: Task<Void, Never>?
+
+    /// This continuation is closed with the MapView becomes idle at the end of a camera update.
+    /// A canceled camera update (think a gesture midway through another camera update)
+    /// should cancel and reset this.
+    var cameraUpdateContinuation: CheckedContinuation<Void, Never>?
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
 
-    init(parent: MapView<T>,
-         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
-         onViewProxyChanged: @escaping (MapViewProxy) -> Void,
-         proxyUpdateMode: ProxyUpdateMode)
-    {
+    init(
+        parent: MapView<T>,
+        onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
+        onViewProxyChanged: @escaping (MapViewProxy) -> Void,
+        proxyUpdateMode: ProxyUpdateMode
+    ) {
         self.parent = parent
         self.onGesture = onGesture
         self.onViewProxyChanged = onViewProxyChanged
@@ -42,170 +47,6 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         }
 
         onGesture(mapView, sender)
-    }
-
-    // MARK: - Coordinator API - Camera + Manipulation
-
-    /// Update the camera based on the MapViewCamera binding change.
-    ///
-    /// - Parameters:
-    ///   - mapView: This is the camera updating protocol representation of the MLNMapView. This allows mockable testing
-    /// for
-    /// camera related MLNMapView functionality.
-    ///   - camera: The new camera from the binding.
-    ///   - animated: Whether to animate.
-    @MainActor func updateCamera(mapView: MLNMapViewCameraUpdating, camera: MapViewCamera, animated: Bool) {
-        guard camera != snapshotCamera else {
-            // No action - camera has not changed.
-            return
-        }
-
-        suppressCameraUpdatePropagation = true
-        defer {
-            suppressCameraUpdatePropagation = false
-        }
-
-        switch camera.state {
-        case let .centered(
-            onCoordinate: coordinate,
-            zoom: zoom,
-            pitch: pitch,
-            pitchRange: pitchRange,
-            direction: direction
-        ):
-            mapView.userTrackingMode = .none
-
-            if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                mapView.setCenter(coordinate,
-                                  zoomLevel: zoom,
-                                  direction: direction,
-                                  animated: animated)
-
-                // this is a workaround for no camera - minimum and maximum will be reset below, but this adjusts it.
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-
-            } else {
-                let camera = mapView.camera
-                camera.centerCoordinate = coordinate
-                camera.heading = direction
-                camera.pitch = pitch
-
-                let altitude = MLNAltitudeForZoomLevel(zoom, pitch, coordinate.latitude, mapView.frame.size)
-                camera.altitude = altitude
-                mapView.setCamera(camera, animated: animated)
-            }
-
-            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-            mapView.maximumPitch = pitchRange.rangeValue.upperBound
-        case let .trackingUserLocation(zoom: zoom, pitch: pitch, pitchRange: pitchRange, direction: direction):
-            if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                // Needs to be non-animated or else it messes up following
-
-                mapView.userTrackingMode = .follow
-
-                mapView.setZoomLevel(zoom, animated: false)
-                mapView.direction = direction
-
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-                mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
-            } else {
-                mapView.setUserTrackingMode(.follow, animated: animated) {
-                    mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                    mapView.maximumPitch = pitchRange.rangeValue.upperBound
-                    let camera = mapView.camera
-                    camera.heading = direction
-                    camera.pitch = pitch
-
-                    let altitude = MLNAltitudeForZoomLevel(
-                        zoom,
-                        pitch,
-                        mapView.camera.centerCoordinate.latitude,
-                        mapView.frame.size
-                    )
-                    camera.altitude = altitude
-                    mapView.setCamera(camera, animated: animated)
-                }
-            }
-        case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
-            if mapView.frame.size == .zero {
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                // Needs to be non-animated or else it messes up following
-
-                mapView.userTrackingMode = .followWithHeading
-                mapView.setZoomLevel(zoom, animated: false)
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-                mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
-            } else {
-                mapView.setUserTrackingMode(.followWithHeading, animated: animated) {
-                    mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                    mapView.maximumPitch = pitchRange.rangeValue.upperBound
-                    let camera = mapView.camera
-
-                    let altitude = MLNAltitudeForZoomLevel(
-                        zoom,
-                        pitch,
-                        mapView.camera.centerCoordinate.latitude,
-                        mapView.frame.size
-                    )
-                    camera.altitude = altitude
-                    camera.pitch = pitch
-                    mapView.setCamera(camera, animated: animated)
-                }
-            }
-        case let .trackingUserLocationWithCourse(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
-            if mapView.frame.size == .zero {
-                mapView.userTrackingMode = .followWithCourse
-                // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
-                // so let's do something else instead.
-                // Needs to be non-animated or else it messes up following
-
-                mapView.setZoomLevel(zoom, animated: false)
-                mapView.minimumPitch = pitch
-                mapView.maximumPitch = pitch
-                mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
-            } else {
-                mapView.setUserTrackingMode(.followWithCourse, animated: animated) {
-                    mapView.minimumPitch = pitchRange.rangeValue.lowerBound
-                    mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
-                    let camera = mapView.camera
-
-                    let altitude = MLNAltitudeForZoomLevel(
-                        zoom,
-                        pitch,
-                        mapView.camera.centerCoordinate.latitude,
-                        mapView.frame.size
-                    )
-                    camera.altitude = altitude
-                    camera.pitch = pitch
-                    mapView.setCamera(camera, animated: animated)
-                }
-            }
-        case let .rect(boundingBox, padding):
-            mapView.setVisibleCoordinateBounds(boundingBox,
-                                               edgePadding: padding,
-                                               animated: animated,
-                                               completionHandler: nil)
-        case .showcase:
-            // TODO: Need a method these/or to finalize a goal here.
-            break
-        }
-
-        snapshotCamera = camera
     }
 
     // MARK: - Coordinator API - Styles + Layers
@@ -319,6 +160,232 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         }
     }
 
+    // MARK: - Camera
+
+    /// Apply a camera change based on the current @State of the camera.
+    ///
+    /// - Parameters:
+    ///   - mapView: The MapView that the state is being updated for.
+    ///   - camera: The new camera state
+    ///   - animated: Whether the camera change should be animated. Defaults to `true`.
+    @MainActor func applyCameraChangeFromStateUpdate(
+        _ mapView: MLNMapViewCameraUpdating,
+        camera: MapViewCamera,
+        animated: Bool = true
+    ) {
+        guard camera != snapshotCamera else {
+            // No action - camera has not changed.
+            return
+        }
+
+        snapshotCamera = camera
+
+        // Cancel any existing camera update completion task.
+        cameraUpdateTask?.cancel()
+        cameraUpdateContinuation = nil
+
+        cameraUpdateTask = Task { @MainActor in
+            return await withCheckedContinuation { continuation in
+                // Store the continuation to be resumed in mapViewDidBecomeIdle
+                cameraUpdateContinuation = continuation
+
+                // Apply the camera settings based on camera.state
+                switch camera.state {
+                case let .centered(
+                    onCoordinate: coordinate,
+                    zoom: zoom,
+                    pitch: pitch,
+                    pitchRange: pitchRange,
+                    direction: direction
+                ):
+                    mapView.userTrackingMode = .none
+
+                    if mapView.frame.size == .zero {
+                        // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                        // so let's do something else instead.
+                        mapView.setCenter(coordinate,
+                                          zoomLevel: zoom,
+                                          direction: direction,
+                                          animated: animated)
+
+                        // this is a workaround for no camera - minimum and maximum will be reset below, but this
+                        // adjusts it.
+                        mapView.minimumPitch = pitch
+                        mapView.maximumPitch = pitch
+
+                    } else {
+                        let camera = mapView.camera
+                        camera.centerCoordinate = coordinate
+                        camera.heading = direction
+                        camera.pitch = pitch
+
+                        let altitude = MLNAltitudeForZoomLevel(zoom, pitch, coordinate.latitude, mapView.frame.size)
+                        camera.altitude = altitude
+                        mapView.setCamera(camera, animated: animated)
+                    }
+
+                    mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                    mapView.maximumPitch = pitchRange.rangeValue.upperBound
+                case let .trackingUserLocation(zoom: zoom, pitch: pitch, pitchRange: pitchRange, direction: direction):
+                    if mapView.frame.size == .zero {
+                        // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                        // so let's do something else instead.
+                        // Needs to be non-animated or else it messes up following
+
+                        mapView.userTrackingMode = .follow
+
+                        mapView.setZoomLevel(zoom, animated: false)
+                        mapView.direction = direction
+
+                        mapView.minimumPitch = pitch
+                        mapView.maximumPitch = pitch
+                        mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                        mapView.maximumPitch = pitchRange.rangeValue.upperBound
+
+                    } else {
+                        mapView.setUserTrackingMode(.follow, animated: animated) {
+                            guard mapView.userTrackingMode == .follow else {
+                                // Exit early if the user tracking mode is no longer set to follow
+                                return
+                            }
+
+                            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                            mapView.maximumPitch = pitchRange.rangeValue.upperBound
+                            let camera = mapView.camera
+                            camera.heading = direction
+                            camera.pitch = pitch
+
+                            let altitude = MLNAltitudeForZoomLevel(
+                                zoom,
+                                pitch,
+                                mapView.camera.centerCoordinate.latitude,
+                                mapView.frame.size
+                            )
+                            camera.altitude = altitude
+                            mapView.setCamera(camera, animated: animated)
+                        }
+                    }
+                case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
+                    if mapView.frame.size == .zero {
+                        // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                        // so let's do something else instead.
+                        // Needs to be non-animated or else it messes up following
+
+                        mapView.userTrackingMode = .followWithHeading
+                        mapView.setZoomLevel(zoom, animated: false)
+                        mapView.minimumPitch = pitch
+                        mapView.maximumPitch = pitch
+                        mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                        mapView.maximumPitch = pitchRange.rangeValue.upperBound
+
+                    } else {
+                        mapView.setUserTrackingMode(.followWithHeading, animated: animated) {
+                            guard mapView.userTrackingMode == .followWithHeading else {
+                                // Exit early if the user tracking mode is no longer set to followWithHeading
+                                return
+                            }
+
+                            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                            mapView.maximumPitch = pitchRange.rangeValue.upperBound
+                            let camera = mapView.camera
+
+                            let altitude = MLNAltitudeForZoomLevel(
+                                zoom,
+                                pitch,
+                                mapView.camera.centerCoordinate.latitude,
+                                mapView.frame.size
+                            )
+                            camera.altitude = altitude
+                            camera.pitch = pitch
+                            mapView.setCamera(camera, animated: animated)
+                        }
+                    }
+                case let .trackingUserLocationWithCourse(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
+                    if mapView.frame.size == .zero {
+                        mapView.userTrackingMode = .followWithCourse
+                        // On init, the mapView's frame is not set up yet, so manipulation via camera is broken,
+                        // so let's do something else instead.
+                        // Needs to be non-animated or else it messes up following
+
+                        mapView.setZoomLevel(zoom, animated: false)
+                        mapView.minimumPitch = pitch
+                        mapView.maximumPitch = pitch
+                        mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                        mapView.maximumPitch = pitchRange.rangeValue.upperBound
+
+                    } else {
+                        mapView.setUserTrackingMode(.followWithCourse, animated: animated) {
+                            guard mapView.userTrackingMode == .followWithCourse else {
+                                // Exit early if the user tracking mode is no longer set to followWithCourse
+                                return
+                            }
+
+                            mapView.minimumPitch = pitchRange.rangeValue.lowerBound
+                            mapView.maximumPitch = pitchRange.rangeValue.upperBound
+
+                            let camera = mapView.camera
+
+                            let altitude = MLNAltitudeForZoomLevel(
+                                zoom,
+                                pitch,
+                                mapView.camera.centerCoordinate.latitude,
+                                mapView.frame.size
+                            )
+                            camera.altitude = altitude
+                            camera.pitch = pitch
+                            mapView.setCamera(camera, animated: animated)
+                        }
+                    }
+                case let .rect(boundingBox, padding):
+                    mapView.setVisibleCoordinateBounds(boundingBox,
+                                                       edgePadding: padding,
+                                                       animated: animated,
+                                                       completionHandler: nil)
+                case .showcase:
+                    // TODO: Need a method these/or to finalize a goal here.
+                    break
+                }
+            }
+        }
+    }
+
+    /// Apply a gesture based camera change. This behavior will only be triggered on the first gesture and will
+    /// only be completed when the mapView becomes idle.
+    ///
+    /// - Parameters:
+    ///   - mapView: The MapView that is being manipulated by a gesture.
+    ///   - reason: The reason for the camera change.
+    @MainActor func applyCameraChangeFromGesture(_ mapView: MLNMapViewCameraUpdating, reason: CameraChangeReason) {
+        guard cameraUpdateTask == nil else {
+            // Gestures emit many updates, so we only want to launch the first one and rely on idle to close the event.
+            return
+        }
+
+        cameraUpdateTask = Task { @MainActor in
+            await withCheckedContinuation { continuation in
+                // Store the continuation to be resumed in mapViewDidBecomeIdle
+                cameraUpdateContinuation = continuation
+
+                let pitchRange: CameraPitchRange = if mapView.minimumPitch == 0 && mapView.maximumPitch > 59.9 {
+                    .free
+                } else if mapView.minimumPitch == mapView.maximumPitch {
+                    .fixed(mapView.minimumPitch)
+                } else {
+                    .freeWithinRange(minimum: mapView.minimumPitch, maximum: mapView.maximumPitch)
+                }
+
+                parent.camera = .center(
+                    mapView.centerCoordinate,
+                    zoom: mapView.zoomLevel,
+                    pitch: mapView.camera.pitch,
+                    pitchRange: pitchRange,
+                    direction: mapView.direction,
+                    reason: reason
+                )
+            }
+        }
+    }
+
     // MARK: - MLNMapViewDelegate
 
     public func mapView(_: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
@@ -326,69 +393,36 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
         onStyleLoaded?(mglStyle)
     }
 
-    // MARK: MapViewCamera
-
-    @MainActor private func updateParentCamera(mapView: MLNMapView, reason: MLNCameraChangeReason) {
-        // If any of these are a mismatch, we know the camera is no longer following a desired method, so we should
-        // detach and revert to a .centered camera. If any one of these is true, the desired camera state still
-        // matches the mapView's userTrackingMode
-        let userTrackingMode = mapView.userTrackingMode
-        let isProgrammaticallyTracking: Bool = switch parent.camera.state {
-        case .trackingUserLocation:
-            userTrackingMode == .follow
-        case .trackingUserLocationWithHeading:
-            userTrackingMode == .followWithHeading
-        case .trackingUserLocationWithCourse:
-            userTrackingMode == .followWithCourse
-        case .centered, .rect, .showcase:
-            false
-        }
-
-        guard !isProgrammaticallyTracking else {
-            // Programmatic tracking is still active, we can ignore camera updates until we unset/fail this boolean
-            // check
-            return
-        }
-
-        // Publish the MLNMapView's "raw" camera state to the MapView camera binding.
-        // This path only executes when the map view diverges from the parent state, so this is a "matter of fact"
-        // state propagation.
-
-        // Determine camera pitch range based on current MapView settings
-        let pitchRange: CameraPitchRange = if mapView.minimumPitch == 0 && mapView.maximumPitch > 59.9 {
-            .free
-        } else if mapView.minimumPitch == mapView.maximumPitch {
-            .fixed(mapView.minimumPitch)
-        } else {
-            .freeWithinRange(minimum: mapView.minimumPitch, maximum: mapView.maximumPitch)
-        }
-
-        let newCamera: MapViewCamera = .center(mapView.centerCoordinate,
-                                               zoom: mapView.zoomLevel,
-                                               pitch: mapView.camera.pitch,
-                                               pitchRange: pitchRange,
-                                               direction: mapView.direction,
-                                               reason: CameraChangeReason(reason))
-        snapshotCamera = newCamera
-        DispatchQueue.main.async {
-            self.parent.camera = newCamera
-        }
-    }
-
     /// The MapView's region has changed with a specific reason.
-    public func mapView(_ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool) {
+    public func mapView(
+        _ mapView: MLNMapView, regionDidChangeWith reason: MLNCameraChangeReason, animated _: Bool
+    ) {
         // TODO: We could put this in regionIsChangingWith if we calculate significant change/debounce.
         MainActor.assumeIsolated {
             // regionIsChangingWith is not called for the final update, so we need to call updateViewProxy
             // in both modes here.
             updateViewProxy(mapView: mapView, reason: reason)
 
-            guard !suppressCameraUpdatePropagation else {
+            guard let changeReason = CameraChangeReason(reason) else {
+                // Invalid state - we cannot process this camera change.
                 return
             }
 
-            updateParentCamera(mapView: mapView, reason: reason)
+            switch changeReason {
+            case .gesturePan, .gesturePinch, .gestureRotate,
+                 .gestureZoomIn, .gestureZoomOut, .gestureOneFingerZoom,
+                 .gestureTilt:
+                applyCameraChangeFromGesture(mapView, reason: changeReason)
+            default:
+                break
+            }
         }
+    }
+
+    public func mapViewDidBecomeIdle(_: MLNMapView) {
+        cameraUpdateContinuation?.resume()
+        cameraUpdateContinuation = nil
+        cameraUpdateTask = nil
     }
 
     @MainActor
@@ -402,8 +436,10 @@ public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @precon
 
     @MainActor private func updateViewProxy(mapView: MLNMapView, reason: MLNCameraChangeReason) {
         // Calculate the Raw "ViewProxy"
-        let calculatedViewProxy = MapViewProxy(mapView: mapView,
-                                               lastReasonForChange: CameraChangeReason(reason))
+        let calculatedViewProxy = MapViewProxy(
+            mapView: mapView,
+            lastReasonForChange: CameraChangeReason(reason)
+        )
 
         onViewProxyChanged(calculatedViewProxy)
     }
