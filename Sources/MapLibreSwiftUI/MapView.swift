@@ -99,9 +99,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
-        context.coordinator.suppressCameraUpdatePropagation = true
         applyModifiers(controller, runUnsafe: false)
-        context.coordinator.suppressCameraUpdatePropagation = false
 
         controller.mapView.locationManager = locationManager
 
@@ -110,9 +108,12 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             controller.mapView.styleURL = styleURL
         }
 
-        context.coordinator.updateCamera(mapView: controller.mapView,
-                                         camera: $camera.wrappedValue,
-                                         animated: false)
+        context.coordinator.applyCameraChangeFromStateUpdate(
+            controller.mapView,
+            camera: camera,
+            animated: false
+        )
+
         controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
@@ -141,9 +142,11 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         let isStyleLoaded = uiViewController.mapView.style != nil
 
         if cameraDisabled == false {
-            context.coordinator.updateCamera(mapView: uiViewController.mapView,
-                                             camera: camera,
-                                             animated: isStyleLoaded)
+            context.coordinator.applyCameraChangeFromStateUpdate(
+                uiViewController.mapView,
+                camera: camera,
+                animated: isStyleLoaded
+            )
         }
     }
 

@@ -6,6 +6,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
 @MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
+@MLNStyleProperty<CGVector>("iconOffset", supportsInterpolation: true)
 
 @MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
@@ -142,6 +143,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.iconRotation = definition.iconRotation
         result.iconAllowsOverlap = definition.iconAllowsOverlap
         result.iconColor = definition.iconColor
+        result.iconOffset = definition.iconOffset
 
         result.text = definition.text
         result.textColor = definition.textColor

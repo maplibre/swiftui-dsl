@@ -9,6 +9,8 @@ public protocol MLNMapViewCameraUpdating: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
     @MainActor func setUserTrackingMode(_ mode: MLNUserTrackingMode, animated: Bool, completionHandler: (() -> Void)?)
 
+    @MainActor var centerCoordinate: CLLocationCoordinate2D { get set }
+    @MainActor var zoomLevel: Double { get set }
     @MainActor var minimumPitch: CGFloat { get set }
     @MainActor var maximumPitch: CGFloat { get set }
     @MainActor var direction: CLLocationDirection { get set }

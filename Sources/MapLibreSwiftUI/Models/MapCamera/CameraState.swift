@@ -2,7 +2,7 @@ import Foundation
 import MapLibre
 
 /// The CameraState is used to understand the current context of the MapView's camera.
-public enum CameraState: Hashable {
+public enum CameraState: Hashable, Equatable, Sendable {
     /// Centered on a coordinate
     case centered(
         onCoordinate: CLLocationCoordinate2D,
