@@ -125,8 +125,9 @@ Your use case probably isn't supported today, in which case you can either open 
 
 The code has a number of TODOs, most of which can be tackled by any intermediate Swift programmer.
 The important issues should all be tracked in GitHub.
-We also have a `#maplibre-swiftui-compose-playground` channel in the
+We also have a `#maplibre-swiftui` channel in the
 [OpenStreetMap US Slack](https://slack.openstreetmap.us/).
+(For nonspecific questions about MapLibre on iOS, there's also a `#maplibre-ios` channel).
 
 The skeleton is already in place for several of the core concepts, including style layers and sources, but
 these are incomplete. You can help by opening a PR that fills these in.
