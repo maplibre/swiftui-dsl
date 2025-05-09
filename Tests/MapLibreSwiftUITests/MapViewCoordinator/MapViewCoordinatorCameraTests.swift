@@ -174,8 +174,8 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .setCalled(1)
 
         verify(maplibreMapView)
-            .setZoomLevel(.value(10), animated: .value(false))
-            .called(1)
+            .zoomLevel(newValue: .value(10))
+            .setCalled(1)
     }
 
     @MainActor func testUserTrackingWithCourseCameraUpdate() async throws {
@@ -219,8 +219,8 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .setCalled(1)
 
         verify(maplibreMapView)
-            .setZoomLevel(.value(10), animated: .value(false))
-            .called(1)
+            .zoomLevel(newValue: .value(10))
+            .setCalled(1)
     }
 
     @MainActor func testUserTrackingWithHeadingUpdate() async throws {
@@ -264,8 +264,8 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .setCalled(1)
 
         verify(maplibreMapView)
-            .setZoomLevel(.value(10), animated: .value(false))
-            .called(1)
+            .zoomLevel(newValue: .value(10))
+            .setCalled(1)
     }
 
     // TODO: Test Rect & Showcase once we build it!
