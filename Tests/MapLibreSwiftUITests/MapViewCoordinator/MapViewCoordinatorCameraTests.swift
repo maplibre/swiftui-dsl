@@ -38,6 +38,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             )
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         try await simulateCameraUpdateAndWait {
             self.coordinator.applyCameraChangeFromStateUpdate(
                 self.maplibreMapView, camera: camera, animated: false
@@ -95,6 +99,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             )
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         try await simulateCameraUpdateAndWait {
             self.coordinator.applyCameraChangeFromStateUpdate(
                 self.maplibreMapView, camera: newCamera, animated: false
@@ -139,6 +147,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         given(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
             .willReturn()
+
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
 
         try await simulateCameraUpdateAndWait {
             self.coordinator.applyCameraChangeFromStateUpdate(
@@ -185,6 +197,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .setZoomLevel(.any, animated: .any)
             .willReturn()
 
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
+
         try await simulateCameraUpdateAndWait {
             self.coordinator.applyCameraChangeFromStateUpdate(
                 self.maplibreMapView, camera: newCamera, animated: false
@@ -229,6 +245,10 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         given(maplibreMapView)
             .setZoomLevel(.any, animated: .any)
             .willReturn()
+
+        given(maplibreMapView)
+            .activityIdentifier
+            .willReturn("standard")
 
         try await simulateCameraUpdateAndWait {
             self.coordinator.applyCameraChangeFromStateUpdate(
