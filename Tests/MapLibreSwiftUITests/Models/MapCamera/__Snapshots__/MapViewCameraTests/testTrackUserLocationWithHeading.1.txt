@@ -1,8 +1,8 @@
-▿ MapViewCamera
-  ▿ lastReasonForChange: Optional<CameraChangeReason>
-    - some: CameraChangeReason.programmatic
+▿ State: CameraState.trackingUserLocationWithHeading(zoom: (10.0, 0.0, MapLibreSwiftUI.CameraPitchRange.free)) last: programmatic
   ▿ state: CameraState
     ▿ trackingUserLocationWithHeading: (3 elements)
       - zoom: 10.0
       - pitch: 0.0
       - pitchRange: CameraPitchRange.free
+  ▿ lastReasonForChange: Optional<CameraChangeReason>
+    - some: CameraChangeReason.programmatic
