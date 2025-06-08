@@ -214,10 +214,13 @@ MLNMapViewDelegate {
 
         // Cancel any existing camera update completion task.
         cameraUpdateTask?.cancel()
-        cameraUpdateContinuation = nil
 
         cameraUpdateTask = Task { @MainActor in
             return await withCheckedContinuation { continuation in
+                // Clean up the continuation if it was already set.
+                cameraUpdateContinuation?.resume()
+                cameraUpdateContinuation = nil
+
                 // Store the continuation to be resumed in mapViewDidBecomeIdle
                 cameraUpdateContinuation = continuation
 
@@ -266,14 +269,13 @@ MLNMapViewDelegate {
 
                         mapView.userTrackingMode = .follow
 
-                        mapView.setZoomLevel(zoom, animated: false)
+                        mapView.zoomLevel = zoom
                         mapView.direction = direction
 
                         mapView.minimumPitch = pitch
                         mapView.maximumPitch = pitch
                         mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                         mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
                     } else {
                         mapView.setUserTrackingMode(.follow, animated: animated) {
                             guard mapView.userTrackingMode == .follow else {
@@ -281,20 +283,13 @@ MLNMapViewDelegate {
                                 return
                             }
 
+                            mapView.zoomLevel = zoom
+                            mapView.direction = direction
+
+                            mapView.minimumPitch = pitch
+                            mapView.maximumPitch = pitch
                             mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                             mapView.maximumPitch = pitchRange.rangeValue.upperBound
-                            let camera = mapView.camera
-                            camera.heading = direction
-                            camera.pitch = pitch
-
-                            let altitude = MLNAltitudeForZoomLevel(
-                                zoom,
-                                pitch,
-                                mapView.camera.centerCoordinate.latitude,
-                                mapView.frame.size
-                            )
-                            camera.altitude = altitude
-                            mapView.setCamera(camera, animated: animated)
                         }
                     }
                 case let .trackingUserLocationWithHeading(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
@@ -304,12 +299,13 @@ MLNMapViewDelegate {
                         // Needs to be non-animated or else it messes up following
 
                         mapView.userTrackingMode = .followWithHeading
-                        mapView.setZoomLevel(zoom, animated: false)
+
+                        mapView.zoomLevel = zoom
+
                         mapView.minimumPitch = pitch
                         mapView.maximumPitch = pitch
                         mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                         mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
                     } else {
                         mapView.setUserTrackingMode(.followWithHeading, animated: animated) {
                             guard mapView.userTrackingMode == .followWithHeading else {
@@ -317,19 +313,12 @@ MLNMapViewDelegate {
                                 return
                             }
 
+                            mapView.zoomLevel = zoom
+
+                            mapView.minimumPitch = pitch
+                            mapView.maximumPitch = pitch
                             mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                             mapView.maximumPitch = pitchRange.rangeValue.upperBound
-                            let camera = mapView.camera
-
-                            let altitude = MLNAltitudeForZoomLevel(
-                                zoom,
-                                pitch,
-                                mapView.camera.centerCoordinate.latitude,
-                                mapView.frame.size
-                            )
-                            camera.altitude = altitude
-                            camera.pitch = pitch
-                            mapView.setCamera(camera, animated: animated)
                         }
                     }
                 case let .trackingUserLocationWithCourse(zoom: zoom, pitch: pitch, pitchRange: pitchRange):
@@ -339,12 +328,12 @@ MLNMapViewDelegate {
                         // so let's do something else instead.
                         // Needs to be non-animated or else it messes up following
 
-                        mapView.setZoomLevel(zoom, animated: false)
+                        mapView.zoomLevel = zoom
+
                         mapView.minimumPitch = pitch
                         mapView.maximumPitch = pitch
                         mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                         mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
                     } else {
                         mapView.setUserTrackingMode(.followWithCourse, animated: animated) {
                             guard mapView.userTrackingMode == .followWithCourse else {
@@ -352,23 +341,19 @@ MLNMapViewDelegate {
                                 return
                             }
 
+                            mapView.zoomLevel = zoom
+
+                            mapView.minimumPitch = pitch
+                            mapView.maximumPitch = pitch
                             mapView.minimumPitch = pitchRange.rangeValue.lowerBound
                             mapView.maximumPitch = pitchRange.rangeValue.upperBound
-
-                            let camera = mapView.camera
-
-                            let altitude = MLNAltitudeForZoomLevel(
-                                zoom,
-                                pitch,
-                                mapView.camera.centerCoordinate.latitude,
-                                mapView.frame.size
-                            )
-                            camera.altitude = altitude
-                            camera.pitch = pitch
-                            mapView.setCamera(camera, animated: animated)
                         }
                     }
                 case let .rect(boundingBox, padding):
+                    mapView.minimumPitch = 0
+                    mapView.maximumPitch = 0
+                    mapView.direction = 0
+
                     mapView.setVisibleCoordinateBounds(boundingBox,
                                                        edgePadding: padding,
                                                        animated: animated,
