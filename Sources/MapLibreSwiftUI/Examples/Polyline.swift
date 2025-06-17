@@ -30,7 +30,8 @@ struct PolylineMapView: View {
 
             // Add an inner (blue) polyline
             LineStyleLayer(identifier: "polyline-inner", source: polylineSource)
-                .lineCap(.round)
+                .lineDashPattern([2.0, 0.5])
+                .lineCap(.butt)
                 .lineJoin(.round)
                 .lineColor(.systemBlue)
                 .lineWidth(interpolatedBy: .zoomLevel,

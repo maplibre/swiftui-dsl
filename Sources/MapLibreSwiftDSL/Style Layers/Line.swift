@@ -7,6 +7,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
+@MLNStyleProperty<[Float]>("lineDashPattern")
 @MLNStyleProperty<Float>("lineWidth", supportsInterpolation: true)
 public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
@@ -75,7 +76,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         result.lineCap = definition.lineCap
         result.lineWidth = definition.lineWidth
         result.lineJoin = definition.lineJoin
-
+        result.lineDashPattern = definition.lineDashPattern
         result.predicate = definition.predicate
 
         return result
