@@ -94,17 +94,18 @@ private func generateFunctionDeclSyntax(identifier: TokenSyntax, valueType: Type
 }
 
 #if canImport(SwiftSyntax601)
-// This provides compatibility for the new SwiftSyntax API, returning an empty result if the argument has
-// been parsed as an expression.
-private func generateStyleProperty(for attributes: AttributeSyntax, valueType: GenericArgumentSyntax.Argument,
-                                   isRawRepresentable: Bool) throws -> [DeclSyntax] {
-    switch valueType {
-    case .type(let type):
-        return try generateStyleProperty(for: attributes, valueType: type, isRawRepresentable: isRawRepresentable)
-    default:
-        return []
+    // This provides compatibility for the new SwiftSyntax API, returning an empty result if the argument has
+    // been parsed as an expression.
+    private func generateStyleProperty(for attributes: AttributeSyntax, valueType: GenericArgumentSyntax.Argument,
+                                       isRawRepresentable: Bool) throws -> [DeclSyntax]
+    {
+        switch valueType {
+        case let .type(type):
+            try generateStyleProperty(for: attributes, valueType: type, isRawRepresentable: isRawRepresentable)
+        default:
+            []
+        }
     }
-}
 #endif
 
 public struct MLNStylePropertyMacro: MemberMacro {
