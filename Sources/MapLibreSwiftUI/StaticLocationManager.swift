@@ -8,7 +8,7 @@ import MapLibre
 /// doing some processing of raw location data (ex: determining whether to snap locations to a road) and selectively
 /// passing the updates on to the map view.
 ///
-/// You can provide a new location by setting the ``lastLocation`` property.
+/// You can provide updates by setting the ``lastLocation`` or ``lastHeading`` properties.
 ///
 /// While this class is required to implement authorization status per the underlying protocol,
 /// it does not ever actually check whether you have access to Core Location services.
@@ -27,6 +27,13 @@ public final class StaticLocationManager: NSObject, @unchecked Sendable {
     public var lastLocation: CLLocation {
         didSet {
             delegate?.locationManager(self, didUpdate: [lastLocation])
+        }
+    }
+
+    public var lastHeading: CLHeading? {
+        didSet {
+            guard let heading = lastHeading else { return }
+            delegate?.locationManager(self, didUpdate: heading)
         }
     }
 
