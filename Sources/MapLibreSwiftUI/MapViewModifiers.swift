@@ -14,6 +14,12 @@ public extension MapView {
         return newMapView
     }
 
+    func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
+        var newMapView = self
+        newMapView.onUserTrackingModeChanged = perform
+        return newMapView
+    }
+
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.

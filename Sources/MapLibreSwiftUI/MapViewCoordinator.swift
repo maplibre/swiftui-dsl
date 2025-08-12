@@ -44,6 +44,7 @@ MLNMapViewDelegate {
     var cameraUpdateContinuation: CheckedContinuation<Void, Never>?
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
+    var onUserTrackingModeChange: ((MLNUserTrackingMode, Bool) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
@@ -436,6 +437,10 @@ MLNMapViewDelegate {
         if proxyUpdateMode == .realtime {
             updateViewProxy(mapView: mapView, reason: reason)
         }
+    }
+
+    public func mapView(_: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
+        onUserTrackingModeChange?(mode, animated)
     }
 
     // MARK: MapViewProxy
