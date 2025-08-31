@@ -7,6 +7,8 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
 @MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("iconOffset", supportsInterpolation: true)
+// An enum would probably be better?
+@MLNStyleProperty<String>("iconAnchor", supportsInterpolation: false)
 
 @MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
@@ -16,6 +18,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<String>("textAnchor", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("textOffset", supportsInterpolation: true)
 @MLNStyleProperty<Double>("maximumTextWidth", supportsInterpolation: true)
+@MLNStyleProperty<Bool>("textAllowsOverlap", supportsInterpolation: false)
 
 @MLNStyleProperty<UIColor>("textHaloColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textHaloWidth", supportsInterpolation: true)
@@ -144,6 +147,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.iconAllowsOverlap = definition.iconAllowsOverlap
         result.iconColor = definition.iconColor
         result.iconOffset = definition.iconOffset
+        result.iconAnchor = definition.iconAnchor
 
         result.text = definition.text
         result.textColor = definition.textColor
@@ -152,6 +156,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.textAnchor = definition.textAnchor
         result.textOffset = definition.textOffset
         result.textFontNames = definition.textFontNames
+        result.textAllowsOverlap = definition.textAllowsOverlap
 
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
