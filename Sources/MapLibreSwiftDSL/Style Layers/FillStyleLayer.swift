@@ -12,8 +12,8 @@ public struct FillStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)
     public var isVisible: Bool = true
-    public var maximumZoomLevel: Float? = nil
-    public var minimumZoomLevel: Float? = nil
+    public var maximumZoomLevel: Float?
+    public var minimumZoomLevel: Float?
 
     public var source: StyleLayerSource
     public var predicate: NSPredicate?
