@@ -14,6 +14,6 @@ public protocol StyleLayerCollection {
 /// ```
 /// @MapViewContentBuilder mapContent: @escaping () -> some StyleLayerCollection
 /// ```
-extension Array: StyleLayerCollection where Element == StyleLayerDefinition {
+extension [StyleLayerDefinition]: StyleLayerCollection {
     public var layers: [StyleLayerDefinition] { self }
 }
