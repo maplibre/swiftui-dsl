@@ -59,12 +59,12 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
         activity: MapActivity = .standard,
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+        @MapViewContentBuilder _ makeMapContent: () -> some StyleLayerCollection = { [] }
     ) {
         self.makeViewController = makeViewController
         styleSource = .url(styleURL)
         _camera = camera
-        userLayers = makeMapContent()
+        userLayers = makeMapContent().layers
         self.locationManager = locationManager
         self.activity = activity
     }
