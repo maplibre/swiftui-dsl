@@ -32,8 +32,8 @@ public final class StaticLocationManager: NSObject, @unchecked Sendable {
 
     public var lastHeading: CLHeading? {
         didSet {
-            guard let heading = lastHeading else { return }
-            delegate?.locationManager(self, didUpdate: heading)
+            guard let lastHeading else { return }
+            delegate?.locationManager(self, didUpdate: lastHeading)
         }
     }
 
