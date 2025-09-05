@@ -16,7 +16,8 @@ public extension MapView {
 
     /// Perform an action when the map view's user tracking mode has changed
     ///
-    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and whether the change was animated.
+    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
+    /// whether the change was animated.
     /// - Returns: The modified map view.
     func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
         var newMapView = self
