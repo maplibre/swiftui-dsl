@@ -58,12 +58,12 @@ public struct MapViewProxy: Hashable, Equatable {
     ///   - mapView: The MLNMapView to capture values from
     ///   - lastReasonForChange: The reason for the last camera change
     public init(mapView: MLNMapView, lastReasonForChange: CameraChangeReason?) {
-        self.centerCoordinate = mapView.centerCoordinate
-        self.zoomLevel = mapView.zoomLevel
-        self.direction = mapView.direction
-        self.visibleCoordinateBounds = mapView.visibleCoordinateBounds
-        self.mapViewSize = mapView.frame.size
-        self.contentInset = mapView.contentInset
+        centerCoordinate = mapView.centerCoordinate
+        zoomLevel = mapView.zoomLevel
+        direction = mapView.direction
+        visibleCoordinateBounds = mapView.visibleCoordinateBounds
+        mapViewSize = mapView.frame.size
+        contentInset = mapView.contentInset
         self.lastReasonForChange = lastReasonForChange
         self.mapView = mapView
     }
@@ -93,7 +93,7 @@ public struct MapViewProxy: Hashable, Equatable {
         self.mapViewSize = mapViewSize
         self.contentInset = contentInset
         self.lastReasonForChange = lastReasonForChange
-        self.mapView = nil
+        mapView = nil
     }
 }
 

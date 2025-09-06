@@ -2,7 +2,7 @@ import CarPlay
 import Foundation
 import OSLog
 
-fileprivate let logger = Logger(subsystem: "MapLibreSwiftUI", category: "MapViewCameraOperations")
+private let logger = Logger(subsystem: "MapLibreSwiftUI", category: "MapViewCameraOperations")
 
 @MainActor
 public extension MapViewCamera {
@@ -12,7 +12,8 @@ public extension MapViewCamera {
     ///
     /// - Parameters:
     ///  - newZoom: The new zoom value.
-    ///  - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered. Allowing zoom from the user's current viewport.
+    ///  - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered.
+    /// Allowing zoom from the user's current viewport.
     mutating func setZoom(_ newZoom: Double, proxy: MapViewProxy? = nil) {
         switch state {
         case let .centered(onCoordinate, _, pitch, pitchRange, direction):
@@ -33,7 +34,7 @@ public extension MapViewCamera {
                 logger.debug("Cannot setZoom on a .rect or .showcase camera without a proxy")
                 return
             }
-            
+
             state = .centered(onCoordinate: proxy.centerCoordinate,
                               zoom: newZoom,
                               pitch: MapViewCamera.Defaults.pitch,
@@ -48,7 +49,8 @@ public extension MapViewCamera {
     ///
     /// - Parameters:
     ///   - newZoom: The value to increment the zoom by. Negative decrements the value.
-    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered. Allowing zoom from the user's current viewport.
+    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered.
+    /// Allowing zoom from the user's current viewport.
     mutating func incrementZoom(by increment: Double, proxy: MapViewProxy? = nil) {
         switch state {
         case let .centered(onCoordinate, zoom, pitch, pitchRange, direction):
@@ -74,7 +76,7 @@ public extension MapViewCamera {
                 logger.debug("Cannot incrementZoom on a .rect or .showcase camera without a proxy")
                 return
             }
-            
+
             state = .centered(onCoordinate: proxy.centerCoordinate,
                               zoom: proxy.zoomLevel + increment,
                               pitch: MapViewCamera.Defaults.pitch,
@@ -91,7 +93,8 @@ public extension MapViewCamera {
     ///
     /// - Parameters:
     ///   - newPitch: The new pitch value.
-    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered. Allowing zoom from the user's current viewport.
+    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered.
+    /// Allowing zoom from the user's current viewport.
     mutating func setPitch(_ newPitch: Double, proxy: MapViewProxy? = nil) {
         switch state {
         case let .centered(onCoordinate, zoom, _, pitchRange, direction):
@@ -112,7 +115,7 @@ public extension MapViewCamera {
                 logger.debug("Cannot setPitch on a .rect or .showcase camera without a proxy")
                 return
             }
-            
+
             state = .centered(onCoordinate: proxy.centerCoordinate,
                               zoom: proxy.zoomLevel,
                               pitch: newPitch,
@@ -122,7 +125,7 @@ public extension MapViewCamera {
 
         lastReasonForChange = .programmatic
     }
-    
+
     /// Set the direction of the camera.
     ///
     /// This will convert a rect and showcase camera to a centered camera while rotating.
@@ -130,64 +133,68 @@ public extension MapViewCamera {
     ///
     /// - Parameters:
     ///   - newDirection: The new camera direction (0 - North to 360)
-    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered. Allowing zoom from the user's current viewport.
+    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered.
+    /// Allowing zoom from the user's current viewport.
     mutating func setDirection(_ newDirection: Double, proxy: MapViewProxy? = nil) {
         switch state {
-            
-        case .centered(onCoordinate: let onCoordinate, zoom: let zoom, pitch: let pitch, pitchRange: let pitchRange, _):
-            state = .centered(onCoordinate: onCoordinate, zoom: zoom, pitch: pitch, pitchRange: pitchRange, direction: newDirection)
-        case .trackingUserLocation(zoom: let zoom, pitch: let pitch, pitchRange: let pitchRange, _):
+        case let .centered(onCoordinate: onCoordinate, zoom: zoom, pitch: pitch, pitchRange: pitchRange, _):
+            state = .centered(
+                onCoordinate: onCoordinate,
+                zoom: zoom,
+                pitch: pitch,
+                pitchRange: pitchRange,
+                direction: newDirection
+            )
+        case let .trackingUserLocation(zoom: zoom, pitch: pitch, pitchRange: pitchRange, _):
             state = .trackingUserLocation(zoom: zoom, pitch: pitch, pitchRange: pitchRange, direction: newDirection)
         case .trackingUserLocationWithHeading:
             logger.debug("Cannot setPitch while .trackingUserLocationWithHeading")
-            break
         case .trackingUserLocationWithCourse:
             logger.debug("Cannot setPitch while .trackingUserLocationWithCourse")
-            break
         case .rect, .showcase:
             // This method requires the proxy.
             guard let proxy else {
                 logger.debug("Cannot setDirection on a .rect or .showcase camera without a proxy")
                 return
             }
-            
+
             state = .centered(onCoordinate: proxy.centerCoordinate,
                               zoom: proxy.zoomLevel,
                               pitch: MapViewCamera.Defaults.pitch,
                               pitchRange: .free,
                               direction: newDirection)
         }
-        
+
         lastReasonForChange = .programmatic
     }
-    
+
     // MARK: Car Play
-    
+
     /// Pans the camera for a CarPlay view.
     ///
     /// - Parameters:
     ///   - newPitch: The new pitch value.
-    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered. Allowing zoom from the user's current viewport.
+    ///   - proxy: An optional map view proxy, this allows the camera to convert from .rect/.showcase to centered.
+    /// Allowing zoom from the user's current viewport.
     mutating func pan(_ direction: CPMapTemplate.PanDirection, proxy: MapViewProxy? = nil) {
         var currentZoom: Double?
         var currentCenter: CLLocationCoordinate2D?
-        
+
         switch state {
-            
-        case .centered(onCoordinate: let onCoordinate, zoom: let zoom, _, _, _):
+        case let .centered(onCoordinate: onCoordinate, zoom: zoom, _, _, _):
             currentZoom = zoom
             currentCenter = onCoordinate
-        case .trackingUserLocation(zoom: let zoom, _, _, _),
-             .trackingUserLocationWithHeading(zoom: let zoom, _, _),
-             .trackingUserLocationWithCourse(zoom: let zoom, _, _):
+        case let .trackingUserLocation(zoom: zoom, _, _, _),
+             let .trackingUserLocationWithHeading(zoom: zoom, _, _),
+             let .trackingUserLocationWithCourse(zoom: zoom, _, _):
             currentZoom = zoom
         case .rect, .showcase:
             break
         }
-        
+
         let zoom = currentZoom ?? proxy?.zoomLevel ?? MapViewCamera.Defaults.zoom
         let center = currentCenter ?? proxy?.centerCoordinate ?? MapViewCamera.Defaults.coordinate
-        
+
         // Adjust +5 for desired sensitivity
         let sensitivity: Double = 5
         // Pan distance decreases exponentially with zoom level
@@ -195,7 +202,7 @@ public extension MapViewCamera {
         let basePanDistance = 360.0 / pow(2, zoom + sensitivity)
         let latitudeDelta = basePanDistance
         let longitudeDelta = basePanDistance / cos(center.latitude * .pi / 180)
-        
+
         let newCenter: CLLocationCoordinate2D? = switch direction {
         case .down:
             CLLocationCoordinate2D(latitude: center.latitude - latitudeDelta, longitude: center.longitude)
@@ -208,11 +215,11 @@ public extension MapViewCamera {
         default:
             nil
         }
-        
+
         guard let newCenter else {
             return
         }
-        
+
         self = .center(newCenter, zoom: zoom)
         lastReasonForChange = .programmatic
     }
