@@ -1,0 +1,8 @@
+▿ CameraState
+  ▿ trackingUserLocationWithCourse: (3 elements)
+    - zoom: 15.0
+    - pitch: 30.0
+    ▿ pitchRange: CameraPitchRange
+      ▿ freeWithinRange: (2 elements)
+        - minimum: 0.0
+        - maximum: 60.0

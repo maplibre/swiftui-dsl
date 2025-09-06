@@ -1,0 +1,9 @@
+▿ CameraState
+  ▿ centered: (5 elements)
+    ▿ onCoordinate: CLLocationCoordinate2D
+      - latitude: 37.77524332275391
+      - longitude: -122.4194
+    - zoom: 15.0
+    - pitch: 0.0
+    - pitchRange: CameraPitchRange.free
+    - direction: 0.0

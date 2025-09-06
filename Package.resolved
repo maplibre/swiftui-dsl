@@ -1,5 +1,5 @@
 {
-  "originHash" : "2285e52181b089a5113c1a0565fe0d4a0836365a4d4d552d52396bb19eb77d72",
+  "originHash" : "1bdf888a9d8e8f39b2b4b42fa6b533420213361c23132a58a6dac5f9d3afd8f7",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "2de00af725ff4c43c9a90d7893835de312653169",
         "version" : "0.6.3"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics.git",
+      "state" : {
+        "revision" : "bbadd4b853a33fd78c4ae977d17bb2af15eb3f2a",
+        "version" : "1.1.0"
       }
     },
     {
