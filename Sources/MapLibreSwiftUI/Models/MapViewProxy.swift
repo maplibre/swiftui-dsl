@@ -18,46 +18,82 @@ import MapLibre
 @MainActor
 public struct MapViewProxy: Hashable, Equatable {
     /// The current center coordinate of the MapView
-    public var centerCoordinate: CLLocationCoordinate2D {
-        mapView.centerCoordinate
-    }
+    public let centerCoordinate: CLLocationCoordinate2D
 
     /// The current zoom value of the MapView
-    public var zoomLevel: Double {
-        mapView.zoomLevel
-    }
+    public let zoomLevel: Double
 
     /// The current compass direction of the MapView
-    public var direction: CLLocationDirection {
-        mapView.direction
-    }
+    public let direction: CLLocationDirection
 
-    public var visibleCoordinateBounds: MLNCoordinateBounds {
-        mapView.visibleCoordinateBounds
-    }
+    /// The visible coordinate bounds of the MapView
+    public let visibleCoordinateBounds: MLNCoordinateBounds
 
-    public var mapViewSize: CGSize {
-        mapView.frame.size
-    }
+    /// The size of the MapView
+    public let mapViewSize: CGSize
 
-    public var contentInset: UIEdgeInsets {
-        mapView.contentInset
-    }
+    /// The content inset of the MapView
+    public let contentInset: UIEdgeInsets
 
     /// The reason the view port was changed.
     public let lastReasonForChange: CameraChangeReason?
 
-    private let mapView: MLNMapView
+    /// The underlying MLNMapView (only used for functions that require it)
+    private let mapView: MLNMapView?
 
-    public func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint {
-        mapView.convert(coordinate, toPointTo: toPointTo)
+    /// Convert a coordinate to a point in the MapView
+    /// - Parameters:
+    ///   - coordinate: The coordinate to convert
+    ///   - toPointTo: The view to convert the point to (usually nil for the MapView itself)
+    /// - Returns: The CGPoint representation of the coordinate
+    public func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint? {
+        guard let mapView else {
+            return nil
+        }
+        return mapView.convert(coordinate, toPointTo: toPointTo)
     }
 
-    public init(mapView: MLNMapView,
-                lastReasonForChange: CameraChangeReason?)
-    {
-        self.mapView = mapView
+    /// Initialize with an MLNMapView (captures current values)
+    /// - Parameters:
+    ///   - mapView: The MLNMapView to capture values from
+    ///   - lastReasonForChange: The reason for the last camera change
+    public init(mapView: MLNMapView, lastReasonForChange: CameraChangeReason?) {
+        self.centerCoordinate = mapView.centerCoordinate
+        self.zoomLevel = mapView.zoomLevel
+        self.direction = mapView.direction
+        self.visibleCoordinateBounds = mapView.visibleCoordinateBounds
+        self.mapViewSize = mapView.frame.size
+        self.contentInset = mapView.contentInset
         self.lastReasonForChange = lastReasonForChange
+        self.mapView = mapView
+    }
+
+    /// Initialize with explicit values (useful for testing)
+    /// - Parameters:
+    ///   - centerCoordinate: The center coordinate
+    ///   - zoomLevel: The zoom level
+    ///   - direction: The compass direction
+    ///   - visibleCoordinateBounds: The visible coordinate bounds
+    ///   - mapViewSize: The size of the map view
+    ///   - contentInset: The content inset
+    ///   - lastReasonForChange: The reason for the last camera change
+    public init(
+        centerCoordinate: CLLocationCoordinate2D,
+        zoomLevel: Double,
+        direction: CLLocationDirection,
+        visibleCoordinateBounds: MLNCoordinateBounds,
+        mapViewSize: CGSize = CGSize(width: 320, height: 568),
+        contentInset: UIEdgeInsets = .zero,
+        lastReasonForChange: CameraChangeReason? = nil
+    ) {
+        self.centerCoordinate = centerCoordinate
+        self.zoomLevel = zoomLevel
+        self.direction = direction
+        self.visibleCoordinateBounds = visibleCoordinateBounds
+        self.mapViewSize = mapViewSize
+        self.contentInset = contentInset
+        self.lastReasonForChange = lastReasonForChange
+        self.mapView = nil
     }
 }
 
