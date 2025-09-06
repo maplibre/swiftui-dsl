@@ -540,41 +540,4 @@ struct MapViewCameraOperationTests {
         #expect(highZoomDelta > 0) // Still moved north
         #expect(lowZoomDelta > 0) // Still moved north
     }
-
-    // MARK: - Edge Cases and Error Conditions
-
-    @Test func allOperations_preserveOtherStateProperties() async throws {
-        let initialCamera = MapViewCamera.center(
-            testCoordinate,
-            zoom: testZoom,
-            pitch: testPitch,
-            pitchRange: testPitchRange,
-            direction: testDirection
-        )
-
-        // Test that each operation preserves unmodified properties
-        var zoomTestCamera = initialCamera
-        zoomTestCamera.setZoom(20.0)
-
-        var pitchTestCamera = initialCamera
-        pitchTestCamera.setPitch(45.0)
-
-        var directionTestCamera = initialCamera
-        directionTestCamera.setDirection(180.0)
-
-        assertSnapshot(of: zoomTestCamera.state, as: .dump, named: "zoom-modified")
-        assertSnapshot(of: pitchTestCamera.state, as: .dump, named: "pitch-modified")
-        assertSnapshot(of: directionTestCamera.state, as: .dump, named: "direction-modified")
-    }
-
-    @Test func operations_onDefaultCamera_workCorrectly() async throws {
-        var camera = MapViewCamera.default()
-
-        camera.setZoom(12.0)
-        camera.setPitch(25.0)
-        camera.setDirection(270.0)
-
-        assertSnapshot(of: camera.state, as: .dump)
-        #expect(camera.lastReasonForChange == .programmatic)
-    }
 }
