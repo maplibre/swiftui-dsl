@@ -5,13 +5,13 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapViewCoordinatorCameraTests: XCTestCase {
-    var maplibreMapView: MockMLNMapViewCameraUpdating!
+    var maplibreMapView: MockMLNMapViewRepresentable!
     var mapView: MapView<MLNMapViewController>!
     var coordinator: MapView<MLNMapViewController>.Coordinator!
 
     @MainActor
     override func setUp() async throws {
-        maplibreMapView = MockMLNMapViewCameraUpdating()
+        maplibreMapView = MockMLNMapViewRepresentable()
         given(maplibreMapView).frame.willReturn(.zero)
         mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
         coordinator = MapView.Coordinator(
