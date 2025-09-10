@@ -1,6 +1,7 @@
 import CarPlay
 import CoreLocation
 import MapLibre
+import Mockable
 import Numerics
 import SnapshotTesting
 import Testing
@@ -10,6 +11,7 @@ import Testing
 struct MapViewCameraOperationTests {
     // MARK: - Test Data
 
+    let maplibreMapView = MockMLNMapViewRepresentable()
     let testCoordinate = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
     let testZoom: Double = 15.0
     let testPitch: Double = 30.0
@@ -17,19 +19,24 @@ struct MapViewCameraOperationTests {
     let testPitchRange: CameraPitchRange = .freeWithinRange(minimum: 0, maximum: 60)
 
     var mockProxy: MapViewProxy {
-        let bounds = MLNCoordinateBounds(
-            sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
-            ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
-        )
-        return MapViewProxy(
-            centerCoordinate: testCoordinate,
-            zoomLevel: testZoom,
-            direction: testDirection,
-            visibleCoordinateBounds: bounds,
-            mapViewSize: CGSize(width: 320, height: 568),
-            contentInset: .zero,
+        MapViewProxy(
+            mapView: maplibreMapView,
             lastReasonForChange: .programmatic
         )
+    }
+
+    init() {
+        given(maplibreMapView)
+            .centerCoordinate
+            .willReturn(testCoordinate)
+
+        given(maplibreMapView)
+            .zoomLevel
+            .willReturn(testZoom)
+
+        given(maplibreMapView)
+            .direction
+            .willReturn(testDirection)
     }
 
     // MARK: - setZoom Tests

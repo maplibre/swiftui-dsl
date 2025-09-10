@@ -191,7 +191,7 @@ MLNMapViewDelegate {
     ///   - camera: The new camera state
     ///   - animated: Whether the camera change should be animated. Defaults to `true`.
     @MainActor func applyCameraChangeFromStateUpdate(
-        _ mapView: MLNMapViewCameraUpdating,
+        _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
         animated: Bool = true
     ) {
@@ -362,7 +362,7 @@ MLNMapViewDelegate {
     /// - Parameters:
     ///   - mapView: The MapView that is being manipulated by a gesture.
     ///   - reason: The reason for the camera change.
-    @MainActor func applyCameraChangeFromGesture(_ mapView: MLNMapViewCameraUpdating, reason: CameraChangeReason) {
+    @MainActor func applyCameraChangeFromGesture(_ mapView: MLNMapViewRepresentable, reason: CameraChangeReason) {
         guard cameraUpdateTask == nil else {
             // Gestures emit many updates, so we only want to launch the first one and rely on idle to close the event.
             return
