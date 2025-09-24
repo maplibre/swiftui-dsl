@@ -78,6 +78,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         result.lineJoin = definition.lineJoin
         result.lineDashPattern = definition.lineDashPattern
         result.predicate = definition.predicate
+        result.sourceLayerIdentifier = definition.sourceLayerIdentifier
 
         return result
     }
