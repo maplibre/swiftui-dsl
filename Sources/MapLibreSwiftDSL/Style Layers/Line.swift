@@ -5,6 +5,7 @@ import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
 @MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
+@MLNStyleProperty<Float>("lineOpacity", supportsInterpolation: true)
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
 @MLNStyleProperty<[Float]>("lineDashPattern")
@@ -73,6 +74,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         let result = MLNLineStyleLayer(identifier: identifier, source: mglSource)
 
         result.lineColor = definition.lineColor
+        result.lineOpacity = definition.lineOpacity
         result.lineCap = definition.lineCap
         result.lineWidth = definition.lineWidth
         result.lineJoin = definition.lineJoin
