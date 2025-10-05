@@ -42,5 +42,8 @@ jobs:
       - name: Checkout maplibre-swiftui-dsl-playground
         uses: actions/checkout@v4
 
+      - name: Disable SPM Prebuilts
+        run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
+
       - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
         run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
