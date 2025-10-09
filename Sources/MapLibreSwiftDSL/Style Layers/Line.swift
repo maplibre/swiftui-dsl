@@ -44,23 +44,23 @@ private struct LineStyleLayerInternal: StyleLayer {
     private var definition: LineStyleLayer
     private let mglSource: MLNSource
 
-    public var identifier: String { definition.identifier }
-    public var insertionPosition: LayerInsertionPosition {
+    var identifier: String { definition.identifier }
+    var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }
     }
 
-    public var isVisible: Bool {
+    var isVisible: Bool {
         get { definition.isVisible }
         set { definition.isVisible = newValue }
     }
 
-    public var maximumZoomLevel: Float? {
+    var maximumZoomLevel: Float? {
         get { definition.maximumZoomLevel }
         set { definition.maximumZoomLevel = newValue }
     }
 
-    public var minimumZoomLevel: Float? {
+    var minimumZoomLevel: Float? {
         get { definition.minimumZoomLevel }
         set { definition.minimumZoomLevel = newValue }
     }
@@ -70,7 +70,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         self.mglSource = mglSource
     }
 
-    public func makeMLNStyleLayer() -> MLNStyleLayer {
+    func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNLineStyleLayer(identifier: identifier, source: mglSource)
 
         result.lineColor = definition.lineColor
