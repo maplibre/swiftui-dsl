@@ -140,6 +140,16 @@ public extension MapView {
         result.controls = buildControls()
         return result
     }
+    
+    /// Customize the user location annotation style
+    ///
+    /// - Parameter annotationStyle: The customized annotation style.
+    /// - Returns: The modified MapView
+    func mapAnnotationStyle(_ annotationStyle: MapUserAnnotationStyle) -> Self {
+        var newMapView = self
+        newMapView.annotationStyle = annotationStyle.value
+        return newMapView
+    }
 
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current
     /// state of the

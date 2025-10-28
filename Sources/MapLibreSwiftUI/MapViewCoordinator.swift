@@ -48,7 +48,7 @@ MLNMapViewDelegate {
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
-
+    
     init(
         parent: MapView<T>,
         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
@@ -432,6 +432,11 @@ MLNMapViewDelegate {
         cameraUpdateTask = nil
     }
 
+    @MainActor
+    public func mapView(styleForDefaultUserLocationAnnotationView mapView: MLNMapView) -> MLNUserLocationAnnotationViewStyle {
+        parent.annotationStyle
+    }
+    
     @MainActor
     public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
         if proxyUpdateMode == .realtime {
