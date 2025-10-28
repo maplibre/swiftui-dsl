@@ -63,7 +63,6 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     .ignoresSafeArea(.all)
 }
 
-
 #Preview("Track user location with course with custom annotation") {
     MapView(
         styleURL: demoTilesURL,
@@ -89,4 +88,3 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     )
     .ignoresSafeArea(.all)
 }
-

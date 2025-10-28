@@ -140,7 +140,7 @@ public extension MapView {
         result.controls = buildControls()
         return result
     }
-    
+
     /// Customize the user location annotation style
     ///
     /// - Parameter annotationStyle: The customized annotation style.

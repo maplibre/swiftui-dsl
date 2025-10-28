@@ -2,7 +2,6 @@ import Testing
 @testable import MapLibreSwiftUI
 
 struct MapUserAnnotationStyleTest {
-
     @Test("The MapUserAnnotationStyle values are properly assigned")
     func values() async throws {
         let custom = MapUserAnnotationStyle(
@@ -17,7 +16,7 @@ struct MapUserAnnotationStyleTest {
             puckShadowOpacity: 0.1
         )
         let mlnValue = custom.value
-        
+
         #expect(mlnValue.approximateHaloBorderColor == .systemOrange)
         #expect(mlnValue.approximateHaloBorderWidth == 50)
         #expect(mlnValue.approximateHaloFillColor == .systemBlue)
@@ -26,6 +25,6 @@ struct MapUserAnnotationStyleTest {
         #expect(mlnValue.puckArrowFillColor == .systemYellow)
         #expect(mlnValue.puckFillColor == .systemRed)
         #expect(mlnValue.puckShadowColor == .systemPink)
-        #expect(mlnValue.puckShadowOpacity ==  0.1)
+        #expect(mlnValue.puckShadowOpacity == 0.1)
     }
 }
