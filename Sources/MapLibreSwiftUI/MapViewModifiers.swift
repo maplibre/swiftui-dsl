@@ -141,6 +141,16 @@ public extension MapView {
         return result
     }
 
+    /// Customize the user location annotation style
+    ///
+    /// - Parameter annotationStyle: The customized annotation style.
+    /// - Returns: The modified MapView
+    func mapUserAnnotationStyle(_ annotationStyle: MapUserAnnotationStyle) -> Self {
+        var newMapView = self
+        newMapView.annotationStyle = annotationStyle.value
+        return newMapView
+    }
+
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current
     /// state of the
     /// `MapView` such as its bounds, center and insets.

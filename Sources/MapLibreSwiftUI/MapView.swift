@@ -31,6 +31,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
+    var annotationStyle = MLNUserLocationAnnotationViewStyle()
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?

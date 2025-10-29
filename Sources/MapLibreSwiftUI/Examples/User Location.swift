@@ -1,4 +1,5 @@
 import CoreLocation
+import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
@@ -33,5 +34,57 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     .mapControls {
         LogoView()
     }
+    .ignoresSafeArea(.all)
+}
+
+#Preview("Track user location with custom annotation") {
+    MapView(
+        styleURL: demoTilesURL,
+        camera: .constant(.trackUserLocation(zoom: 4, pitch: 45)),
+        locationManager: locationManager
+    )
+    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
+    .mapControls {
+        LogoView()
+    }
+    .mapUserAnnotationStyle(
+        MapUserAnnotationStyle(
+            approximateHaloBorderColor: .orange,
+            approximateHaloBorderWidth: 50,
+            approximateHaloFillColor: .orange,
+            approximateHaloOpacity: 0.5,
+            haloFillColor: .orange,
+            puckArrowFillColor: .orange,
+            puckFillColor: .orange,
+            puckShadowColor: .white,
+            puckShadowOpacity: 0.5
+        )
+    )
+    .ignoresSafeArea(.all)
+}
+
+#Preview("Track user location with course with custom annotation") {
+    MapView(
+        styleURL: demoTilesURL,
+        camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: 45)),
+        locationManager: locationManager
+    )
+    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
+    .mapControls {
+        LogoView()
+    }
+    .mapUserAnnotationStyle(
+        MapUserAnnotationStyle(
+            approximateHaloBorderColor: .orange,
+            approximateHaloBorderWidth: 50,
+            approximateHaloFillColor: .orange,
+            approximateHaloOpacity: 0.5,
+            haloFillColor: .orange,
+            puckArrowFillColor: .orange,
+            puckFillColor: .orange,
+            puckShadowColor: .white,
+            puckShadowOpacity: 0.5
+        )
+    )
     .ignoresSafeArea(.all)
 }

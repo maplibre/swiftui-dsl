@@ -433,6 +433,11 @@ MLNMapViewDelegate {
     }
 
     @MainActor
+    public func mapView(styleForDefaultUserLocationAnnotationView _: MLNMapView) -> MLNUserLocationAnnotationViewStyle {
+        parent.annotationStyle
+    }
+
+    @MainActor
     public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
         if proxyUpdateMode == .realtime {
             updateViewProxy(mapView: mapView, reason: reason)
