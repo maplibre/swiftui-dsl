@@ -47,7 +47,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     .mapControls {
         LogoView()
     }
-    .mapAnnotationStyle(
+    .mapUserAnnotationStyle(
         MapUserAnnotationStyle(
             approximateHaloBorderColor: .orange,
             approximateHaloBorderWidth: 50,
@@ -73,7 +73,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     .mapControls {
         LogoView()
     }
-    .mapAnnotationStyle(
+    .mapUserAnnotationStyle(
         MapUserAnnotationStyle(
             approximateHaloBorderColor: .orange,
             approximateHaloBorderWidth: 50,
