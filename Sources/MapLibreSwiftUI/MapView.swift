@@ -25,13 +25,13 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
+    @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
-    var annotationStyle = MLNUserLocationAnnotationViewStyle()
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?

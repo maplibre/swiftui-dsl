@@ -4,7 +4,7 @@ private struct MapViewContentUserAnnotationStyleKey: EnvironmentKey {
     static let defaultValue = MapUserAnnotationStyle()
 }
 
-private extension EnvironmentValues {
+extension EnvironmentValues {
     var mapViewUserAnnotationStyle: MapUserAnnotationStyle {
         get { self[MapViewContentUserAnnotationStyleKey.self] }
         set { self[MapViewContentUserAnnotationStyleKey.self] = newValue }
