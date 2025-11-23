@@ -20,12 +20,11 @@ private struct MapUserAnnotationStyleViewModifier: ViewModifier {
 }
 
 public extension View {
-    
     /// Customize the MapLibre MapView user location annotation style
     ///
     /// - Parameter annotationStyle: The customized annotation style.
     /// - Returns: The modified view heirarchy
     func mapUserAnnotationStyle(_ annotationStyle: MapUserAnnotationStyle) -> some View {
-        return modifier(MapUserAnnotationStyleViewModifier(userAnnotationStyle: annotationStyle))
+        modifier(MapUserAnnotationStyleViewModifier(userAnnotationStyle: annotationStyle))
     }
 }
