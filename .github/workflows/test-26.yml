@@ -7,16 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  format-lint:
-    runs-on: macos-15
-
-    steps:
-      - name: Checkout maplibre-swiftui-dsl-playground
-        uses: actions/checkout@v4
-
-      - name: Check format
-        run: swiftformat . --lint
-
   test:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: macos-26
