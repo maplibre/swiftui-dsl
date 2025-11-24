@@ -164,7 +164,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
         result.textHaloBlur = definition.textHaloBlur
-        
+
         result.symbolPlacement = definition.symbolPlacement
         result.symbolSpacing = definition.symbolSpacing
 
