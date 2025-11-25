@@ -1,0 +1,18 @@
+name: Format + Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  format-lint:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
+
+      - name: Check format
+        run: swiftformat . --lint
