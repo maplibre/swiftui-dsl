@@ -2,7 +2,7 @@ import MapLibre
 import SwiftUI
 
 /// An abstraction of the [MLNUserLocationAnnotationViewStyle](https://maplibre.org/maplibre-native/ios/latest/documentation/maplibre/mlnuserlocationannotationviewstyle/)
-public struct MapUserAnnotationStyle {
+public struct MapUserAnnotationStyle: Equatable, Hashable, Sendable {
     /// The halo border color for the approximate view.
     var approximateHaloBorderColor: Color
 
