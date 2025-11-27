@@ -7,6 +7,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("color", supportsInterpolation: false)
 @MLNStyleProperty<Double>("strokeWidth", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("strokeColor", supportsInterpolation: false)
+@MLNStyleProperty<Double>("circleBlur", supportsInterpolation: true)
 public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
     public let sourceLayerIdentifier: String?
@@ -78,6 +79,7 @@ private struct CircleStyleLayerInternal: StyleLayer {
 
         result.circleStrokeWidth = definition.strokeWidth
         result.circleStrokeColor = definition.strokeColor
+        result.circleBlur = definition.circleBlur
 
         result.predicate = definition.predicate
 
