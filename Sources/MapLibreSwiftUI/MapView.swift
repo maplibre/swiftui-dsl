@@ -28,7 +28,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Binding var camera: MapViewCamera
     @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
-    
+
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]

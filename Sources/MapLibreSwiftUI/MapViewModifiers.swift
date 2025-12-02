@@ -14,7 +14,7 @@ public extension MapView {
         newMapView.onStyleLoaded = perform
         return newMapView
     }
-    
+
     /// Perform an action when the map view's user tracking mode has changed
     ///
     /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
