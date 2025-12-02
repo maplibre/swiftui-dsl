@@ -20,20 +20,23 @@ public enum MapActivity: Int, CustomStringConvertible {
     }
 }
 
+// TODO: Delete all deprecated modifiers before v1
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
     var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
     @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
-
+    @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
 
-    @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    @available(*, deprecated, message: "Replaced with environment onMapStyleLoaded")
+    var onStyleLoaded: ((MLNStyle) -> Void)?
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
     var proxyUpdateMode: ProxyUpdateMode?
@@ -105,7 +108,10 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
-        context.coordinator.onStyleLoaded = onMapStyleLoaded
+        context.coordinator.onStyleLoaded = { style in
+            onMapStyleLoaded?(style)
+            onStyleLoaded?(style)
+        }
 
         // Link the user tracking change to the coordinator that emits the delegate event.
         context.coordinator.onUserTrackingModeChange = onUserTrackingModeChanged

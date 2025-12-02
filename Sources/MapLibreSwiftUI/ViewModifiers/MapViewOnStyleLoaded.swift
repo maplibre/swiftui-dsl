@@ -3,12 +3,12 @@ import SwiftUI
 
 @MainActor
 private struct OnMapStyleLoadedKey: @MainActor EnvironmentKey {
-    static let defaultValue: ((MLNStyle) -> Void) = { _ in }
+    static let defaultValue: ((MLNStyle) -> Void)? = nil
 }
 
 @MainActor
 extension EnvironmentValues {
-    var onMapStyleLoaded: (MLNStyle) -> Void {
+    var onMapStyleLoaded: ((MLNStyle) -> Void)? {
         get { self[OnMapStyleLoadedKey.self] }
         set { self[OnMapStyleLoadedKey.self] = newValue }
     }

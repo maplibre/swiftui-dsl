@@ -31,6 +31,11 @@ result builders which enable more modern expressive APIs.
 The SwiftUI layer publishes a SwiftUI view with the end goal of being a universal view that can be adapted to a wide
 variety of use cases, much like MapKit's SwiftUI views. 
 
+### View Modifier
+
+View Modifiers should always be implemented with the SwiftUI `@Environment`. This avoids two 
+be pre-pended with `map` or `onMap` to provide a consistent 
+
 ## Testing
 
 You can run the test suite from Xcode using the standard process:
