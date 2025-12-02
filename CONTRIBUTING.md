@@ -31,10 +31,24 @@ result builders which enable more modern expressive APIs.
 The SwiftUI layer publishes a SwiftUI view with the end goal of being a universal view that can be adapted to a wide
 variety of use cases, much like MapKit's SwiftUI views. 
 
-### View Modifier
+### View Modifiers
 
-View Modifiers should always be implemented with the SwiftUI `@Environment`. This avoids two 
-be pre-pended with `map` or `onMap` to provide a consistent 
+View modifiers should always be implemented with the SwiftUI `@Environment` as seen in 
+these [ViewModifiers](Sources/MapLibreSwiftUI/ViewModifiers). This enables developers to modify a
+MapView in their view hierarchy even when direct access to the type is not possible (e.g. 
+through another library's wrapper view). Reviewing Apple's own MapKit, it's very likely they're 
+using the same concept since all view modifiers for their `Map` type show up on `View` and 
+return `some View`.
+
+#### View Modifier Naming
+
+- For view modifiers that modify the `MapView`, we should prefix them `.map`.
+- For view modifiers that observe an event, we should prefix them with `.onMap`.
+
+When naming a view modifier, it's useful to review Apple's MapKit modifiers. Our goal to avoid 
+modifier names that might cause confusion in the rare case a developer uses both MapKit and this 
+library in a single project. You can review Apple's modifiers in their `View` 
+DocC (e.g. https://developer.apple.com/documentation/swiftui/view/mapstyle(_:)).
 
 ## Testing
 
