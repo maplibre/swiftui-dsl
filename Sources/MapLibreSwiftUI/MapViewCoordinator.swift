@@ -444,6 +444,7 @@ MLNMapViewDelegate {
         }
     }
 
+    @MainActor
     public func mapView(_: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
         onUserTrackingModeChange?(mode, animated)
     }
