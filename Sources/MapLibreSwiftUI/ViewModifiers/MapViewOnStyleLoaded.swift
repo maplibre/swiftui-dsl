@@ -1,9 +1,8 @@
 import MapLibre
 import SwiftUI
 
-@MainActor
-private struct OnMapStyleLoadedKey: @MainActor EnvironmentKey {
-    static let defaultValue: ((MLNStyle) -> Void)? = nil
+private struct OnMapStyleLoadedKey: EnvironmentKey {
+    @MainActor static let defaultValue: ((MLNStyle) -> Void)? = nil
 }
 
 @MainActor
