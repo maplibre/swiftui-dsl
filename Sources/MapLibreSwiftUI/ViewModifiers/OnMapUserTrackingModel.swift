@@ -2,13 +2,13 @@ import MapLibre
 import SwiftUI
 
 #if swift(>=6.2)
-private struct OnMapUserTrackingModeChangedKey: @MainActor EnvironmentKey {
-    @MainActor static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
-}
+    private struct OnMapUserTrackingModeChangedKey: @MainActor EnvironmentKey {
+        @MainActor static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
+    }
 #else
-private struct OnMapUserTrackingModeChangedKey: EnvironmentKey {
-    nonisolated(unsafe) static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
-}
+    private struct OnMapUserTrackingModeChangedKey: EnvironmentKey {
+        nonisolated(unsafe) static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
+    }
 #endif
 
 @MainActor
