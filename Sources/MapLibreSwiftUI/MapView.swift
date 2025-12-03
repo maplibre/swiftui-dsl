@@ -35,8 +35,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var gestures = [MapGesture]()
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
-    @available(*, deprecated, renamed: "onMapUserTrackingModeChanged")
-    var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
     var proxyUpdateMode: ProxyUpdateMode?
 
@@ -110,10 +108,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         context.coordinator.onStyleLoaded = onStyleLoaded
 
         // Link the user tracking change to the coordinator that emits the delegate event.
-        context.coordinator.onUserTrackingModeChange = { mode, animated in
-            onMapUserTrackingModeChanged?(mode, animated)
-            onUserTrackingModeChanged?(mode, animated)
-        }
+        context.coordinator.onUserTrackingModeChange = onMapUserTrackingModeChanged
 
         // Add all gesture recognizers
         for gesture in gestures {

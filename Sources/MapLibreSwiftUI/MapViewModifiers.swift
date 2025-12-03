@@ -14,18 +14,6 @@ public extension MapView {
         return newMapView
     }
 
-    /// Perform an action when the map view's user tracking mode has changed
-    ///
-    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
-    /// whether the change was animated.
-    /// - Returns: The modified map view.
-    @available(*, deprecated, renamed: "onMapUserTrackingModeChanged")
-    func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
-        var newMapView = self
-        newMapView.onUserTrackingModeChanged = perform
-        return newMapView
-    }
-
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
