@@ -1,9 +1,15 @@
 import MapLibre
 import SwiftUI
 
-private struct OnMapUserTrackingModeChangedKey: EnvironmentKey {
+#if swift(>=6.2)
+private struct OnMapUserTrackingModeChangedKey: @MainActor EnvironmentKey {
     @MainActor static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
 }
+#else
+private struct OnMapUserTrackingModeChangedKey: EnvironmentKey {
+    nonisolated(unsafe) static let defaultValue: ((MLNUserTrackingMode, Bool) -> Void)? = nil
+}
+#endif
 
 @MainActor
 extension EnvironmentValues {
