@@ -45,7 +45,7 @@ return `some View`.
 - For view modifiers that modify the `MapView`, we should prefix them `.map`.
 - For view modifiers that observe an event, we should prefix them with `.onMap`.
 
-When naming a view modifier, it's useful to review Apple's MapKit modifiers. Our goal to avoid 
+When naming a view modifier, it's useful to review Apple's MapKit modifiers. Our goal is to avoid 
 modifier names that might cause confusion in the rare case a developer uses both MapKit and this 
 library in a single project. You can review Apple's modifiers in their `View` 
 DocC (e.g. https://developer.apple.com/documentation/swiftui/view/mapstyle(_:)).
