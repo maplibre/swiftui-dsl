@@ -1,9 +1,15 @@
 import MapLibre
 import SwiftUI
 
-private struct OnMapStyleLoadedKey: EnvironmentKey {
-    @MainActor static let defaultValue: ((MLNStyle) -> Void)? = nil
-}
+#if swift(>=6.2)
+    private struct OnMapStyleLoadedKey: @MainActor EnvironmentKey {
+        @MainActor static let defaultValue: ((MLNStyle) -> Void)? = nil
+    }
+#else
+    private struct OnMapStyleLoadedKey: EnvironmentKey {
+        nonisolated(unsafe) static let defaultValue: ((MLNStyle) -> Void)? = nil
+    }
+#endif
 
 @MainActor
 extension EnvironmentValues {
