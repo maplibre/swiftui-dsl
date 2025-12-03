@@ -20,7 +20,6 @@ public enum MapActivity: Int, CustomStringConvertible {
     }
 }
 
-// TODO: Delete all deprecated modifiers before v1
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
     var cameraDisabled: Bool = false
