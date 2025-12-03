@@ -119,16 +119,6 @@ public extension MapView {
         return newMapView
     }
 
-    /// Add a default implementation for tapping clustered features. When tapped, the map zooms so that the cluster is
-    /// expanded.
-    /// - Parameter clusteredLayers: An array of layers to monitor that can contain clustered features.
-    /// - Returns: The modified MapView
-    func expandClustersOnTapping(clusteredLayers: [ClusterLayer]) -> MapView {
-        var newMapView = self
-        newMapView.clusteredLayers = clusteredLayers
-        return newMapView
-    }
-
     func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
         var result = self
         result.mapViewContentInset = inset
