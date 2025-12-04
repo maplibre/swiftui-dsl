@@ -4,6 +4,7 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 public extension MapView {
+<<<<<<< HEAD
     /// Perform an action when the map view has loaded its style and all locally added style definitions.
     ///
     /// - Parameter perform: The action to perform with the loaded style.
@@ -11,6 +12,16 @@ public extension MapView {
     func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
         var newMapView = self
         newMapView.onStyleLoaded = perform
+=======
+    /// Perform an action when the map view's user tracking mode has changed
+    ///
+    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
+    /// whether the change was animated.
+    /// - Returns: The modified map view.
+    func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
+        var newMapView = self
+        newMapView.onUserTrackingModeChanged = perform
+>>>>>>> 7af8d406b4282ff50d8bdce58166aecad2e58443
         return newMapView
     }
 
@@ -105,16 +116,6 @@ public extension MapView {
                                  onChange: .context(onPressChanged))
         newMapView.gestures.append(gesture)
 
-        return newMapView
-    }
-
-    /// Add a default implementation for tapping clustered features. When tapped, the map zooms so that the cluster is
-    /// expanded.
-    /// - Parameter clusteredLayers: An array of layers to monitor that can contain clustered features.
-    /// - Returns: The modified MapView
-    func expandClustersOnTapping(clusteredLayers: [ClusterLayer]) -> MapView {
-        var newMapView = self
-        newMapView.clusteredLayers = clusteredLayers
         return newMapView
     }
 

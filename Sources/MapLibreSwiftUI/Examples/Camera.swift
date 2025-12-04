@@ -10,7 +10,8 @@ struct CameraDirectManipulationPreview: View {
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
-            .onStyleLoaded { _ in
+            .onMapStyleLoaded { _ in
+                print("Style Loaded")
                 onStyleLoaded?()
             }
             .overlay(alignment: .bottom, content: {
@@ -22,6 +23,7 @@ struct CameraDirectManipulationPreview: View {
                             .foregroundColor(.black)
                             .cornerRadius(8)
                     )
+                    .padding(.horizontal)
                     .padding(.bottom, 42)
             })
             .task {
