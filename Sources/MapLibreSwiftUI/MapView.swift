@@ -27,6 +27,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Binding var camera: MapViewCamera
     @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
     @Environment(\.mapClusterLayers) var clusteredLayers
 
     let makeViewController: () -> T
@@ -35,6 +36,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     var gestures = [MapGesture]()
 
+    var onStyleLoaded: ((MLNStyle) -> Void)?
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
     var proxyUpdateMode: ProxyUpdateMode?
@@ -107,7 +109,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         context.coordinator.onStyleLoaded = onMapStyleLoaded
 
         // Link the user tracking change to the coordinator that emits the delegate event.
-        context.coordinator.onUserTrackingModeChange = onUserTrackingModeChanged
+        context.coordinator.onUserTrackingModeChange = onMapUserTrackingModeChanged
 
         // Add all gesture recognizers
         for gesture in gestures {
