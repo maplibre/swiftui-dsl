@@ -4,27 +4,6 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 public extension MapView {
-<<<<<<< HEAD
-    /// Perform an action when the map view has loaded its style and all locally added style definitions.
-    ///
-    /// - Parameter perform: The action to perform with the loaded style.
-    /// - Returns: The modified map view.
-    func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
-        var newMapView = self
-        newMapView.onStyleLoaded = perform
-=======
-    /// Perform an action when the map view's user tracking mode has changed
-    ///
-    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
-    /// whether the change was animated.
-    /// - Returns: The modified map view.
-    func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
-        var newMapView = self
-        newMapView.onUserTrackingModeChanged = perform
->>>>>>> 7af8d406b4282ff50d8bdce58166aecad2e58443
-        return newMapView
-    }
-
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
