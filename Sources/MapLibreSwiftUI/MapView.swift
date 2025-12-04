@@ -27,6 +27,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Binding var camera: MapViewCamera
     @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    @Environment(\.mapClusterLayers) var clusteredLayers
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
@@ -49,8 +50,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     ]
 
     private var locationManager: MLNLocationManager?
-
-    var clusteredLayers: [ClusterLayer]?
 
     let activity: MapActivity
 
