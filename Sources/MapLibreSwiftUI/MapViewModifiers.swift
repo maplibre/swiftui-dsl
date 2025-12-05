@@ -4,27 +4,6 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 public extension MapView {
-    /// Perform an action when the map view has loaded its style and all locally added style definitions.
-    ///
-    /// - Parameter perform: The action to perform with the loaded style.
-    /// - Returns: The modified map view.
-    func onStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> MapView {
-        var newMapView = self
-        newMapView.onStyleLoaded = perform
-        return newMapView
-    }
-
-    /// Perform an action when the map view's user tracking mode has changed
-    ///
-    /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
-    /// whether the change was animated.
-    /// - Returns: The modified map view.
-    func onUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> MapView {
-        var newMapView = self
-        newMapView.onUserTrackingModeChanged = perform
-        return newMapView
-    }
-
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
     /// Use this function to modify various properties of the MLNMapView instance.
@@ -119,16 +98,6 @@ public extension MapView {
         return newMapView
     }
 
-    /// Add a default implementation for tapping clustered features. When tapped, the map zooms so that the cluster is
-    /// expanded.
-    /// - Parameter clusteredLayers: An array of layers to monitor that can contain clustered features.
-    /// - Returns: The modified MapView
-    func expandClustersOnTapping(clusteredLayers: [ClusterLayer]) -> MapView {
-        var newMapView = self
-        newMapView.clusteredLayers = clusteredLayers
-        return newMapView
-    }
-
     func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
         var result = self
         result.mapViewContentInset = inset
@@ -139,16 +108,6 @@ public extension MapView {
         var result = self
         result.controls = buildControls()
         return result
-    }
-
-    /// Customize the user location annotation style
-    ///
-    /// - Parameter annotationStyle: The customized annotation style.
-    /// - Returns: The modified MapView
-    func mapUserAnnotationStyle(_ annotationStyle: MapUserAnnotationStyle) -> Self {
-        var newMapView = self
-        newMapView.annotationStyle = annotationStyle.value
-        return newMapView
     }
 
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current

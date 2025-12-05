@@ -25,13 +25,16 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
+    @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
+    @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
+    @Environment(\.mapClusterLayers) var clusteredLayers
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
-    var annotationStyle = MLNUserLocationAnnotationViewStyle()
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
@@ -49,8 +52,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     ]
 
     private var locationManager: MLNLocationManager?
-
-    var clusteredLayers: [ClusterLayer]?
 
     let activity: MapActivity
 
@@ -105,10 +106,10 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
-        context.coordinator.onStyleLoaded = onStyleLoaded
+        context.coordinator.onStyleLoaded = onMapStyleLoaded
 
         // Link the user tracking change to the coordinator that emits the delegate event.
-        context.coordinator.onUserTrackingModeChange = onUserTrackingModeChanged
+        context.coordinator.onUserTrackingModeChange = onMapUserTrackingModeChanged
 
         // Add all gesture recognizers
         for gesture in gestures {

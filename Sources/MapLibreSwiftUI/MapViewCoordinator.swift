@@ -434,7 +434,7 @@ MLNMapViewDelegate {
 
     @MainActor
     public func mapView(styleForDefaultUserLocationAnnotationView _: MLNMapView) -> MLNUserLocationAnnotationViewStyle {
-        parent.annotationStyle
+        parent.annotationStyle.value
     }
 
     @MainActor
@@ -444,6 +444,7 @@ MLNMapViewDelegate {
         }
     }
 
+    @MainActor
     public func mapView(_: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
         onUserTrackingModeChange?(mode, animated)
     }
