@@ -5,7 +5,7 @@ private struct MapViewContentUserAnnotationStyleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var mapViewUserAnnotationStyle: MapUserAnnotationStyle {
+    var mapUserAnnotationStyle: MapUserAnnotationStyle {
         get { self[MapViewContentUserAnnotationStyleKey.self] }
         set { self[MapViewContentUserAnnotationStyleKey.self] = newValue }
     }
@@ -15,7 +15,7 @@ private struct MapUserAnnotationStyleViewModifier: ViewModifier {
     let userAnnotationStyle: MapUserAnnotationStyle
 
     func body(content: Content) -> some View {
-        content.environment(\.mapViewUserAnnotationStyle, userAnnotationStyle)
+        content.environment(\.mapUserAnnotationStyle, userAnnotationStyle)
     }
 }
 
