@@ -86,7 +86,7 @@ private struct CircleStyleLayerInternal: StyleLayer {
 
         result.circleOpacity = definition.circleOpacity
         result.circleStrokeOpacity = definition.circleStrokeOpacity
-        
+
         result.predicate = definition.predicate
 
         return result
