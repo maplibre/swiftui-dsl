@@ -28,7 +28,6 @@ private struct MapViewContentInsetViewModifier: ViewModifier {
 }
 
 public extension View {
-    
     /// Set the content inset in the map.
     ///
     /// This pads the things like the user location puck.
@@ -38,5 +37,4 @@ public extension View {
     func mapViewContentInset(_ inset: UIEdgeInsets) -> some View {
         modifier(MapViewContentInsetViewModifier(mapContentInset: inset))
     }
-
 }
