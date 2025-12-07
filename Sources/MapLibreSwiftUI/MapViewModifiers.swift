@@ -98,12 +98,6 @@ public extension MapView {
         return newMapView
     }
 
-    func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
-        var result = self
-        result.mapViewContentInset = inset
-        return result
-    }
-
     func mapControls(@MapControlsBuilder _ buildControls: () -> [MapControl]) -> Self {
         var result = self
         result.controls = buildControls()
