@@ -37,12 +37,11 @@ private struct MapControlsViewModifier: ViewModifier {
 }
 
 public extension View {
-    /// Customize the Map's Controls.
+    /// Customize the MapLibre MapView's Controls.
     ///
-    /// - Parameter buildControls: <#buildControls description#>
-    /// - Returns: <#description#>
+    /// - Parameter buildControls: The map controls you want to include.
     @MainActor
-    func mapControls(@MapControlsBuilder _ buildControls: () -> [MapControl]) -> some View {
-        modifier(MapControlsViewModifier(controls: buildControls()))
+    func mapControls(@MapControlsBuilder _ mapLibreMapControls: () -> [MapControl]) -> some View {
+        modifier(MapControlsViewModifier(controls: mapLibreMapControls()))
     }
 }
