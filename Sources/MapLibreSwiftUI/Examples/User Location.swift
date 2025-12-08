@@ -1,5 +1,4 @@
 import CoreLocation
-import MapKit
 import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
