@@ -34,7 +34,7 @@ public extension View {
     ///
     /// - Parameter inset: The edge insets to pad the map content with.
     @MainActor
-    func mapViewContentInset(_ inset: UIEdgeInsets) -> some View {
+    func mapContentInset(_ inset: UIEdgeInsets) -> some View {
         modifier(MapViewContentInsetViewModifier(mapContentInset: inset))
     }
 }
