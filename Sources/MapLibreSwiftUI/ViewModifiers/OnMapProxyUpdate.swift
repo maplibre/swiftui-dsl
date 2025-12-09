@@ -10,7 +10,7 @@ import SwiftUI
         @MainActor static let defaultValue: ((MapViewProxy) -> Void)? = nil
     }
 #else
-    private struct MapViewProxyUpdateMode: @MainActor EnvironmentKey {
+    private struct MapViewProxyUpdateMode: EnvironmentKey {
         nonisolated(unsafe) static let defaultValue: ProxyUpdateMode? = nil
     }
 
