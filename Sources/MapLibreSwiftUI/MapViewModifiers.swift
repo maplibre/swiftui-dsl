@@ -98,12 +98,6 @@ public extension MapView {
         return newMapView
     }
 
-    func mapControls(@MapControlsBuilder _ buildControls: () -> [MapControl]) -> Self {
-        var result = self
-        result.controls = buildControls()
-        return result
-    }
-
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current
     /// state of the
     /// `MapView` such as its bounds, center and insets.

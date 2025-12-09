@@ -25,11 +25,12 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
-    @Environment(\.mapViewUserAnnotationStyle) var annotationStyle
+    @Environment(\.mapUserAnnotationStyle) var annotationStyle
+    @Environment(\.mapControls) var controls
+    @Environment(\.mapContentInset) var mapContentInset
+    @Environment(\.mapClusterLayers) var clusteredLayers
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
-    @Environment(\.mapClusterLayers) var clusteredLayers
-    @Environment(\.mapContentInset) var mapContentInset
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
@@ -43,12 +44,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var proxyUpdateMode: ProxyUpdateMode?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
-
-    var controls: [MapControl] = [
-        CompassView(),
-        LogoView(),
-        AttributionButton(),
-    ]
 
     private var locationManager: MLNLocationManager?
 
