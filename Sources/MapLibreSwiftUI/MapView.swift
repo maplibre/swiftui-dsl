@@ -22,13 +22,13 @@ public enum MapActivity: Int, CustomStringConvertible {
 
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
-    var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
     @Environment(\.mapUserAnnotationStyle) var annotationStyle
     @Environment(\.mapControls) var controls
     @Environment(\.mapContentInset) var mapContentInset
     @Environment(\.mapClusterLayers) var clusteredLayers
+    @Environment(\.mapCameraDisabled) var cameraDisabled
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
 
@@ -38,8 +38,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     var gestures = [MapGesture]()
 
-    var onStyleLoaded: ((MLNStyle) -> Void)?
-    var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
     var proxyUpdateMode: ProxyUpdateMode?
 
