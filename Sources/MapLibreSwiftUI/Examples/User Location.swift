@@ -20,7 +20,7 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
         camera: .constant(.trackUserLocation(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
-    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
+    .mapContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .ignoresSafeArea(.all)
 }
 
@@ -30,10 +30,10 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
         camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
-    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .mapControls {
         LogoView()
     }
+    .mapContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .ignoresSafeArea(.all)
 }
 
@@ -43,10 +43,10 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
         camera: .constant(.trackUserLocation(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
-    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .mapControls {
         LogoView()
     }
+    .mapContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .mapUserAnnotationStyle(
         MapUserAnnotationStyle(
             approximateHaloBorderColor: .orange,
@@ -69,10 +69,10 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
         camera: .constant(.trackUserLocationWithCourse(zoom: 4, pitch: 45)),
         locationManager: locationManager
     )
-    .mapViewContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .mapControls {
         LogoView()
     }
+    .mapContentInset(.init(top: 450, left: 0, bottom: 0, right: 0))
     .mapUserAnnotationStyle(
         MapUserAnnotationStyle(
             approximateHaloBorderColor: .orange,

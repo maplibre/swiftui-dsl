@@ -98,12 +98,6 @@ public extension MapView {
         return newMapView
     }
 
-    func mapViewContentInset(_ inset: UIEdgeInsets) -> Self {
-        var result = self
-        result.mapViewContentInset = inset
-        return result
-    }
-
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current
     /// state of the
     /// `MapView` such as its bounds, center and insets.

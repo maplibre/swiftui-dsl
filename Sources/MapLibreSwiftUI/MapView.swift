@@ -27,6 +27,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Binding var camera: MapViewCamera
     @Environment(\.mapUserAnnotationStyle) var annotationStyle
     @Environment(\.mapControls) var controls
+    @Environment(\.mapContentInset) var mapContentInset
     @Environment(\.mapClusterLayers) var clusteredLayers
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
@@ -41,8 +42,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     var onUserTrackingModeChanged: ((MLNUserTrackingMode, Bool) -> Void)?
     var onViewProxyChanged: ((MapViewProxy) -> Void)?
     var proxyUpdateMode: ProxyUpdateMode?
-
-    var mapViewContentInset: UIEdgeInsets?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
@@ -136,9 +135,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 
     @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
-        if let mapViewContentInset {
+        if let mapContentInset {
             mapViewController.mapView.automaticallyAdjustsContentInset = false
-            mapViewController.mapView.contentInset = mapViewContentInset
+            mapViewController.mapView.contentInset = mapContentInset
         }
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
