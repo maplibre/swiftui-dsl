@@ -31,15 +31,14 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Environment(\.mapCameraDisabled) var cameraDisabled
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
+    @Environment(\.mapProxyUpdateMode) var proxyUpdateMode
+    @Environment(\.onMapProxyUpdated) var onViewProxyChanged
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
-
-    var onViewProxyChanged: ((MapViewProxy) -> Void)?
-    var proxyUpdateMode: ProxyUpdateMode?
 
     var unsafeMapViewControllerModifier: ((T) -> Void)?
 
