@@ -29,6 +29,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Environment(\.mapContentInset) var mapContentInset
     @Environment(\.mapClusterLayers) var clusteredLayers
     @Environment(\.mapCameraDisabled) var cameraDisabled
+    @Environment(\.mapUnsafeController) var mapUnsafeController
     @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
     @Environment(\.mapProxyUpdateMode) var proxyUpdateMode
@@ -39,8 +40,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     let userLayers: [StyleLayerDefinition]
 
     var gestures = [MapGesture]()
-
-    var unsafeMapViewControllerModifier: ((T) -> Void)?
 
     private var locationManager: MLNLocationManager?
 
@@ -148,7 +147,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         }
 
         if runUnsafe {
-            unsafeMapViewControllerModifier?(mapViewController)
+            mapUnsafeController?(mapViewController)
         }
     }
 }
