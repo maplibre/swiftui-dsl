@@ -2,7 +2,7 @@ import MapLibre
 import SwiftUI
 
 private struct MapViewCameraDisabledKey: EnvironmentKey {
-    static let defaultValue: Bool = true
+    static let defaultValue: Bool = false
 }
 
 @MainActor
