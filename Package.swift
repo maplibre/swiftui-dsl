@@ -25,7 +25,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.20.1"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
