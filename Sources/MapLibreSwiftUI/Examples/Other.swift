@@ -4,22 +4,16 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 #Preview("Unsafe MapView Modifier") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // A collection of points with various
         // attributes
         let pointSource = ShapeSource(identifier: "points") {
             // Uses the DSL to quickly construct point features inline
             MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139))
 
-            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { feature in
-                feature.attributes["icon"] = "missing"
-                feature.attributes["heading"] = 45
-            }
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
 
-            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148)) { feature in
-                feature.attributes["icon"] = "club"
-                feature.attributes["heading"] = 145
-            }
+            MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 39.02001, longitude: 1.482148))
         }
 
         // Demonstrates how to use the unsafeMapModifier to set MLNMapView properties that have not been exposed as

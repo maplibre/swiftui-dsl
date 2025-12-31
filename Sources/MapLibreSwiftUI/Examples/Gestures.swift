@@ -5,7 +5,7 @@ import SwiftUI
 
 #Preview("Tappable Circles") {
     let tappableID = "simple-circles"
-    return MapView(styleURL: demoTilesURL) {
+    return MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Simple symbol layer demonstration with an icon
         CircleStyleLayer(identifier: tappableID, source: pointSource)
             .radius(16)
