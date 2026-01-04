@@ -44,6 +44,7 @@ MLNMapViewDelegate {
     var cameraUpdateContinuation: CheckedContinuation<Void, Never>?
 
     var onStyleLoaded: ((MLNStyle) -> Void)?
+    var onUserTrackingModeChange: ((MLNUserTrackingMode, Bool) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
@@ -190,7 +191,7 @@ MLNMapViewDelegate {
     ///   - camera: The new camera state
     ///   - animated: Whether the camera change should be animated. Defaults to `true`.
     @MainActor func applyCameraChangeFromStateUpdate(
-        _ mapView: MLNMapViewCameraUpdating,
+        _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
         animated: Bool = true
     ) {
@@ -361,7 +362,7 @@ MLNMapViewDelegate {
     /// - Parameters:
     ///   - mapView: The MapView that is being manipulated by a gesture.
     ///   - reason: The reason for the camera change.
-    @MainActor func applyCameraChangeFromGesture(_ mapView: MLNMapViewCameraUpdating, reason: CameraChangeReason) {
+    @MainActor func applyCameraChangeFromGesture(_ mapView: MLNMapViewRepresentable, reason: CameraChangeReason) {
         guard cameraUpdateTask == nil else {
             // Gestures emit many updates, so we only want to launch the first one and rely on idle to close the event.
             return
@@ -432,10 +433,20 @@ MLNMapViewDelegate {
     }
 
     @MainActor
+    public func mapView(styleForDefaultUserLocationAnnotationView _: MLNMapView) -> MLNUserLocationAnnotationViewStyle {
+        parent.annotationStyle.value
+    }
+
+    @MainActor
     public func mapView(_ mapView: MLNMapView, regionIsChangingWith reason: MLNCameraChangeReason) {
         if proxyUpdateMode == .realtime {
             updateViewProxy(mapView: mapView, reason: reason)
         }
+    }
+
+    @MainActor
+    public func mapView(_: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
+        onUserTrackingModeChange?(mode, animated)
     }
 
     // MARK: MapViewProxy

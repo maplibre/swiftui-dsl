@@ -34,7 +34,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Rose Tint") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Silly example: a background layer on top of everything to create a tint effect
         BackgroundLayer(identifier: "rose-colored-glasses")
             .backgroundColor(.systemPink.withAlphaComponent(0.3))
@@ -44,7 +44,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Simple Symbol") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
             .iconImage(UIImage(systemName: "mappin")!)
@@ -53,7 +53,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Rotated Symbols (Const)") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
             .iconImage(UIImage(systemName: "location.north.circle.fill")!)
@@ -63,7 +63,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Rotated Symbols (Dynamic)") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Simple symbol layer demonstration with an icon
         SymbolStyleLayer(identifier: "rotated-symbols", source: pointSource)
             .iconImage(UIImage(systemName: "location.north.circle.fill")!)
@@ -73,7 +73,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 }
 
 #Preview("Circles with Symbols") {
-    MapView(styleURL: demoTilesURL) {
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
         // Simple symbol layer demonstration with an icon
         CircleStyleLayer(identifier: "simple-circles", source: pointSource)
             .radius(16)
@@ -125,7 +125,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
     .onTapMapGesture(on: ["simple-circles-non-clusters"], onTapChanged: { _, features in
         print("Tapped on \(features.first?.debugDescription ?? "<nil>")")
     })
-    .expandClustersOnTapping(clusteredLayers: [ClusterLayer(
+    .mapClustersExpandOnTapping(clusteredLayers: [ClusterLayer(
         layerIdentifier: "simple-circles-clusters",
         sourceIdentifier: "points"
     )])

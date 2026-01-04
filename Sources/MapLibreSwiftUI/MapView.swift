@@ -22,9 +22,18 @@ public enum MapActivity: Int, CustomStringConvertible {
 
 public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentable {
     public typealias UIViewControllerType = T
-    var cameraDisabled: Bool = false
 
     @Binding var camera: MapViewCamera
+    @Environment(\.mapUserAnnotationStyle) var annotationStyle
+    @Environment(\.mapControls) var controls
+    @Environment(\.mapContentInset) var mapContentInset
+    @Environment(\.mapClusterLayers) var clusteredLayers
+    @Environment(\.mapCameraDisabled) var cameraDisabled
+    @Environment(\.mapUnsafeController) var mapUnsafeController
+    @Environment(\.onMapStyleLoaded) var onMapStyleLoaded
+    @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
+    @Environment(\.mapProxyUpdateMode) var proxyUpdateMode
+    @Environment(\.onMapProxyUpdated) var onViewProxyChanged
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
@@ -32,23 +41,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     var gestures = [MapGesture]()
 
-    var onStyleLoaded: ((MLNStyle) -> Void)?
-    var onViewProxyChanged: ((MapViewProxy) -> Void)?
-    var proxyUpdateMode: ProxyUpdateMode?
-
-    var mapViewContentInset: UIEdgeInsets?
-
-    var unsafeMapViewControllerModifier: ((T) -> Void)?
-
-    var controls: [MapControl] = [
-        CompassView(),
-        LogoView(),
-        AttributionButton(),
-    ]
-
     private var locationManager: MLNLocationManager?
-
-    var clusteredLayers: [ClusterLayer]?
 
     let activity: MapActivity
 
@@ -58,12 +51,12 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         camera: Binding<MapViewCamera> = .constant(.default()),
         locationManager: MLNLocationManager? = nil,
         activity: MapActivity = .standard,
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+        @MapViewContentBuilder _ makeMapContent: () -> some StyleLayerCollection = { [] }
     ) {
         self.makeViewController = makeViewController
         styleSource = .url(styleURL)
         _camera = camera
-        userLayers = makeMapContent()
+        userLayers = makeMapContent().layers
         self.locationManager = locationManager
         self.activity = activity
     }
@@ -103,7 +96,10 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         controller.mapView.locationManager = controller.mapView.locationManager
 
         // Link the style loaded to the coordinator that emits the delegate event.
-        context.coordinator.onStyleLoaded = onStyleLoaded
+        context.coordinator.onStyleLoaded = onMapStyleLoaded
+
+        // Link the user tracking change to the coordinator that emits the delegate event.
+        context.coordinator.onUserTrackingModeChange = onMapUserTrackingModeChanged
 
         // Add all gesture recognizers
         for gesture in gestures {
@@ -135,9 +131,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     }
 
     @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
-        if let mapViewContentInset {
+        if let mapContentInset {
             mapViewController.mapView.automaticallyAdjustsContentInset = false
-            mapViewController.mapView.contentInset = mapViewContentInset
+            mapViewController.mapView.contentInset = mapContentInset
         }
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
@@ -151,7 +147,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         }
 
         if runUnsafe {
-            unsafeMapViewControllerModifier?(mapViewController)
+            mapUnsafeController?(mapViewController)
         }
     }
 }

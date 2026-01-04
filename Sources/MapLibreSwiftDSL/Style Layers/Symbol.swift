@@ -24,13 +24,16 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<Double>("textHaloWidth", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textHaloBlur", supportsInterpolation: true)
 
+@MLNStyleProperty<String>("symbolPlacement", supportsInterpolation: false)
+@MLNStyleProperty<Double>("symbolSpacing", supportsInterpolation: true)
+
 public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public let identifier: String
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)
     public var isVisible: Bool = true
-    public var maximumZoomLevel: Float? = nil
-    public var minimumZoomLevel: Float? = nil
+    public var maximumZoomLevel: Float?
+    public var minimumZoomLevel: Float?
 
     public var source: StyleLayerSource
     public var predicate: NSPredicate?
@@ -112,23 +115,23 @@ private struct SymbolStyleLayerInternal: StyleLayer {
     private var definition: SymbolStyleLayer
     private let mglSource: MLNSource
 
-    public var identifier: String { definition.identifier }
-    public var insertionPosition: LayerInsertionPosition {
+    var identifier: String { definition.identifier }
+    var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }
     }
 
-    public var isVisible: Bool {
+    var isVisible: Bool {
         get { definition.isVisible }
         set { definition.isVisible = newValue }
     }
 
-    public var maximumZoomLevel: Float? {
+    var maximumZoomLevel: Float? {
         get { definition.maximumZoomLevel }
         set { definition.maximumZoomLevel = newValue }
     }
 
-    public var minimumZoomLevel: Float? {
+    var minimumZoomLevel: Float? {
         get { definition.minimumZoomLevel }
         set { definition.minimumZoomLevel = newValue }
     }
@@ -138,7 +141,7 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         self.mglSource = mglSource
     }
 
-    public func makeMLNStyleLayer() -> MLNStyleLayer {
+    func makeMLNStyleLayer() -> MLNStyleLayer {
         let result = MLNSymbolStyleLayer(identifier: identifier, source: mglSource)
         result.sourceLayerIdentifier = definition.sourceLayerIdentifier
 
@@ -161,6 +164,9 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
         result.textHaloBlur = definition.textHaloBlur
+
+        result.symbolPlacement = definition.symbolPlacement
+        result.symbolSpacing = definition.symbolSpacing
 
         result.predicate = definition.predicate
 

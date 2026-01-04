@@ -25,14 +25,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.10.0"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
         // Macros
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "602.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.3.1"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.3"),
+        .package(url: "https://github.com/apple/swift-numerics.git", from: "1.1.1"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.7"),
         // Macro Testing
-        .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.0")),
+        .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.4")),
     ],
     targets: [
         .target(
@@ -88,6 +89,8 @@ let package = Package(
             name: "MapLibreSwiftUITests",
             dependencies: [
                 "MapLibreSwiftUI",
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+                .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Mockable", package: "Mockable"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ]

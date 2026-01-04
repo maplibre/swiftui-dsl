@@ -5,12 +5,13 @@ struct CameraDirectManipulationPreview: View {
     @State private var camera = MapViewCamera.center(switzerland, zoom: 4)
 
     let styleURL: URL
-    var onStyleLoaded: (() -> Void)? = nil
-    var targetCameraAfterDelay: MapViewCamera? = nil
+    var onStyleLoaded: (() -> Void)?
+    var targetCameraAfterDelay: MapViewCamera?
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
-            .onStyleLoaded { _ in
+            .onMapStyleLoaded { _ in
+                print("Style Loaded")
                 onStyleLoaded?()
             }
             .overlay(alignment: .bottom, content: {
@@ -22,6 +23,7 @@ struct CameraDirectManipulationPreview: View {
                             .foregroundColor(.black)
                             .cornerRadius(8)
                     )
+                    .padding(.horizontal)
                     .padding(.bottom, 42)
             })
             .task {

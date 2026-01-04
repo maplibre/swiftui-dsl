@@ -4,8 +4,12 @@ import MapLibre
 import Mockable
 
 // NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
+
+/// A reprentation of the MLNMapView
+///
+/// This is primarily used to abstract the MLNMapView for testing.
 @Mockable
-public protocol MLNMapViewCameraUpdating: AnyObject {
+public protocol MLNMapViewRepresentable: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
     @MainActor func setUserTrackingMode(_ mode: MLNUserTrackingMode, animated: Bool, completionHandler: (() -> Void)?)
 
@@ -28,8 +32,11 @@ public protocol MLNMapViewCameraUpdating: AnyObject {
         animated: Bool,
         completionHandler: (() -> Void)?
     )
+    @MainActor var visibleCoordinateBounds: MLNCoordinateBounds { get }
+    @MainActor var contentInset: UIEdgeInsets { get }
+    @MainActor func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint
 }
 
-extension MLNMapView: MLNMapViewCameraUpdating {
+extension MLNMapView: MLNMapViewRepresentable {
     // No definition
 }

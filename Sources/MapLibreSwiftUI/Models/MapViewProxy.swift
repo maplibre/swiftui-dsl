@@ -16,7 +16,7 @@ import MapLibre
 /// For more information about the properties and functions, see
 /// https://maplibre.org/maplibre-native/ios/latest/documentation/maplibre/mlnmapview
 @MainActor
-public struct MapViewProxy: Hashable, Equatable {
+public struct MapViewProxy {
     /// The current center coordinate of the MapView
     public var centerCoordinate: CLLocationCoordinate2D {
         mapView.centerCoordinate
@@ -32,14 +32,17 @@ public struct MapViewProxy: Hashable, Equatable {
         mapView.direction
     }
 
+    /// The visible coordinate bounds of the MapView
     public var visibleCoordinateBounds: MLNCoordinateBounds {
         mapView.visibleCoordinateBounds
     }
 
+    /// The size of the MapView
     public var mapViewSize: CGSize {
         mapView.frame.size
     }
 
+    /// The content inset of the MapView
     public var contentInset: UIEdgeInsets {
         mapView.contentInset
     }
@@ -47,17 +50,25 @@ public struct MapViewProxy: Hashable, Equatable {
     /// The reason the view port was changed.
     public let lastReasonForChange: CameraChangeReason?
 
-    private let mapView: MLNMapView
+    /// The underlying MLNMapView (only used for functions that require it)
+    private let mapView: MLNMapViewRepresentable
 
+    /// Convert a coordinate to a point in the MapView
+    /// - Parameters:
+    ///   - coordinate: The coordinate to convert
+    ///   - toPointTo: The view to convert the point to (usually nil for the MapView itself)
+    /// - Returns: The CGPoint representation of the coordinate
     public func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint {
         mapView.convert(coordinate, toPointTo: toPointTo)
     }
 
-    public init(mapView: MLNMapView,
-                lastReasonForChange: CameraChangeReason?)
-    {
-        self.mapView = mapView
+    /// Initialize with an MLNMapView (captures current values)
+    /// - Parameters:
+    ///   - mapView: The MLNMapView to capture values from
+    ///   - lastReasonForChange: The reason for the last camera change
+    public init(mapView: MLNMapViewRepresentable, lastReasonForChange: CameraChangeReason?) {
         self.lastReasonForChange = lastReasonForChange
+        self.mapView = mapView
     }
 }
 

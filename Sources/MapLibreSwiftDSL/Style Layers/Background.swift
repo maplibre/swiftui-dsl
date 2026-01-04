@@ -9,8 +9,8 @@ public struct BackgroundLayer: StyleLayer {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .below(.all)
     public var isVisible: Bool = true
-    public var maximumZoomLevel: Float? = nil
-    public var minimumZoomLevel: Float? = nil
+    public var maximumZoomLevel: Float?
+    public var minimumZoomLevel: Float?
 
     public init(identifier: String) {
         self.identifier = identifier
