@@ -1,11 +1,11 @@
 import SwiftUI
 
 private struct MapViewContentUserAnnotationStyleKey: EnvironmentKey {
-    static let defaultValue = MapUserAnnotationStyle()
+    static let defaultValue: MapUserAnnotationStyle? = nil
 }
 
 extension EnvironmentValues {
-    var mapUserAnnotationStyle: MapUserAnnotationStyle {
+    var mapUserAnnotationStyle: MapUserAnnotationStyle? {
         get { self[MapViewContentUserAnnotationStyleKey.self] }
         set { self[MapViewContentUserAnnotationStyleKey.self] = newValue }
     }

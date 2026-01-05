@@ -53,8 +53,8 @@ public struct MapUserAnnotationStyle: Equatable, Hashable, Sendable {
         approximateHaloFillColor: Color = .primary,
         approximateHaloOpacity: CGFloat = 0.15,
         haloFillColor: Color = .primary,
-        puckArrowFillColor: Color = .primary,
-        puckFillColor: Color = .white,
+        puckArrowFillColor: Color = .blue,
+        puckFillColor: Color = .blue,
         puckShadowColor: Color = .black,
         puckShadowOpacity: CGFloat = 0.25
     ) {

@@ -434,7 +434,11 @@ MLNMapViewDelegate {
 
     @MainActor
     public func mapView(styleForDefaultUserLocationAnnotationView _: MLNMapView) -> MLNUserLocationAnnotationViewStyle {
-        parent.annotationStyle.value
+        if let value = parent.annotationStyle?.value {
+            value
+        } else {
+            MLNUserLocationAnnotationViewStyle()
+        }
     }
 
     @MainActor
