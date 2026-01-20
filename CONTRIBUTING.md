@@ -26,6 +26,9 @@ to `true`. This variable enables the `"MapLibreDeveloper"` SwiftPM trait, allowi
 install Mockable in the main library target. Doing this ensures that Mockable is not included
 in the downloaded package unless a developer installs with that trait enabled.
 
+> [!IMPORTANT]
+> Configuring the trait is not possible with Swift 5.10 or earlier.
+
 > [!NOTE]
 > We haven't used `Context` or `ProcessInfo` because Xcode doesn't respect them. See [this issue](https://github.com/swiftlang/swift-package-manager/issues/5641) and others.
 
