@@ -23,7 +23,7 @@ jobs:
             # "platform=iOS Simulator,name=iPad (10th generation),OS=16.4",
             # "platform=iOS Simulator,name=iPhone 15,OS=17.2",
           ]
-    name: ${{ matrix.destination }}
+    name: Test ${{ matrix.destination }}
 
     steps:
       - name: Install tools
