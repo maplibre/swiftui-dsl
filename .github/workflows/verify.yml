@@ -39,7 +39,7 @@ jobs:
       matrix:
         scheme: [MapLibreSwiftUI-Package]
         destination: ["platform=iOS Simulator,name=iPhone 17,OS=26.2"]
-    name: ${{ matrix.destination }}
+    name: Build as release
 
     steps:
       - name: Install tools
