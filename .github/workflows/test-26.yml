@@ -15,7 +15,7 @@ jobs:
         scheme: [MapLibreSwiftUI-Package]
         destination: [
             # TODO: Add more destinations (snapshot testing is the problem)
-            "platform=iOS Simulator,name=iPhone 17,OS=26.1",
+            "platform=iOS Simulator,name=iPhone 17,OS=26.2",
             # 'platform=watchOS Simulator,name=Apple Watch Ultra 2 (49mm)',
             # "platform=iOS Simulator,name=iPad (10th generation),OS=16.4",
             # "platform=iOS Simulator,name=iPhone 15,OS=17.2",
@@ -28,7 +28,7 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "26.1.1"
+          xcode-version: "26.2"
 
       - name: Checkout maplibre-swiftui-dsl-playground
         uses: actions/checkout@v4

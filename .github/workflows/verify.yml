@@ -1,0 +1,57 @@
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-developer-toggle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
+
+      - name: Ensure that Package.swift is NOT configured for development at this stage (easy to forget)
+        run: |
+          if grep -q "let enableDeveloperTools = true" Package.swift; then
+            echo "Error: Package.swift has enableDeveloperTools = true. It should be false for release."
+            exit 1
+          fi
+
+  format-lint:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
+
+      - name: Check format
+        run: swiftformat . --lint
+
+  build-as-release:
+    runs-on: macos-26
+    strategy:
+      matrix:
+        scheme: [MapLibreSwiftUI-Package]
+        destination: ["platform=iOS Simulator,name=iPhone 17,OS=26.2"]
+    name: ${{ matrix.destination }}
+
+    steps:
+      - name: Install tools
+        run: brew update && brew upgrade xcbeautify
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.2"
+
+      - name: Checkout maplibre-swiftui-dsl-playground
+        uses: actions/checkout@v4
+
+      - name: Disable SPM Prebuilts
+        run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
+
+      - name: Build
+        run: xcodebuild -scheme ${{ matrix.scheme }} build -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}

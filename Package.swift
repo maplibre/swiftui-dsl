@@ -1,8 +1,15 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
 import PackageDescription
+
+let enableDeveloperTools = false
+let defaultTraits: Set<String> = if enableDeveloperTools {
+    ["MapLibreDeveloper"]
+} else {
+    []
+}
 
 let package = Package(
     name: "MapLibreSwiftUI",
@@ -24,13 +31,17 @@ let package = Package(
             targets: ["MapLibreSwiftMacros"]
         ),
     ],
+    traits: [
+        .default(enabledTraits: defaultTraits),
+        .trait(name: "MapLibreDeveloper")
+    ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.1.1"),
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.0"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.1"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.7"),
         // Macro Testing
         .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.4")),
@@ -42,7 +53,7 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibreSwiftDSL"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-                .product(name: "Mockable", package: "Mockable"),
+                .product(name: "Mockable", package: "Mockable", condition: .when(traits: ["MapLibreDeveloper"])),
             ],
             swiftSettings: [
                 .define("MOCKING", .when(configuration: .debug)),
@@ -112,5 +123,6 @@ let package = Package(
                 .product(name: "MacroTesting", package: "swift-macro-testing"),
             ]
         ),
-    ]
+    ],
+    swiftLanguageModes: [.v5] // TODO: we need to enable v6
 )
