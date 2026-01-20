@@ -1,10 +1,10 @@
 #if MapLibreDeveloper
-import Mockable
+    import Mockable
 #endif
 import UIKit
 
 #if MapLibreDeveloper
-@Mockable
+    @Mockable
 #endif
 public protocol UIGestureRecognizing: AnyObject {
     @MainActor var state: UIGestureRecognizer.State { get }
