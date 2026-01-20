@@ -19,6 +19,8 @@ jobs:
           if grep -q "let enableDeveloperTools = true" Package.swift; then
             echo "Error: Package.swift has enableDeveloperTools = true. It should be false for release."
             exit 1
+          else
+            echo "✓ Package.swift correctly has enableDeveloperTools = false"
           fi
 
   format-lint:
