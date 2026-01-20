@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure Package.swift for local development
-        run: sed -i '' 's/let enableDeveloperTools = false/let enableDeveloperTools = true/' Package@swift-5.9.swift
+        run: sed -i '' 's/let enableDeveloperTools = false/let enableDeveloperTools = true/' Package@swift-5.10.swift
 
       - name: Disable SPM Prebuilts
         run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
