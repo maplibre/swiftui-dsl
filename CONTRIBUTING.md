@@ -19,6 +19,16 @@ swiftformat .
 Swiftformat can occasionally poorly resolve a formatting issue (e.g. when you've already line-broken a large comment).
 Issues like this are typically easy to manually correct. 
 
+## MapLibreDeveloper SwiftPM trait toggle
+
+When testing this package, you'll want to change `let enableDeveloperTools = false` 
+to `true`. This variable enables the `"MapLibreDeveloper"` SwiftPM trait, allowing you to 
+install Mockable in the main library target. Doing this ensures that Mockable is not included
+in the downloaded package unless a developer installs with that trait enabled.
+
+> [!NOTE]
+> We haven't used `Context` or `ProcessInfo` because Xcode doesn't respect them. See [this issue](https://github.com/swiftlang/swift-package-manager/issues/5641) and others.
+
 ## Structure
 
 This package is structured into a few targets. `InternalUtils` is pretty much what it says. `MapLibreSwiftDSL` and
