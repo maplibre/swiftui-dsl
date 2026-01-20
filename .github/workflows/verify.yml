@@ -23,6 +23,15 @@ jobs:
             echo "✓ Package.swift correctly has enableDeveloperTools = false"
           fi
 
+      - name: Ensure that Package@swift-5.10.swift is NOT configured for development at this stage (easy to forget)
+        run: |
+          if grep -q "let enableDeveloperTools = true" Package@swift-5.10.swift; then
+            echo "Error: Package@swift-5.10.swift has enableDeveloperTools = true. It should be false for release."
+            exit 1
+          else
+            echo "✓ Package@swift-5.10.swift correctly has enableDeveloperTools = false"
+          fi
+
   format-lint:
     runs-on: macos-26
 

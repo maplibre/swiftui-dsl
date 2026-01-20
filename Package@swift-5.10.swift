@@ -4,6 +4,13 @@
 import CompilerPluginSupport
 import PackageDescription
 
+let enableDeveloperTools = false
+let devDependencies: [PackageDescription.Target.Dependency] = if enableDeveloperTools {
+    [.product(name: "Mockable", package: "Mockable"),]
+} else {
+    []
+}
+
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
@@ -42,8 +49,7 @@ let package = Package(
                 .target(name: "InternalUtils"),
                 .target(name: "MapLibreSwiftDSL"),
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
-                .product(name: "Mockable", package: "Mockable"),
-            ],
+            ] + devDependencies,
             swiftSettings: [
                 .define("MOCKING", .when(configuration: .debug)),
                 .enableExperimentalFeature("StrictConcurrency"),
