@@ -6,7 +6,7 @@ import PackageDescription
 
 let enableDeveloperTools = false
 let devDependencies: [PackageDescription.Target.Dependency] = if enableDeveloperTools {
-    [.product(name: "Mockable", package: "Mockable"),]
+    [.product(name: "Mockable", package: "Mockable")]
 } else {
     []
 }
