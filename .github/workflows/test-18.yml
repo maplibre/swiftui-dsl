@@ -10,6 +10,9 @@ jobs:
   test:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: macos-15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-ios18
+      cancel-in-progress: true
     strategy:
       matrix:
         scheme: [MapLibreSwiftUI-Package]
