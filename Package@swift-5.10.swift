@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -7,6 +7,12 @@ import PackageDescription
 let enableDeveloperTools = false
 let devDependencies: [PackageDescription.Target.Dependency] = if enableDeveloperTools {
     [.product(name: "Mockable", package: "Mockable")]
+} else {
+    []
+}
+
+let devFlags: [SwiftSetting] = if enableDeveloperTools {
+    [.define("MapLibreDeveloper")]
 } else {
     []
 }
@@ -53,7 +59,7 @@ let package = Package(
             swiftSettings: [
                 .define("MOCKING", .when(configuration: .debug)),
                 .enableExperimentalFeature("StrictConcurrency"),
-            ]
+            ] + devFlags
         ),
         .target(
             name: "MapLibreSwiftDSL",
