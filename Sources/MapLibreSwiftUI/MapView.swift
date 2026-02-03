@@ -36,10 +36,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Environment(\.onMapProxyUpdated) var onViewProxyChanged
     @Environment(\.onMapGestures) var gestureManager
 
-    var gestures: [MapGesture] {
-        gestureManager.gestures
-    }
-
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
