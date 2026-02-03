@@ -47,7 +47,10 @@ private struct CircleStyleLayerInternal: StyleLayer {
     private var definition: CircleStyleLayer
     private let mglSource: MLNSource
 
-    var identifier: String { definition.identifier }
+    var identifier: String {
+        definition.identifier
+    }
+
     var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }

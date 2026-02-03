@@ -1,7 +1,6 @@
 import CoreLocation
 import Mockable
 import XCTest
-
 @testable import MapLibreSwiftUI
 
 final class MapViewCoordinatorCameraTests: XCTestCase {

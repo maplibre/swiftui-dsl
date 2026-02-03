@@ -4,7 +4,7 @@ import XCTest
 @testable import MapLibreSwiftDSL
 
 final class ShapeSourceTests: XCTestCase {
-    func testShapeSourcePolylineShapeBuilder() throws {
+    func testShapeSourcePolylineShapeBuilder() {
         // Ideally in a style context, these could be tested at compile time to
         // ensure there are no duplicate IDs.
         let shapeSource = ShapeSource(identifier: "foo") {
@@ -21,7 +21,7 @@ final class ShapeSourceTests: XCTestCase {
         }
     }
 
-    func testShapeSourcePolylineFeatureBuilder() throws {
+    func testShapeSourcePolylineFeatureBuilder() {
         let shapeSource = ShapeSource(identifier: "foo") {
             MLNPolylineFeature(coordinates: samplePedestrianWaypoints)
         }
@@ -36,7 +36,7 @@ final class ShapeSourceTests: XCTestCase {
         }
     }
 
-    func testForInAndCombinationFeatureBuilder() throws {
+    func testForInAndCombinationFeatureBuilder() {
         // ShapeSource now accepts 'for in' building, arrays, and combinations of them
         let shapeSource = ShapeSource(identifier: "foo") {
             for coordinates in samplePedestrianWaypoints {
