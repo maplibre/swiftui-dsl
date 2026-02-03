@@ -3,8 +3,9 @@ import InternalUtils
 import MapLibre
 import MapLibreSwiftMacros
 
-/// An enum would probably be better?
-/// An enum would probably be better?
+/// A MapLibre symbol.
+/// 
+/// An enum would probably be better for iconAnchor and textAnchor?
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
 @MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
