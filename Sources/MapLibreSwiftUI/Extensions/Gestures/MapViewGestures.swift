@@ -3,43 +3,6 @@ import MapLibre
 import SwiftUI
 
 extension MapView {
-    /// Register a gesture recognizer on the MapView.
-    ///
-    /// - Parameters:
-    ///   - mapView: The MLNMapView that will host the gesture itself.
-    ///   - context: The UIViewRepresentable context that will orchestrate the response sender
-    ///   - gesture: The gesture definition.
-    @MainActor func registerGesture(_ mapView: MLNMapView, _ context: Context, gesture: MapGesture) {
-        switch gesture.method {
-        case let .tap(numberOfTaps: numberOfTaps):
-            let gestureRecognizer = UITapGestureRecognizer(target: context.coordinator,
-                                                           action: #selector(context.coordinator.captureGesture(_:)))
-            gestureRecognizer.numberOfTapsRequired = numberOfTaps
-            if numberOfTaps == 1 {
-                // If a user double taps to zoom via the built in gesture, a normal
-                // tap should not be triggered.
-                if let doubleTapRecognizer = mapView.gestureRecognizers?
-                    .first(where: {
-                        $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2
-                    })
-                {
-                    gestureRecognizer.require(toFail: doubleTapRecognizer)
-                }
-            }
-            mapView.addGestureRecognizer(gestureRecognizer)
-            gesture.gestureRecognizer = gestureRecognizer
-
-        case let .longPress(minimumDuration: minimumDuration):
-            let gestureRecognizer = UILongPressGestureRecognizer(target: context.coordinator,
-                                                                 action: #selector(context.coordinator
-                                                                     .captureGesture(_:)))
-            gestureRecognizer.minimumPressDuration = minimumDuration
-
-            mapView.addGestureRecognizer(gestureRecognizer)
-            gesture.gestureRecognizer = gestureRecognizer
-        }
-    }
-
     /// Runs on each gesture change event and filters the appropriate gesture behavior based on the
     /// user definition.
     ///
@@ -53,7 +16,7 @@ extension MapView {
     /// gesture.
     ///   - sender: The UIGestureRecognizer
     @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
-        guard let gesture = gestures.first(where: { $0.gestureRecognizer == sender }) else {
+        guard let gesture = gestureManager.gestures.first(where: { $0.gestureRecognizer == sender }) else {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return
         }

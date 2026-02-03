@@ -33,7 +33,7 @@ let package = Package(
     ],
     traits: [
         .default(enabledTraits: defaultTraits),
-        .trait(name: "MapLibreDeveloper")
+        .trait(name: "MapLibreDeveloper"),
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),

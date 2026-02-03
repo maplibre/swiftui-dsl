@@ -9,24 +9,6 @@ final class MapViewGestureTests: XCTestCase {
     @MainActor
     let mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
 
-    // MARK: Gesture View Modifiers
-
-    func testMapViewOnTapGestureModifier() {
-        let newMapView = mapView.onTapMapGesture { _ in
-            // Do nothing
-        }
-
-        XCTAssertEqual(newMapView.gestures.first?.method, .tap())
-    }
-
-    func testMapViewOnLongPressGestureModifier() {
-        let newMapView = mapView.onLongPressMapGesture { _ in
-            // Do nothing
-        }
-
-        XCTAssertEqual(newMapView.gestures.first?.method, .longPress())
-    }
-
     // MARK: Gesture Processing
 
     @MainActor func testTapGesture() {

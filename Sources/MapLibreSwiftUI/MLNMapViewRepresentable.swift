@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 import MapLibre
 #if MapLibreDeveloper
-import Mockable
+    import Mockable
 #endif
 
 // NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
@@ -11,7 +11,7 @@ import Mockable
 ///
 /// This is primarily used to abstract the MLNMapView for testing.
 #if MapLibreDeveloper
-@Mockable
+    @Mockable
 #endif
 public protocol MLNMapViewRepresentable: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
