@@ -19,6 +19,17 @@ jobs:
           if grep -q "let enableDeveloperTools = true" Package.swift; then
             echo "Error: Package.swift has enableDeveloperTools = true. It should be false for release."
             exit 1
+          else
+            echo "✓ Package.swift correctly has enableDeveloperTools = false"
+          fi
+
+      - name: Ensure that Package@swift-5.10.swift is NOT configured for development at this stage (easy to forget)
+        run: |
+          if grep -q "let enableDeveloperTools = true" Package@swift-5.10.swift; then
+            echo "Error: Package@swift-5.10.swift has enableDeveloperTools = true. It should be false for release."
+            exit 1
+          else
+            echo "✓ Package@swift-5.10.swift correctly has enableDeveloperTools = false"
           fi
 
   format-lint:
@@ -33,11 +44,17 @@ jobs:
 
   build-as-release:
     runs-on: macos-26
+<<<<<<< HEAD
+=======
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build-as-release
+      cancel-in-progress: true
+>>>>>>> 31994c2e1199a5364b5503939327d8cc7150ac66
     strategy:
       matrix:
         scheme: [MapLibreSwiftUI-Package]
         destination: ["platform=iOS Simulator,name=iPhone 17,OS=26.2"]
-    name: ${{ matrix.destination }}
+    name: Build as release
 
     steps:
       - name: Install tools

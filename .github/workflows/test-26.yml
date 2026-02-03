@@ -10,6 +10,9 @@ jobs:
   test:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: macos-26
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-ios26
+      cancel-in-progress: true
     strategy:
       matrix:
         scheme: [MapLibreSwiftUI-Package]
@@ -20,7 +23,7 @@ jobs:
             # "platform=iOS Simulator,name=iPad (10th generation),OS=16.4",
             # "platform=iOS Simulator,name=iPhone 15,OS=17.2",
           ]
-    name: ${{ matrix.destination }}
+    name: Test ${{ matrix.destination }}
 
     steps:
       - name: Install tools
@@ -32,6 +35,9 @@ jobs:
 
       - name: Checkout maplibre-swiftui-dsl-playground
         uses: actions/checkout@v4
+
+      - name: Configure Package.swift for local development
+        run: sed -i '' 's/let enableDeveloperTools = false/let enableDeveloperTools = true/' Package.swift
 
       - name: Disable SPM Prebuilts
         run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
