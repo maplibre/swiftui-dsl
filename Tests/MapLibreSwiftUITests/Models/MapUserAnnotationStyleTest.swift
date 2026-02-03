@@ -3,7 +3,7 @@ import Testing
 
 struct MapUserAnnotationStyleTest {
     @Test("The MapUserAnnotationStyle values are properly assigned")
-    func values() async throws {
+    func values() {
         let custom = MapUserAnnotationStyle(
             approximateHaloBorderColor: .orange,
             approximateHaloBorderWidth: 50,

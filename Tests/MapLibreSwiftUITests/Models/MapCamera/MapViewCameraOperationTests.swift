@@ -41,7 +41,7 @@ struct MapViewCameraOperationTests {
 
     // MARK: - setZoom Tests
 
-    @Test func setZoom_centeredCamera_updatesZoomCorrectly() async throws {
+    @Test func setZoom_centeredCamera_updatesZoomCorrectly() {
         var camera = MapViewCamera.center(
             testCoordinate,
             zoom: 10.0,
@@ -56,7 +56,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setZoom_trackingUserLocationCamera_updatesZoomCorrectly() async throws {
+    @Test func setZoom_trackingUserLocationCamera_updatesZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocation(
             zoom: 10.0,
             pitch: testPitch,
@@ -70,7 +70,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setZoom_trackingUserLocationWithHeadingCamera_updatesZoomCorrectly() async throws {
+    @Test func setZoom_trackingUserLocationWithHeadingCamera_updatesZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithHeading(
             zoom: 10.0,
             pitch: testPitch,
@@ -83,7 +83,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setZoom_trackingUserLocationWithCourseCamera_updatesZoomCorrectly() async throws {
+    @Test func setZoom_trackingUserLocationWithCourseCamera_updatesZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithCourse(
             zoom: 10.0,
             pitch: testPitch,
@@ -96,7 +96,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setZoom_rectCamera_withProxy_convertsToCenteredCamera() async throws {
+    @Test func setZoom_rectCamera_withProxy_convertsToCenteredCamera() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -109,7 +109,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setZoom_rectCamera_withoutProxy_doesNothing() async throws {
+    @Test func setZoom_rectCamera_withoutProxy_doesNothing() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -125,7 +125,7 @@ struct MapViewCameraOperationTests {
 
     // MARK: - incrementZoom Tests
 
-    @Test func incrementZoom_centeredCamera_incrementsZoomCorrectly() async throws {
+    @Test func incrementZoom_centeredCamera_incrementsZoomCorrectly() {
         var camera = MapViewCamera.center(
             testCoordinate,
             zoom: 10.0,
@@ -140,7 +140,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func incrementZoom_negativeIncrement_decrementsZoom() async throws {
+    @Test func incrementZoom_negativeIncrement_decrementsZoom() {
         var camera = MapViewCamera.center(testCoordinate, zoom: 10.0)
 
         camera.incrementZoom(by: -3.0)
@@ -148,7 +148,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func incrementZoom_trackingUserLocationCamera_incrementsZoomCorrectly() async throws {
+    @Test func incrementZoom_trackingUserLocationCamera_incrementsZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocation(
             zoom: 8.0,
             pitch: testPitch,
@@ -161,7 +161,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func incrementZoom_trackingUserLocationWithHeadingCamera_incrementsZoomCorrectly() async throws {
+    @Test func incrementZoom_trackingUserLocationWithHeadingCamera_incrementsZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithHeading(
             zoom: 12.0,
             pitch: testPitch,
@@ -173,7 +173,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func incrementZoom_trackingUserLocationWithCourseCamera_incrementsZoomCorrectly() async throws {
+    @Test func incrementZoom_trackingUserLocationWithCourseCamera_incrementsZoomCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithCourse(
             zoom: 14.0,
             pitch: testPitch,
@@ -185,7 +185,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func incrementZoom_rectCamera_withProxy_convertsToCenteredCamera() async throws {
+    @Test func incrementZoom_rectCamera_withProxy_convertsToCenteredCamera() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -197,7 +197,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func incrementZoom_rectCamera_withoutProxy_doesNothing() async throws {
+    @Test func incrementZoom_rectCamera_withoutProxy_doesNothing() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -212,7 +212,7 @@ struct MapViewCameraOperationTests {
 
     // MARK: - setPitch Tests
 
-    @Test func setPitch_centeredCamera_updatesPitchCorrectly() async throws {
+    @Test func setPitch_centeredCamera_updatesPitchCorrectly() {
         var camera = MapViewCamera.center(
             testCoordinate,
             zoom: testZoom,
@@ -227,7 +227,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setPitch_trackingUserLocationCamera_updatesPitchCorrectly() async throws {
+    @Test func setPitch_trackingUserLocationCamera_updatesPitchCorrectly() {
         var camera = MapViewCamera.trackUserLocation(
             zoom: testZoom,
             pitch: 0.0,
@@ -240,7 +240,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setPitch_trackingUserLocationWithHeadingCamera_updatesPitchCorrectly() async throws {
+    @Test func setPitch_trackingUserLocationWithHeadingCamera_updatesPitchCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithHeading(
             zoom: testZoom,
             pitch: 0.0,
@@ -252,7 +252,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setPitch_trackingUserLocationWithCourseCamera_updatesPitchCorrectly() async throws {
+    @Test func setPitch_trackingUserLocationWithCourseCamera_updatesPitchCorrectly() {
         var camera = MapViewCamera.trackUserLocationWithCourse(
             zoom: testZoom,
             pitch: 0.0,
@@ -264,7 +264,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setPitch_rectCamera_withProxy_convertsToCenteredCamera() async throws {
+    @Test func setPitch_rectCamera_withProxy_convertsToCenteredCamera() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -276,7 +276,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setPitch_rectCamera_withoutProxy_doesNothing() async throws {
+    @Test func setPitch_rectCamera_withoutProxy_doesNothing() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -291,7 +291,7 @@ struct MapViewCameraOperationTests {
 
     // MARK: - setDirection Tests
 
-    @Test func setDirection_centeredCamera_updatesDirectionCorrectly() async throws {
+    @Test func setDirection_centeredCamera_updatesDirectionCorrectly() {
         var camera = MapViewCamera.center(
             testCoordinate,
             zoom: testZoom,
@@ -306,7 +306,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.lastReasonForChange == .programmatic)
     }
 
-    @Test func setDirection_trackingUserLocationCamera_updatesDirectionCorrectly() async throws {
+    @Test func setDirection_trackingUserLocationCamera_updatesDirectionCorrectly() {
         var camera = MapViewCamera.trackUserLocation(
             zoom: testZoom,
             pitch: testPitch,
@@ -319,7 +319,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setDirection_trackingUserLocationWithHeadingCamera_ignoresDirection() async throws {
+    @Test func setDirection_trackingUserLocationWithHeadingCamera_ignoresDirection() {
         var camera = MapViewCamera.trackUserLocationWithHeading(
             zoom: testZoom,
             pitch: testPitch,
@@ -333,7 +333,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.state == originalState)
     }
 
-    @Test func setDirection_trackingUserLocationWithCourseCamera_ignoresDirection() async throws {
+    @Test func setDirection_trackingUserLocationWithCourseCamera_ignoresDirection() {
         var camera = MapViewCamera.trackUserLocationWithCourse(
             zoom: testZoom,
             pitch: testPitch,
@@ -347,7 +347,7 @@ struct MapViewCameraOperationTests {
         #expect(camera.state == originalState)
     }
 
-    @Test func setDirection_rectCamera_withProxy_convertsToCenteredCamera() async throws {
+    @Test func setDirection_rectCamera_withProxy_convertsToCenteredCamera() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -359,7 +359,7 @@ struct MapViewCameraOperationTests {
         assertSnapshot(of: camera.state, as: .dump)
     }
 
-    @Test func setDirection_rectCamera_withoutProxy_doesNothing() async throws {
+    @Test func setDirection_rectCamera_withoutProxy_doesNothing() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -374,7 +374,7 @@ struct MapViewCameraOperationTests {
 
     // MARK: - CarPlay Pan Tests
 
-    @Test func pan_centeredCamera_upDirection_pansCameraUp() async throws {
+    @Test func pan_centeredCamera_upDirection_pansCameraUp() {
         var camera = MapViewCamera.center(testCoordinate, zoom: testZoom)
 
         camera.pan(.up)
@@ -388,7 +388,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_centeredCamera_downDirection_pansCameraDown() async throws {
+    @Test func pan_centeredCamera_downDirection_pansCameraDown() {
         var camera = MapViewCamera.center(testCoordinate, zoom: testZoom)
 
         camera.pan(.down)
@@ -402,7 +402,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_centeredCamera_leftDirection_pansCameraLeft() async throws {
+    @Test func pan_centeredCamera_leftDirection_pansCameraLeft() {
         var camera = MapViewCamera.center(testCoordinate, zoom: testZoom)
 
         camera.pan(.left)
@@ -416,7 +416,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_centeredCamera_rightDirection_pansCameraRight() async throws {
+    @Test func pan_centeredCamera_rightDirection_pansCameraRight() {
         var camera = MapViewCamera.center(testCoordinate, zoom: testZoom)
 
         camera.pan(.right)
@@ -430,7 +430,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_trackingUserLocationCamera_convertsToCenteredCamera() async throws {
+    @Test func pan_trackingUserLocationCamera_convertsToCenteredCamera() {
         var camera = MapViewCamera.trackUserLocation(zoom: testZoom)
 
         camera.pan(.up, proxy: mockProxy)
@@ -445,7 +445,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_trackingUserLocationWithHeadingCamera_convertsToCenteredCamera() async throws {
+    @Test func pan_trackingUserLocationWithHeadingCamera_convertsToCenteredCamera() {
         var camera = MapViewCamera.trackUserLocationWithHeading(zoom: testZoom)
 
         camera.pan(.down, proxy: mockProxy)
@@ -460,7 +460,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_trackingUserLocationWithCourseCamera_convertsToCenteredCamera() async throws {
+    @Test func pan_trackingUserLocationWithCourseCamera_convertsToCenteredCamera() {
         var camera = MapViewCamera.trackUserLocationWithCourse(zoom: testZoom)
 
         camera.pan(.left, proxy: mockProxy)
@@ -475,7 +475,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_rectCamera_withProxy_convertsToCenteredCamera() async throws {
+    @Test func pan_rectCamera_withProxy_convertsToCenteredCamera() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -494,7 +494,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_rectCamera_withoutProxy_usesDefaults() async throws {
+    @Test func pan_rectCamera_withoutProxy_usesDefaults() {
         let bounds = MLNCoordinateBounds(
             sw: CLLocationCoordinate2D(latitude: 37.0, longitude: -123.0),
             ne: CLLocationCoordinate2D(latitude: 38.0, longitude: -122.0)
@@ -521,7 +521,7 @@ struct MapViewCameraOperationTests {
         }
     }
 
-    @Test func pan_zoomSensitivity_higherZoomMeansSmallerMovement() async throws {
+    @Test func pan_zoomSensitivity_higherZoomMeansSmallerMovement() {
         let highZoomCamera = MapViewCamera.center(testCoordinate, zoom: 20.0)
         let lowZoomCamera = MapViewCamera.center(testCoordinate, zoom: 5.0)
 

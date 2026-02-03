@@ -94,8 +94,8 @@ private func generateFunctionDeclSyntax(identifier: TokenSyntax, valueType: Type
 }
 
 #if canImport(SwiftSyntax601)
-    // This provides compatibility for the new SwiftSyntax API, returning an empty result if the argument has
-    // been parsed as an expression.
+    /// This provides compatibility for the new SwiftSyntax API, returning an empty result if the argument has
+    /// been parsed as an expression.
     private func generateStyleProperty(for attributes: AttributeSyntax, valueType: GenericArgumentSyntax.Argument,
                                        isRawRepresentable: Bool) throws -> [DeclSyntax]
     {

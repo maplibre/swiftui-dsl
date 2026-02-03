@@ -8,9 +8,9 @@ final class StyleLayerTest: XCTestCase {
             .backgroundColor(.cyan)
             .backgroundOpacity(0.4)
 
-        let mglStyleLayer = styleLayer.makeMLNStyleLayer() as! MLNBackgroundStyleLayer
+        let mglStyleLayer = try XCTUnwrap(styleLayer.makeMLNStyleLayer() as? MLNBackgroundStyleLayer)
 
         XCTAssertEqual(mglStyleLayer.backgroundColor, NSExpression(forConstantValue: UIColor.cyan))
-        XCTAssertEqual(mglStyleLayer.backgroundOpacity.constantValue as! Double, 0.4, accuracy: 0.000001)
+        XCTAssertEqual(try XCTUnwrap(mglStyleLayer.backgroundOpacity.constantValue as? Double), 0.4, accuracy: 0.000001)
     }
 }
