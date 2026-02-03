@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import MapLibre
 import MapLibreSwiftDSL
@@ -23,6 +24,7 @@ extension MLNCameraChangeReason: @retroactive CustomStringConvertible {
     }
 }
 
+@MainActor
 public class MapViewCoordinator<T: MapViewHostViewController>: NSObject, @preconcurrency
 MLNMapViewDelegate {
     // This must be weak, the UIViewRepresentable owns the MLNMapView.
@@ -69,6 +71,15 @@ MLNMapViewDelegate {
         }
 
         onGesture(mapView, sender)
+    }
+
+    /// This function sets up a callback on the registered `MapViewGestureManager`.
+    /// Each time the callback emits a modified list of gestures, they are synced to the map view.
+    func registerGestureListener() {
+        parent.gestureManager.onGestureChange = { [weak self] gestures in
+            guard let self, let mapView else { return }
+            syncGestures(on: mapView, gestures: gestures)
+        }
     }
 
     // MARK: - Coordinator API - Styles + Layers

@@ -34,12 +34,11 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @Environment(\.onMapUserTrackingModeChanged) var onMapUserTrackingModeChanged
     @Environment(\.mapProxyUpdateMode) var proxyUpdateMode
     @Environment(\.onMapProxyUpdated) var onViewProxyChanged
+    @Environment(\.onMapGestures) var gestureManager
 
     let makeViewController: () -> T
     let styleSource: MapStyleSource
     let userLayers: [StyleLayerDefinition]
-
-    var gestures = [MapGesture]()
 
     private var locationManager: MLNLocationManager?
 
@@ -81,11 +80,14 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         applyModifiers(controller, runUnsafe: false)
 
         controller.mapView.locationManager = locationManager
+        controller.mapView.locationManager = controller.mapView.locationManager
 
         switch styleSource {
         case let .url(styleURL):
             controller.mapView.styleURL = styleURL
         }
+
+        context.coordinator.registerGestureListener()
 
         context.coordinator.applyCameraChangeFromStateUpdate(
             controller.mapView,
@@ -93,18 +95,11 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             animated: false
         )
 
-        controller.mapView.locationManager = controller.mapView.locationManager
-
         // Link the style loaded to the coordinator that emits the delegate event.
         context.coordinator.onStyleLoaded = onMapStyleLoaded
 
         // Link the user tracking change to the coordinator that emits the delegate event.
         context.coordinator.onUserTrackingModeChange = onMapUserTrackingModeChanged
-
-        // Add all gesture recognizers
-        for gesture in gestures {
-            registerGesture(controller.mapView, context, gesture: gesture)
-        }
 
         return controller
     }
@@ -174,14 +169,4 @@ public extension MapView where T == MLNMapViewController {
             makeMapContent
         )
     }
-}
-
-#Preview("Vanilla Map") {
-    MapView(styleURL: demoTilesURL)
-        .ignoresSafeArea(.all)
-
-    // For a larger selection of previews,
-    // check out the Examples directory, which
-    // has a wide variety of previews,
-    // organized into (hopefully) useful groups
 }
