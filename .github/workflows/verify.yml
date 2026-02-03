@@ -44,7 +44,6 @@ jobs:
 
   build-as-release:
     runs-on: macos-26
-
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-as-release
       cancel-in-progress: true
