@@ -31,7 +31,7 @@ extension MapViewCoordinator {
     /// Remove/clean up all gesture recognizers that were applied.
     ///
     /// - Parameter mapView: The MapLibre map view
-    func removeAllGestures(_ mapView: MLNMapView) {
+    private func removeAllGestures(_ mapView: MLNMapView) {
         mapView.gestureRecognizers?.forEach { gestureRecognizer in
             mapView.removeGestureRecognizer(gestureRecognizer)
         }
@@ -39,7 +39,7 @@ extension MapViewCoordinator {
 
     // MARK: Individual Gesture Tools
 
-    func addTapGesture(to mapView: MLNMapView, gesture: MapGesture) {
+    private func addTapGesture(to mapView: MLNMapView, gesture: MapGesture) {
         guard case let .tap(numberOfTaps: numberOfTaps) = gesture.method else {
             return
         }
