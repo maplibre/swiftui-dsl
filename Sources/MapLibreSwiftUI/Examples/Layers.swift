@@ -3,8 +3,8 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-// A collection of points with various
-// attributes
+/// A collection of points with various
+/// attributes
 @MainActor
 let pointSource = ShapeSource(identifier: "points") {
     // Uses the DSL to quickly construct point features inline

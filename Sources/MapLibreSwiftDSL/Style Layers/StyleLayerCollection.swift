@@ -15,5 +15,7 @@ public protocol StyleLayerCollection {
 /// @MapViewContentBuilder mapContent: @escaping () -> some StyleLayerCollection
 /// ```
 extension [StyleLayerDefinition]: StyleLayerCollection {
-    public var layers: [StyleLayerDefinition] { self }
+    public var layers: [StyleLayerDefinition] {
+        self
+    }
 }

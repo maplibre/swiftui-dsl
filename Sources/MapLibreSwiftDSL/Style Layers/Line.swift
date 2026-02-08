@@ -45,7 +45,10 @@ private struct LineStyleLayerInternal: StyleLayer {
     private var definition: LineStyleLayer
     private let mglSource: MLNSource
 
-    var identifier: String { definition.identifier }
+    var identifier: String {
+        definition.identifier
+    }
+
     var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }

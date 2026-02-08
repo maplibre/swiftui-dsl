@@ -15,7 +15,7 @@ public enum ShapeData {
     case geoJSONURL(URL)
     /// Generic shapes. These will NOT preserve any attributes.
     case shapes([MLNShape])
-    // Features which retain attributes when styled, filtered via a predicate, etc.
+    /// Features which retain attributes when styled, filtered via a predicate, etc.
     case features([MLNShape & MLNFeature])
 }
 
@@ -85,7 +85,7 @@ public enum ShapeDataBuilder: DefaultResultBuilder {
         components ?? []
     }
 
-    // Convert the collected MLNShape array to ShapeData
+    /// Convert the collected MLNShape array to ShapeData
     public static func buildFinalResult(_ components: [MLNShape]) -> ShapeData {
         let features = components.compactMap { $0 as? MLNShape & MLNFeature }
         if features.count == components.count {

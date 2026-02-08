@@ -3,18 +3,19 @@ import InternalUtils
 import MapLibre
 import MapLibreSwiftMacros
 
+/// A MapLibre symbol.
+///
+/// An enum would probably be better for iconAnchor and textAnchor?
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
 @MLNStyleProperty<Bool>("iconAllowsOverlap", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("iconOffset", supportsInterpolation: true)
-// An enum would probably be better?
 @MLNStyleProperty<String>("iconAnchor", supportsInterpolation: false)
 
 @MLNStyleProperty<UIColor>("textColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textFontSize", supportsInterpolation: true)
 @MLNStyleProperty<String>("text", supportsInterpolation: false)
 @MLNStyleProperty<[String]>("textFontNames", supportsInterpolation: false)
-// An enum would probably be better?
 @MLNStyleProperty<String>("textAnchor", supportsInterpolation: false)
 @MLNStyleProperty<CGVector>("textOffset", supportsInterpolation: true)
 @MLNStyleProperty<Double>("maximumTextWidth", supportsInterpolation: true)
@@ -115,7 +116,10 @@ private struct SymbolStyleLayerInternal: StyleLayer {
     private var definition: SymbolStyleLayer
     private let mglSource: MLNSource
 
-    var identifier: String { definition.identifier }
+    var identifier: String {
+        definition.identifier
+    }
+
     var insertionPosition: LayerInsertionPosition {
         get { definition.insertionPosition }
         set { definition.insertionPosition = newValue }

@@ -40,7 +40,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check format
+        id: check-format
         run: swiftformat . --lint
+
+      - name: Recommend swiftformat update on failure
+        if: ${{ failure() && steps.check-format.outcome == 'failure' }}
+        run: |
+          swiftformat --version
+          echo "::warning::swiftformat may be outdated. Check your version matches."
 
   build-as-release:
     runs-on: macos-26

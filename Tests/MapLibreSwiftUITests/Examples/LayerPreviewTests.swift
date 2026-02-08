@@ -6,8 +6,8 @@ import XCTest
 final class LayerPreviewTests: XCTestCase {
     let demoTilesURL = URL(string: "https://demotiles.maplibre.org/style.json")!
 
-    // A collection of points with various
-    // attributes
+    /// A collection of points with various
+    /// attributes
     let pointSource = ShapeSource(identifier: "points") {
         // Uses the DSL to quickly construct point features inline
         MLNPointFeature(coordinate: CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.00139))
