@@ -4,7 +4,7 @@ import MapLibre
 import MapLibreSwiftMacros
 
 /// A MapLibre symbol.
-/// 
+///
 /// An enum would probably be better for iconAnchor and textAnchor?
 @MLNStyleProperty<Double>("iconRotation", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("iconColor", supportsInterpolation: true)
