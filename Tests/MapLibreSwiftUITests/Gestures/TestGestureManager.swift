@@ -4,7 +4,7 @@ import Testing
 @MainActor
 struct TestGestureManager {
     @Test("Gesture manager lifecycle")
-    func registerAndRemove() async throws {
+    func registerAndRemove() {
         let manager = MapViewGestureManager()
         let gesture = MapGesture(
             method: .tap(numberOfTaps: 1),
