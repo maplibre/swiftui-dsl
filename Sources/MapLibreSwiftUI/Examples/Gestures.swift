@@ -30,3 +30,26 @@ import SwiftUI
         })
         .ignoresSafeArea(.all)
 }
+
+#Preview("Gestures on Multiple Maps") {
+    VStack(spacing: 16) {
+        MapView(
+            styleURL: demoTilesURL,
+            camera: .constant(.center(switzerland, zoom: 4))
+        )
+        .onTapMapGesture { _ in
+            print("Tapping MapView 1 ")
+        }
+        .onLongPressMapGesture { _ in
+            print("Long press MapView 1")
+        }
+
+        MapView(
+            styleURL: demoTilesURL,
+            camera: .constant(.center(switzerland, zoom: 4))
+        )
+        .onTapMapGesture { _ in
+            print("Tapping MapView 2 ")
+        }
+    }
+}
