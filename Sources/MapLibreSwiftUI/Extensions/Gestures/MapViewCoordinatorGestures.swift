@@ -32,9 +32,10 @@ extension MapViewCoordinator {
     ///
     /// - Parameter mapView: The MapLibre map view
     private func removeAllGestures(_ mapView: MLNMapView) {
-        mapView.gestureRecognizers?.forEach { gestureRecognizer in
-            mapView.removeGestureRecognizer(gestureRecognizer)
-        }
+        let gestureNames = Set(GestureRecognizerName.allCases.map(\.rawValue))
+        mapView.gestureRecognizers?
+            .filter { gestureNames.contains($0.name ?? "") }
+            .forEach { mapView.removeGestureRecognizer($0) }
     }
 
     // MARK: Individual Gesture Tools
@@ -48,6 +49,7 @@ extension MapViewCoordinator {
             target: self,
             action: #selector(captureGesture(_:))
         )
+        gestureRecognizer.name = GestureRecognizerName.tapGesture.rawValue
         gestureRecognizer.numberOfTapsRequired = numberOfTaps
 
         if numberOfTaps == 1 {
@@ -74,9 +76,17 @@ extension MapViewCoordinator {
             target: self,
             action: #selector(captureGesture(_:))
         )
+        gestureRecognizer.name = GestureRecognizerName.longPressGesture.rawValue
         gestureRecognizer.minimumPressDuration = minimumDuration
 
         mapView.addGestureRecognizer(gestureRecognizer)
         gesture.gestureRecognizer = gestureRecognizer
+    }
+}
+
+extension MapViewCoordinator {
+    private enum GestureRecognizerName: String, CaseIterable {
+        case tapGesture = "MapLibreSwiftUI.TapMapGesture"
+        case longPressGesture = "MapLibreSwiftUI.LongPressMapGesture"
     }
 }
