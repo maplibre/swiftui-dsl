@@ -32,9 +32,10 @@ extension MapViewCoordinator {
     ///
     /// - Parameter mapView: The MapLibre map view
     private func removeAllGestures(_ mapView: MLNMapView) {
-        mapView.gestureRecognizers?.forEach { gestureRecognizer in
+        for gestureRecognizer in managedGestureRecognizers {
             mapView.removeGestureRecognizer(gestureRecognizer)
         }
+        managedGestureRecognizers.removeAll()
     }
 
     // MARK: Individual Gesture Tools
@@ -62,6 +63,7 @@ extension MapViewCoordinator {
             }
         }
         mapView.addGestureRecognizer(gestureRecognizer)
+        managedGestureRecognizers.append(gestureRecognizer)
         gesture.gestureRecognizer = gestureRecognizer
     }
 
@@ -77,6 +79,7 @@ extension MapViewCoordinator {
         gestureRecognizer.minimumPressDuration = minimumDuration
 
         mapView.addGestureRecognizer(gestureRecognizer)
+        managedGestureRecognizers.append(gestureRecognizer)
         gesture.gestureRecognizer = gestureRecognizer
     }
 }

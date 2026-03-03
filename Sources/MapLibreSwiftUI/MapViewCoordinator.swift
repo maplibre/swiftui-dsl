@@ -52,6 +52,7 @@ MLNMapViewDelegate {
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
+    var managedGestureRecognizers: [UIGestureRecognizer] = []
 
     init(
         parent: MapView<T>,

@@ -60,4 +60,22 @@ final class MapViewGestureTests: XCTestCase {
         XCTAssertEqual(result.coordinate.latitude, 15, accuracy: 1)
         XCTAssertEqual(result.coordinate.longitude, -15, accuracy: 1)
     }
+
+    @MainActor func testSyncGesturesDoesNotRemoveUnmanagedRecognizers() {
+        let coordinator = mapView.makeCoordinator()
+
+        // Simulate an existing recognizer on the map (e.g. built-in pan recognizer).
+        let unmanagedRecognizer = UIPanGestureRecognizer()
+        maplibreMapView.addGestureRecognizer(unmanagedRecognizer)
+
+        let tapGesture = MapGesture(method: .tap(numberOfTaps: 1), onChange: .context { _ in })
+        coordinator.syncGestures(on: maplibreMapView, gestures: [tapGesture])
+
+        XCTAssertTrue(maplibreMapView.gestureRecognizers?.contains(unmanagedRecognizer) == true)
+
+        let longPressGesture = MapGesture(method: .longPress(minimumDuration: 0.5), onChange: .context { _ in })
+        coordinator.syncGestures(on: maplibreMapView, gestures: [longPressGesture])
+
+        XCTAssertTrue(maplibreMapView.gestureRecognizers?.contains(unmanagedRecognizer) == true)
+    }
 }
