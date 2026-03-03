@@ -49,10 +49,15 @@ MLNMapViewDelegate {
     var onUserTrackingModeChange: ((MLNUserTrackingMode, Bool) -> Void)?
     var onMapIdle: ((MapViewProxy) -> Void)?
     var onMapDidFinishRendering: ((MapViewProxy, Bool) -> Void)?
+    var onMapTileError: (() -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
     var managedGestureRecognizers: [UIGestureRecognizer] = []
+
+    /// Debounces rapid-fire tile error callbacks so the consumer receives one
+    /// notification per burst rather than one per individual failing tile.
+    private var tileErrorDebounceTask: Task<Void, Never>?
 
     init(
         parent: MapView<T>,
@@ -418,6 +423,34 @@ MLNMapViewDelegate {
         )
         onViewProxyChanged(viewProxy)
         onStyleLoaded?(mglStyle)
+    }
+
+    /// Called by MapLibre for every tile lifecycle event.
+    ///
+    /// Only ``MLNTileOperation/error`` is acted on, it indicates a tile
+    /// request failed, typically due to no internet or a poor connection.
+    ///
+    /// The callback is debounced to 3ms, a burst of simultaneously
+    /// failing tiles within the window produces a single notification
+    /// rather than many.
+    @MainActor
+    public func mapView(
+        _: MLNMapView,
+        tileDidTriggerAction operation: MLNTileOperation,
+        x _: Int,
+        y _: Int,
+        z _: Int,
+        wrap _: Int,
+        overscaledZ _: Int,
+        sourceID _: String
+    ) {
+        guard operation == .error else { return }
+        tileErrorDebounceTask?.cancel()
+        tileErrorDebounceTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            guard !Task.isCancelled else { return }
+            onMapTileError?()
+        }
     }
 
     /// The MapView's region has changed with a specific reason.
