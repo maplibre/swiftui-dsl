@@ -143,6 +143,10 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)
         context.coordinator.updateLayers(mapView: uiViewController.mapView)
+        context.coordinator.restoreGestures(
+            on: uiViewController.mapView,
+            gestures: gestureManager.gestures
+        )
         context.coordinator.onMapIdle = onMapIdle
         context.coordinator.onMapDidFinishRendering = onMapDidFinishRendering
         context.coordinator.onMapTileError = onMapTileError

@@ -12,6 +12,16 @@ extension MapViewCoordinator {
         addGestures(to: mapView, gestures: gestures)
     }
 
+    /// Restores gestures after a `.id(...)` rebuild, where the new coordinator
+    /// inherits an already-populated `MapViewGestureManager` and
+    /// `onGestureChange` never re-fires.
+    @MainActor func restoreGestures(on mapView: MLNMapView, gestures: [MapGesture]) {
+        if managedGestureRecognizers.count == gestures.count, !gestures.isEmpty {
+            return
+        }
+        syncGestures(on: mapView, gestures: gestures)
+    }
+
     /// Add an array of gestures to a map view.
     ///
     /// - Parameters:
