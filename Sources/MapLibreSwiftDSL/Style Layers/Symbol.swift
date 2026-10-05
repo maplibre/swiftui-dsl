@@ -26,7 +26,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<Double>("textHaloBlur", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textRadialOffset", supportsInterpolation: true)
 @MLNStyleProperty<String>("textJustification", supportsInterpolation: false)
-@MLNStyleProperty<[String]>("textVariableAnchor", supportsInterpolation: true)
+@MLNStyleProperty<[String]>("textVariableAnchor", supportsInterpolation: false)
 
 @MLNStyleProperty<String>("symbolPlacement", supportsInterpolation: false)
 @MLNStyleProperty<Double>("symbolSpacing", supportsInterpolation: true)
