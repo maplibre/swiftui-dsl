@@ -19,7 +19,9 @@ extension MLNCameraChangeReason: @retroactive CustomStringConvertible {
 
     public var description: String {
         var names = Self.descriptions.filter { contains($0.0) }.map(\.1)
-        if names.isEmpty { names = ["none"] }
+        if names.isEmpty {
+            names = ["none"]
+        }
         return names.joined(separator: ",")
     }
 }
@@ -232,7 +234,7 @@ MLNMapViewDelegate {
         cameraUpdateTask?.cancel()
 
         cameraUpdateTask = Task { @MainActor in
-            return await withCheckedContinuation { continuation in
+            await withCheckedContinuation { continuation in
                 // Clean up the continuation if it was already set.
                 cameraUpdateContinuation?.resume()
                 cameraUpdateContinuation = nil

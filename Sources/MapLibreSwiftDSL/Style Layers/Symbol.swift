@@ -24,6 +24,9 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("textHaloColor", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textHaloWidth", supportsInterpolation: true)
 @MLNStyleProperty<Double>("textHaloBlur", supportsInterpolation: true)
+@MLNStyleProperty<Double>("textRadialOffset", supportsInterpolation: true)
+@MLNStyleProperty<String>("textJustification", supportsInterpolation: false)
+@MLNStyleProperty<[String]>("textVariableAnchor", supportsInterpolation: false)
 
 @MLNStyleProperty<String>("symbolPlacement", supportsInterpolation: false)
 @MLNStyleProperty<Double>("symbolSpacing", supportsInterpolation: true)
@@ -168,6 +171,9 @@ private struct SymbolStyleLayerInternal: StyleLayer {
         result.textHaloColor = definition.textHaloColor
         result.textHaloWidth = definition.textHaloWidth
         result.textHaloBlur = definition.textHaloBlur
+        result.textRadialOffset = definition.textRadialOffset
+        result.textJustification = definition.textJustification
+        result.textVariableAnchor = definition.textVariableAnchor
 
         result.symbolPlacement = definition.symbolPlacement
         result.symbolSpacing = definition.symbolSpacing
