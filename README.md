@@ -34,6 +34,13 @@ Any breaking API changes will be reflected in release notes.
 2. Prevent most common classes of mistakes that users make with the lower level APIs (ex: adding the same source twice)
 3. Deeper SwiftUI integration (ex: SwiftUI callout views)
 
+## Compatibility
+
+This revision uses MapLibre Native 7 and requires iOS 15.5 or later.
+Applications supporting iOS 15.0–15.4 can continue using version 0.26.1.
+Swift imports remain `import MapLibre`; Objective-C integrations must use
+`MapLibre/MapLibre.h` instead of the removed `Mapbox.h` umbrella header.
+
 ## Quick start
 
 ### In a normal Xcode project
