@@ -62,6 +62,16 @@ public struct MapViewProxy {
         mapView.convert(coordinate, toPointTo: toPointTo)
     }
 
+    /// Convert a screen point to a geographic coordinate without changing the map.
+    ///
+    /// - Parameters:
+    ///   - point: The point in the supplied view's coordinate space.
+    ///   - view: The view containing the point, or nil for the map view itself.
+    /// - Returns: The geographic coordinate under that point.
+    public func convert(_ point: CGPoint, toCoordinateFrom view: UIView? = nil) -> CLLocationCoordinate2D {
+        mapView.convert(point, toCoordinateFrom: view)
+    }
+
     /// Query rendered features at a screen point.
     ///
     /// - Parameters:
