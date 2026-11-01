@@ -4,7 +4,10 @@ import MapLibre
 import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
+/// A styled line. For gradients based on line progress, set the shape source's
+/// `.lineDistanceMetrics` option to `true` and use `.lineProgress` interpolation.
 @MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
+@MLNStyleProperty<UIColor>("lineGradient", supportsInterpolation: true)
 @MLNStyleProperty<Float>("lineOpacity", supportsInterpolation: true)
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
@@ -78,6 +81,7 @@ private struct LineStyleLayerInternal: StyleLayer {
         let result = MLNLineStyleLayer(identifier: identifier, source: mglSource)
 
         result.lineColor = definition.lineColor
+        result.lineGradient = definition.lineGradient
         result.lineOpacity = definition.lineOpacity
         result.lineCap = definition.lineCap
         result.lineWidth = definition.lineWidth

@@ -147,3 +147,21 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 //    }
 //    .ignoresSafeArea(.all)
 // }
+
+#Preview("Line Progress Gradient") {
+    let source = ShapeSource(identifier: "gradient-line", options: [.lineDistanceMetrics: true]) {
+        MLNPolylineFeature(coordinates: [
+            CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.02),
+            CLLocationCoordinate2D(latitude: 51.49, longitude: 0.0),
+            CLLocationCoordinate2D(latitude: 51.47778, longitude: 0.02),
+        ])
+    }
+    MapView(styleURL: demoTilesURL, camera: .constant(.center(
+        CLLocationCoordinate2D(latitude: 51.485, longitude: 0.0), zoom: 12
+    ))) {
+        LineStyleLayer(identifier: "gradient-line", source: source)
+            .lineWidth(8)
+            .lineGradient(interpolatedBy: .lineProgress, curveType: .linear, parameters: nil,
+                          stops: NSExpression(forConstantValue: [0: UIColor.systemBlue, 1: UIColor.systemRed]))
+    }
+}
