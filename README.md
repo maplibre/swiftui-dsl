@@ -38,8 +38,6 @@ Any breaking API changes will be reflected in release notes.
 
 This revision uses MapLibre Native 7 and requires iOS 15.5 or later.
 Applications supporting iOS 15.0–15.4 can continue using version 0.26.1.
-Swift imports remain `import MapLibre`; Objective-C integrations must use
-`MapLibre/MapLibre.h` instead of the removed `Mapbox.h` umbrella header.
 
 ## Quick start
 
