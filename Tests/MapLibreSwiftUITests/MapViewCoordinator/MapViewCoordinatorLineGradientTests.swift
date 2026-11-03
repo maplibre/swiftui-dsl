@@ -47,13 +47,14 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
                        try XCTUnwrap(expression.mgl_jsonExpressionObject as? NSArray))
         XCTAssertEqual(layer.lineWidth, NSExpression(forConstantValue: 4))
 
+        let stepStops: [Double: UIColor] = [0: .blue, 0.5: .yellow, 0.75: .red]
         let stepExpression = NSExpression(
             forMLNStepping: .lineProgressVariable,
             from: NSExpression(forConstantValue: UIColor.blue),
-            stops: NSExpression(forConstantValue: [0.5: UIColor.yellow, 1: UIColor.red])
+            stops: NSExpression(forConstantValue: [0.5: UIColor.yellow, 0.75: UIColor.red])
         )
         coordinator.parent = MapView(styleURL: styleURL) {
-            plainLine.lineGradient(stops: stops, interpolation: .step)
+            plainLine.lineGradient(stops: stepStops, interpolation: .step)
         }
         coordinator.updateLayers(mapView: map)
         let stepGradient = (map.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)?.lineGradient

@@ -148,7 +148,7 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
 //    .ignoresSafeArea(.all)
 // }
 
-#Preview("Line Progress Gradient") {
+#Preview("Stepped Line Gradient") {
     let source = ShapeSource(identifier: "gradient-line", options: [.lineDistanceMetrics: true]) {
         MLNPolylineFeature(coordinates: [
             CLLocationCoordinate2D(latitude: 51.47778, longitude: -0.02),
@@ -161,6 +161,6 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
     ))) {
         LineStyleLayer(identifier: "gradient-line", source: source)
             .lineWidth(8)
-            .lineGradient(stops: [0: .systemBlue, 1: .systemRed])
+            .lineGradient(stops: [0: .systemBlue, 0.75: .systemRed], interpolation: .step)
     }
 }

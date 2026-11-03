@@ -41,7 +41,8 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public enum GradientInterpolation {
         /// Blends neighboring colors.
         case linear
-        /// Holds each color until the next stop.
+        /// Holds each color until the next stop. A stop at 1 has no visible
+        /// segment. Use a stop below 1 to color the end of the line.
         case step
     }
 
