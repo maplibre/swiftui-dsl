@@ -26,13 +26,13 @@ private struct OnMapIdleViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Perform an action when the map becomes idle.
     ///
     /// This callback is emitted from the underlying `mapViewDidBecomeIdle` delegate event.
     /// - Parameter perform: The action to perform with a read-only proxy of the current map state.
     /// - Returns: The modified map view.
-    @MainActor
     func onMapIdle(_ perform: @escaping (MapViewProxy) -> Void) -> some View {
         modifier(OnMapIdleViewModifier(onMapIdle: perform))
     }

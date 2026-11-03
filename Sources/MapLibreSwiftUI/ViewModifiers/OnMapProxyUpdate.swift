@@ -43,6 +43,7 @@ private struct OnMapProxyUpdateViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// The view modifier recieves an instance of `MapViewProxy`, which contains read only information about the current
     /// state of the `MapView` such as its bounds, center and insets.
@@ -60,7 +61,6 @@ public extension View {
     /// to `.realtime`
     ///                 to recieve updates during the animations and scrolling too.
     ///   - onViewProxyChanged: The closure containing the `MapViewProxy`. Use this to run code based on the current
-    @MainActor
     func onMapViewProxyUpdate(
         updateMode: ProxyUpdateMode = .onFinish,
         onViewProxyChanged: @escaping (MapViewProxy) -> Void
