@@ -5,9 +5,8 @@ import MapLibreSwiftMacros
 
 // TODO: Other properties and their modifiers
 /// A styled line. For gradients based on line progress, set the shape source's
-/// `.lineDistanceMetrics` option to `true` and use `.lineProgress` interpolation.
+/// `.lineDistanceMetrics` option to `true`.
 @MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
-@MLNStyleProperty<UIColor>("lineGradient", supportsInterpolation: true)
 @MLNStyleProperty<Float>("lineOpacity", supportsInterpolation: true)
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
 @MLNRawRepresentableStyleProperty<LineJoin>("lineJoin")
@@ -24,6 +23,7 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
 
     public var source: StyleLayerSource
     public var predicate: NSPredicate?
+    fileprivate var lineGradient: NSExpression?
 
     public init(identifier: String, source: Source) {
         self.identifier = identifier
@@ -35,6 +35,30 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
         self.identifier = identifier
         self.source = .mglSource(source)
         self.sourceLayerIdentifier = sourceLayerIdentifier
+    }
+
+    /// Applies a linear color ramp along the line.
+    ///
+    /// Supply at least two colors keyed by their progress along the line, from 0
+    /// (start) to 1 (end). Enable `.lineDistanceMetrics` on the GeoJSON source.
+    public func lineGradient(stops: [Double: UIColor]) -> Self {
+        lineGradient(expression: interpolatingExpression(
+            expression: .lineProgress,
+            curveType: .linear,
+            parameters: nil,
+            stops: NSExpression(forConstantValue: stops)
+        ))
+    }
+
+    /// Applies a Native color-ramp expression. Use line progress for interpolation.
+    ///
+    /// MapLibre Native validates this expression when the layer is applied.
+    /// Feature-dependent and zoom-dependent expressions are unsupported and can
+    /// raise an Objective-C exception. Enable `.lineDistanceMetrics` on the GeoJSON source.
+    public func lineGradient(expression: NSExpression) -> Self {
+        var copy = self
+        copy.lineGradient = expression
+        return copy
     }
 
     public func makeStyleLayer(style: MLNStyle) -> StyleLayer {

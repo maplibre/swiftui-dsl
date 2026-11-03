@@ -161,7 +161,6 @@ let clustered = ShapeSource(identifier: "points", options: [.clustered: true, .c
     ))) {
         LineStyleLayer(identifier: "gradient-line", source: source)
             .lineWidth(8)
-            .lineGradient(interpolatedBy: .lineProgress, curveType: .linear, parameters: nil,
-                          stops: NSExpression(forConstantValue: [0: UIColor.systemBlue, 1: UIColor.systemRed]))
+            .lineGradient(stops: [0: .systemBlue, 1: .systemRed])
     }
 }

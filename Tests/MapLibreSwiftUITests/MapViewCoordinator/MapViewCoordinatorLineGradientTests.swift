@@ -22,11 +22,14 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
             ])
         }
         let plainLine = LineStyleLayer(identifier: "line", source: source).lineWidth(4).lineColor(.green)
-        let stops = NSExpression(forConstantValue: [0: UIColor.blue, 1: UIColor.red])
-        let expression = interpolatingExpression(expression: .lineProgress, curveType: .linear,
-                                                 parameters: nil, stops: stops)
-        let gradientLine = plainLine.lineGradient(interpolatedBy: .lineProgress, curveType: .linear,
-                                                  parameters: nil, stops: stops)
+        let stops: [Double: UIColor] = [0: .blue, 0.5: .yellow, 1: .red]
+        let expression = interpolatingExpression(
+            expression: .lineProgress,
+            curveType: .linear,
+            parameters: nil,
+            stops: NSExpression(forConstantValue: stops)
+        )
+        let gradientLine = plainLine.lineGradient(stops: stops)
         let view = MapView(styleURL: styleURL) { gradientLine }
         let coordinator = view.makeCoordinator()
         let loaded = expectation(description: "Local style loaded")
