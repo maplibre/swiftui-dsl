@@ -21,12 +21,12 @@ private struct MapViewCameraDisabledViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Prevent Maplibre-DSL from updating the camera, useful when the underlying ViewController is managing the camera,
     /// for example during navigation when Maplibre-Navigation is used.
     ///
     /// - Parameter disabled: if true, prevents Maplibre-DSL from updating the camera
-    @MainActor
     func mapCameraDisabled(_ disabled: Bool) -> some View {
         modifier(MapViewCameraDisabledViewModifier(cameraDisabled: disabled))
     }

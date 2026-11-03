@@ -32,12 +32,12 @@ private struct OnMapStyleLoadedViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Perform an action when the map view has loaded its style and all locally added style definitions.
     ///
     /// - Parameter perform: The action to perform with the loaded style.
     /// - Returns: The modified map view.
-    @MainActor
     func onMapStyleLoaded(_ perform: @escaping (MLNStyle) -> Void) -> some View {
         modifier(OnMapStyleLoadedViewModifier(onMapStyleLoaded: perform))
     }
@@ -46,7 +46,6 @@ public extension View {
     ///
     /// - Parameter perform: The action to perform with the current map view proxy and render completeness flag.
     /// - Returns: The modified map view.
-    @MainActor
     func onMapDidFinishRendering(
         _ perform: @escaping (MapViewProxy, Bool) -> Void
     ) -> some View {
