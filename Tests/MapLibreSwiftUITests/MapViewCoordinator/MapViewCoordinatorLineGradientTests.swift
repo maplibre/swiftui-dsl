@@ -77,6 +77,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         let reloaded = expectation(description: "Replacement local style loaded")
         coordinator.onStyleLoaded = { _ in reloaded.fulfill() }
         coordinator.updateStyleSource(.url(reloadedStyleURL), mapView: map)
+        coordinator.updateLayers(mapView: map)
         await fulfillment(of: [reloaded], timeout: 10)
         XCTAssertTrue(coordinator.mapView === originalMap)
         let reloadedGradient = (map.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)?.lineGradient
