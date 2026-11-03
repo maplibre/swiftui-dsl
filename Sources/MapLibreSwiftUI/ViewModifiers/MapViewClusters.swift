@@ -27,12 +27,12 @@ private struct MapViewClusterLayersViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Add a default implementation for tapping clustered features. When tapped, the map zooms so that the cluster is
     /// expanded.
     /// - Parameter clusteredLayers: An array of layers to monitor that can contain clustered features.
     /// - Returns: The modified MapView
-    @MainActor
     func mapClustersExpandOnTapping(clusteredLayers: [ClusterLayer]) -> some View {
         modifier(MapViewClusterLayersViewModifier(clusteredLayers: clusteredLayers))
     }
