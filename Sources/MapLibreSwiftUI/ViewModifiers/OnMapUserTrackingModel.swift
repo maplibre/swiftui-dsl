@@ -27,12 +27,12 @@ private struct OnMapStyleLoadedViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Perform an action when the map view's user tracking mode has changed
     ///
     /// - Parameter perform: The action to perform on tracking mode change. Inputs are the new user tracking mode and
     /// whether the change was animated.
-    @MainActor
     func onMapUserTrackingModeChanged(_ perform: @escaping (MLNUserTrackingMode, Bool) -> Void) -> some View {
         modifier(OnMapStyleLoadedViewModifier(onMapUserTrackingModeChanged: perform))
     }
