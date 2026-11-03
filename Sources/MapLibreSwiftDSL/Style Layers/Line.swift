@@ -37,27 +37,46 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
         self.sourceLayerIdentifier = sourceLayerIdentifier
     }
 
-    /// Applies a linear color ramp along the line.
-    ///
-    /// Supply at least two colors keyed by their progress along the line, from 0
-    /// (start) to 1 (end). Enable `.lineDistanceMetrics` on the GeoJSON source.
-    public func lineGradient(stops: [Double: UIColor]) -> Self {
-        lineGradient(expression: interpolatingExpression(
-            expression: .lineProgress,
-            curveType: .linear,
-            parameters: nil,
-            stops: NSExpression(forConstantValue: stops)
-        ))
+    /// How colors change between line-progress stops.
+    public enum GradientInterpolation {
+        /// Blends neighboring colors.
+        case linear
+        /// Holds each color until the next stop.
+        case step
     }
 
-    /// Applies a Native color-ramp expression. Use line progress for interpolation.
+    /// Applies a color ramp along the line. Enable `.lineDistanceMetrics` on the GeoJSON source.
     ///
-    /// MapLibre Native validates this expression when the layer is applied.
-    /// Feature-dependent and zoom-dependent expressions are unsupported and can
-    /// raise an Objective-C exception. Enable `.lineDistanceMetrics` on the GeoJSON source.
-    public func lineGradient(expression: NSExpression) -> Self {
+    /// Stops are keyed by progress from 0 (start) to 1 (end). Out-of-range stops are ignored.
+    /// One valid stop colors the whole line. An empty set clears the gradient.
+    public func lineGradient(stops: [Double: UIColor], interpolation: GradientInterpolation = .linear) -> Self {
         var copy = self
-        copy.lineGradient = expression
+        var validStops = stops.filter { (0 ... 1).contains($0.key) }
+        guard let first = validStops.min(by: { $0.key < $1.key }) else {
+            copy.lineGradient = nil
+            return copy
+        }
+        if validStops.count == 1 {
+            copy.lineGradient = NSExpression(forConstantValue: first.value)
+            return copy
+        }
+
+        switch interpolation {
+        case .linear:
+            copy.lineGradient = interpolatingExpression(
+                expression: .lineProgress,
+                curveType: .linear,
+                parameters: nil,
+                stops: NSExpression(forConstantValue: validStops)
+            )
+        case .step:
+            validStops.removeValue(forKey: first.key)
+            copy.lineGradient = NSExpression(
+                forMLNStepping: .lineProgressVariable,
+                from: NSExpression(forConstantValue: first.value),
+                stops: NSExpression(forConstantValue: validStops)
+            )
+        }
         return copy
     }
 
