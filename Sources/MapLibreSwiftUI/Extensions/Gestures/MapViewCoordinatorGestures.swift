@@ -61,16 +61,15 @@ extension MapViewCoordinator {
         )
         gestureRecognizer.numberOfTapsRequired = numberOfTaps
 
-        if numberOfTaps == 1 {
-            // If a user double taps to zoom via the built in gesture, a normal
-            // tap should not be triggered.
-            if let doubleTapRecognizer = mapView.gestureRecognizers?
-                .first(where: {
-                    $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2
-                })
-            {
-                gestureRecognizer.require(toFail: doubleTapRecognizer)
-            }
+        if numberOfTaps == 1,
+           // If a user double taps to zoom via the built in gesture, a normal
+           // tap should not be triggered.
+           let doubleTapRecognizer = mapView.gestureRecognizers?
+               .first(where: {
+                   $0 is UITapGestureRecognizer && ($0 as! UITapGestureRecognizer).numberOfTapsRequired == 2
+               })
+        {
+            gestureRecognizer.require(toFail: doubleTapRecognizer)
         }
         mapView.addGestureRecognizer(gestureRecognizer)
         managedGestureRecognizers.append(gestureRecognizer)
