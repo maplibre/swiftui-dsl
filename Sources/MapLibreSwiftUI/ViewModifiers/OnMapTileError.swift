@@ -26,6 +26,7 @@ private struct OnMapTileErrorViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Perform an action when one or more map tiles fail to load.
     ///
@@ -44,7 +45,6 @@ public extension View {
     ///         print("Some tiles couldn't load. Check your connection.")
     ///     }
     /// ```
-    @MainActor
     func onMapTileError(_ perform: @escaping () -> Void) -> some View {
         modifier(OnMapTileErrorViewModifier(onMapTileError: perform))
     }
