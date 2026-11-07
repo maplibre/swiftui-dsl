@@ -2,10 +2,10 @@ import Foundation
 import InternalUtils
 import MapLibre
 import MapLibreSwiftMacros
+import SwiftUI
 
 // TODO: Other properties and their modifiers
-/// A styled line. For gradients based on line progress, set the shape source's
-/// `.lineDistanceMetrics` option to `true`.
+/// A styled line.
 @MLNStyleProperty<UIColor>("lineColor", supportsInterpolation: true)
 @MLNStyleProperty<Float>("lineOpacity", supportsInterpolation: true)
 @MLNRawRepresentableStyleProperty<LineCap>("lineCap")
@@ -38,18 +38,53 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     }
 
     /// How colors change between line-progress stops.
-    public enum GradientInterpolation {
+    public enum GradientInterpolation: Sendable {
         /// Blends neighboring colors.
         case linear
-        /// Holds each color until the next stop. A stop at 1 has no visible
-        /// segment. Use a stop below 1 to color the end of the line.
+        /// Holds each color from its stop until the next stop.
         case step
+    }
+
+    /// A color at a position along a gradient line.
+    public struct GradientStop: Sendable {
+        /// Progress along the line, from 0 (start) to 1 (end), inclusive.
+        /// Positions outside this range are ignored when applying the gradient.
+        public let progress: Double
+
+        /// The color at this stop. Linear interpolation blends neighboring
+        /// colors; stepped interpolation holds the color until the next stop.
+        public let color: Color
+
+        public init(progress: Double, color: Color) {
+            self.progress = progress
+            self.color = color
+        }
+    }
+
+    /// Applies a color ramp along the line. Enable `.lineDistanceMetrics` on the GeoJSON source.
+    ///
+    /// Stops may be supplied in any order. When positions repeat, the last supplied
+    /// stop wins. Positions outside `0...1`, including nonfinite values, are ignored.
+    /// One valid stop colors the whole line. An empty set of valid stops clears the gradient.
+    ///
+    /// With stepped interpolation, a new color needs a visible interval before the
+    /// end of the line. Stops at 0 (blue) and 1 (red) produce a blue line; use a red
+    /// stop at 0.75 to color the final quarter red. With linear interpolation, a
+    /// stop at 1 defines the final color of the blend.
+    public func lineGradient(stops: [GradientStop], interpolation: GradientInterpolation = .linear) -> Self {
+        var nativeStops: [Double: UIColor] = [:]
+        for stop in stops where (0 ... 1).contains(stop.progress) {
+            nativeStops[stop.progress] = UIColor(stop.color)
+        }
+        return lineGradient(stops: nativeStops, interpolation: interpolation)
     }
 
     /// Applies a color ramp along the line. Enable `.lineDistanceMetrics` on the GeoJSON source.
     ///
     /// Stops are keyed by progress from 0 (start) to 1 (end). Out-of-range stops are ignored.
     /// One valid stop colors the whole line. An empty set clears the gradient.
+    /// For stepped interpolation, use a stop below 1 to give the final color a
+    /// visible interval. Use ``GradientStop`` to supply SwiftUI colors instead.
     public func lineGradient(stops: [Double: UIColor], interpolation: GradientInterpolation = .linear) -> Self {
         var copy = self
         var validStops = stops.filter { (0 ... 1).contains($0.key) }
