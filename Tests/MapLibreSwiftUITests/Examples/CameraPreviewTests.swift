@@ -3,8 +3,8 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class CameraPreviewTests: XCTestCase {
-    func testCameraPreview() async {
-        await assertView {
+    func testCameraPreview() {
+        assertView {
             CameraDirectManipulationPreview(
                 styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!
             )
