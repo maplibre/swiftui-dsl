@@ -72,22 +72,11 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     /// stop at 0.75 to color the final quarter red. With linear interpolation, a
     /// stop at 1 defines the final color of the blend.
     public func lineGradient(stops: [GradientStop], interpolation: GradientInterpolation = .linear) -> Self {
-        var nativeStops: [Double: UIColor] = [:]
-        for stop in stops where (0 ... 1).contains(stop.progress) {
-            nativeStops[stop.progress] = UIColor(stop.color)
-        }
-        return lineGradient(stops: nativeStops, interpolation: interpolation)
-    }
-
-    /// Applies a color ramp along the line. Enable `.lineDistanceMetrics` on the GeoJSON source.
-    ///
-    /// Stops are keyed by progress from 0 (start) to 1 (end). Out-of-range stops are ignored.
-    /// One valid stop colors the whole line. An empty set clears the gradient.
-    /// For stepped interpolation, use a stop below 1 to give the final color a
-    /// visible interval. Use ``GradientStop`` to supply SwiftUI colors instead.
-    public func lineGradient(stops: [Double: UIColor], interpolation: GradientInterpolation = .linear) -> Self {
         var copy = self
-        var validStops = stops.filter { (0 ... 1).contains($0.key) }
+        var validStops: [Double: UIColor] = [:]
+        for stop in stops where (0 ... 1).contains(stop.progress) {
+            validStops[stop.progress] = UIColor(stop.color)
+        }
         guard let first = validStops.min(by: { $0.key < $1.key }) else {
             copy.lineGradient = nil
             return copy

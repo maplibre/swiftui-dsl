@@ -44,7 +44,9 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
             parameters: nil,
             stops: NSExpression(forConstantValue: stops)
         )
-        let gradientLine = plainLine.lineGradient(stops: stops)
+        let gradientLine = plainLine.lineGradient(stops: stops.map {
+            .init(progress: $0.key, color: Color(uiColor: $0.value))
+        })
         let view = MapView(styleURL: styleURL) { gradientLine }
         let coordinator = view.makeCoordinator()
         let loaded = expectation(description: "Local style loaded")
@@ -117,7 +119,9 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
             stops: NSExpression(forConstantValue: [0.5: UIColor.yellow, 0.75: UIColor.red])
         )
         coordinator.parent = MapView(styleURL: styleURL) {
-            plainLine.lineGradient(stops: stepStops, interpolation: .step)
+            plainLine.lineGradient(stops: stepStops.map {
+                .init(progress: $0.key, color: Color(uiColor: $0.value))
+            }, interpolation: .step)
         }
         coordinator.updateLayers(mapView: map)
         let stepGradient = (map.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)?.lineGradient
@@ -125,13 +129,16 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
                        try XCTUnwrap(stepExpression.mgl_jsonExpressionObject as? NSArray))
 
         coordinator.parent = MapView(styleURL: styleURL) {
-            plainLine.lineGradient(stops: [-1: .blue, 0.5: .purple], interpolation: .step)
+            plainLine.lineGradient(stops: [
+                .init(progress: -1, color: Color(uiColor: .blue)),
+                .init(progress: 0.5, color: Color(uiColor: .purple)),
+            ], interpolation: .step)
         }
         coordinator.updateLayers(mapView: map)
         XCTAssertEqual((map.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)?.lineGradient,
                        NSExpression(forConstantValue: UIColor.purple))
 
-        coordinator.parent = MapView(styleURL: styleURL) { gradientLine.lineGradient(stops: [:]) }
+        coordinator.parent = MapView(styleURL: styleURL) { gradientLine.lineGradient(stops: []) }
         coordinator.updateLayers(mapView: map)
         let clearedLayer = try XCTUnwrap(map.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)
         XCTAssertNil(clearedLayer.lineGradient)
