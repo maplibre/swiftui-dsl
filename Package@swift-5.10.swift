@@ -20,7 +20,7 @@ let devFlags: [SwiftSetting] = if enableDeveloperTools {
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
-        .iOS(.v15),
+        .iOS("15.5"),
         .macOS(.v12),
     ],
     products: [
@@ -38,12 +38,12 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "7.0.0"),
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.1.1"),
-        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.0"),
+        .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.1"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.7"),
         // Macro Testing
         .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.4")),
