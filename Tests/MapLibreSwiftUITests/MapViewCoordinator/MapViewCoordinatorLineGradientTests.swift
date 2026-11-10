@@ -5,7 +5,7 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapViewCoordinatorLineGradientTests: XCTestCase {
-    // Customers may prepare stops in background tasks; protect the configuration's Sendable contract.
+    /// Customers may prepare stops in background tasks; protect the configuration's Sendable contract.
     func testGradientConfigurationCanCrossActorBoundaries() async {
         let (stops, interpolation) = await Task.detached {
             ([LineStyleLayer.GradientStop(progress: 0, color: .blue),
@@ -20,7 +20,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         }
     }
 
-    // Stops beyond the endpoints can influence visible colors; dropping them would diverge from Native.
+    /// Stops beyond the endpoints can influence visible colors; dropping them would diverge from Native.
     @MainActor
     func testLinearGradientPreservesFiniteStopsOutsideLineProgressRange() async throws {
         let expression = try await gradientExpression(stops: [
@@ -36,7 +36,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         XCTAssertEqual(positions, [-1, 2])
     }
 
-    // Negative step thresholds can determine the visible color, so retain Native's full set of finite thresholds.
+    /// Negative step thresholds can determine the visible color, so retain Native's full set of finite thresholds.
     @MainActor
     func testSteppedGradientPreservesFiniteStopsOutsideLineProgressRange() async throws {
         let expression = try await gradientExpression(stops: [
@@ -53,7 +53,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         XCTAssertEqual(positions, [-1, 2])
     }
 
-    // Entirely unusable input must leave the gradient unset rather than send non-finite stops to Native.
+    /// Entirely unusable input must leave the gradient unset rather than send non-finite stops to Native.
     @MainActor
     func testGradientWithOnlyNonfiniteStopsIsUnset() async throws {
         let expression = try await gradientExpression(stops: [
@@ -64,7 +64,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         XCTAssertNil(expression)
     }
 
-    // Customers need predictable colors for unordered or duplicate stops and a uniform color for one usable stop.
+    /// Customers need predictable colors for unordered or duplicate stops and a uniform color for one usable stop.
     @MainActor
     func testGradientConfiguration() async throws {
         try await withLoadedMap(line: plainLine) { map, coordinator in
@@ -122,7 +122,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         }
     }
 
-    // SwiftUI updates must replace stale colors on the existing map and reveal the fallback color after clearing.
+    /// SwiftUI updates must replace stale colors on the existing map and reveal the fallback color after clearing.
     @MainActor
     func testGradientUpdatesAndClears() async throws {
         let stops: [Double: UIColor] = [0: .blue, 0.5: .yellow, 1: .red]
@@ -170,7 +170,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         }
     }
 
-    // Catch stale layer snapshots that would lose a restored gradient when the style reloads in the same update.
+    /// Catch stale layer snapshots that would lose a restored gradient when the style reloads in the same update.
     @MainActor
     func testStyleReloadRestoresLatestGradientAfterClearing() async throws {
         let stops: [Double: UIColor] = [0: .blue, 0.5: .yellow, 1: .red]
