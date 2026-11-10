@@ -32,6 +32,21 @@ public struct MapViewProxy {
         mapView.direction
     }
 
+    /// The map's current user tracking mode. Reading this value does not start
+    /// location updates or change the camera.
+    ///
+    /// Custom controls can observe tracking without accessing the native map:
+    ///
+    /// ```swift
+    /// MapView(styleURL: styleURL)
+    ///     .onMapViewProxyUpdate { proxy in
+    ///         trackingMode = proxy.userTrackingMode
+    ///     }
+    /// ```
+    public var userTrackingMode: MLNUserTrackingMode {
+        mapView.userTrackingMode
+    }
+
     /// The visible coordinate bounds of the MapView
     public var visibleCoordinateBounds: MLNCoordinateBounds {
         mapView.visibleCoordinateBounds
