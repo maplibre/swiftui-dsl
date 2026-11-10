@@ -59,7 +59,7 @@ Camera timing and curves are controlled by Native, independently of SwiftUI's
 `withAnimation`, `.animation`, and transactions.
 Passing a SwiftUI spring does not create a spring camera animation.
 The [interactive camera preview](Sources/MapLibreSwiftUI/Examples/Camera.swift)
-demonstrates immediate and animated moves between Paris and New York.
+demonstrates immediate and animated moves between Austria and Portugal.
 
 ## Quick start
 

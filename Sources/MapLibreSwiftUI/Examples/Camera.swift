@@ -87,11 +87,13 @@ struct CameraShowcasePolylinePreview: View {
 }
 
 struct CameraNativeAnimationPreview: View {
-    @State private var camera = MapViewCamera.center(
-        CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522), zoom: 11
-    )
+    private static let austria = CLLocationCoordinate2D(latitude: 47.6, longitude: 14.1)
+    private static let portugal = CLLocationCoordinate2D(latitude: 39.6, longitude: -8.0)
+    private static let zoom: Double = 4
+
+    @State private var camera = MapViewCamera.center(Self.austria, zoom: Self.zoom)
     @State private var animated = false
-    @State private var nextDestinationIsNewYork = true
+    @State private var nextDestinationIsPortugal = true
     @State private var isStyleLoaded = false
 
     let styleURL: URL
@@ -101,12 +103,10 @@ struct CameraNativeAnimationPreview: View {
             MapView(styleURL: styleURL, camera: $camera)
                 .onMapStyleLoaded { _ in isStyleLoaded = true }
             Toggle("Use Native camera animation", isOn: $animated)
-            Button(nextDestinationIsNewYork ? "Move to New York" : "Move to Paris") {
-                let destination = nextDestinationIsNewYork
-                    ? CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060)
-                    : CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522)
-                camera = .center(destination, zoom: 11, animated: animated)
-                nextDestinationIsNewYork.toggle()
+            Button(nextDestinationIsPortugal ? "Move to Portugal" : "Move to Austria") {
+                let destination = nextDestinationIsPortugal ? Self.portugal : Self.austria
+                camera = .center(destination, zoom: Self.zoom, animated: animated)
+                nextDestinationIsPortugal.toggle()
             }
             .disabled(!isStyleLoaded)
         }
