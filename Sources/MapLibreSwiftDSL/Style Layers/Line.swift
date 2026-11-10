@@ -61,16 +61,25 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
         }
     }
 
-    /// Applies a color ramp along the line. Enable `.lineDistanceMetrics` on the GeoJSON source.
+    /// Applies a color gradient along the line.
     ///
-    /// Stops may be supplied in any order. When positions repeat, the last supplied
-    /// stop wins. Positions outside `0...1`, including nonfinite values, are ignored.
-    /// One valid stop colors the whole line. An empty set of valid stops clears the gradient.
+    /// Stops define colors at positions between `0` (start) and `1` (end).
+    /// Stops may be provided in any order. If multiple stops share the same
+    /// position, the last supplied stop takes precedence. Stops with positions
+    /// outside `0...1` or non-finite values are ignored.
     ///
-    /// With stepped interpolation, a new color needs a visible interval before the
-    /// end of the line. Stops at 0 (blue) and 1 (red) produce a blue line; use a red
-    /// stop at 0.75 to color the final quarter red. With linear interpolation, a
-    /// stop at 1 defines the final color of the blend.
+    /// If only one valid stop remains, its color is applied to the entire line.
+    /// If no valid stops remain, the existing gradient is cleared.
+    ///
+    /// - Important: The GeoJSON source must have `.lineDistanceMetrics` enabled
+    ///   for the gradient to work correctly.
+    ///
+    /// - Parameters:
+    ///   - stops: The color stops defining the gradient.
+    ///   - interpolation: The interpolation mode between stops.
+    ///     Defaults to `.linear`.
+    ///
+    /// - Returns: A copy of this value with the updated line gradient.
     public func lineGradient(stops: [GradientStop], interpolation: GradientInterpolation = .linear) -> Self {
         var copy = self
         var validStops: [Double: UIColor] = [:]
