@@ -7,9 +7,9 @@ import MapLibre
 
 // NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
 
-// A reprentation of the MLNMapView
-//
-// This is primarily used to abstract the MLNMapView for testing.
+/// A reprentation of the MLNMapView
+///
+/// This is primarily used to abstract the MLNMapView for testing.
 #if MapLibreDeveloper
     @Mockable
 #endif
@@ -44,6 +44,7 @@ public protocol MLNMapViewRepresentable: AnyObject {
     @MainActor var visibleCoordinateBounds: MLNCoordinateBounds { get }
     @MainActor var contentInset: UIEdgeInsets { get }
     @MainActor func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint
+    @MainActor func convert(_ point: CGPoint, toCoordinateFrom: UIView?) -> CLLocationCoordinate2D
     @MainActor func visibleFeatures(
         at point: CGPoint,
         styleLayerIdentifiers: Set<String>?
