@@ -74,6 +74,11 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     /// - Important: The GeoJSON source must have `.lineDistanceMetrics` enabled
     ///   for the gradient to work correctly.
     ///
+    /// - Note: With stepped interpolation, a stop at `1` has no visible interval.
+    ///   Blue at `0` and red at `0.75` color the final quarter red; placing the red
+    ///   stop at `1` leaves the line blue. With linear interpolation, a stop at `1`
+    ///   defines the final color of the blend.
+    ///
     /// - Parameters:
     ///   - stops: The color stops defining the gradient.
     ///   - interpolation: The interpolation mode between stops.
