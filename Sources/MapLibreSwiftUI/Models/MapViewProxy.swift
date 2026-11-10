@@ -27,6 +27,11 @@ public struct MapViewProxy {
         mapView.zoomLevel
     }
 
+    /// The map camera's pitch in degrees. Reading it does not change the camera.
+    public var pitch: Double {
+        Double(mapView.camera.pitch)
+    }
+
     /// The current compass direction of the MapView
     public var direction: CLLocationDirection {
         mapView.direction
@@ -120,6 +125,7 @@ public extension MapViewProxy {
     func asMapViewCamera() -> MapViewCamera {
         .center(centerCoordinate,
                 zoom: zoomLevel,
+                pitch: pitch,
                 direction: direction)
     }
 }
