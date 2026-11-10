@@ -4,7 +4,6 @@ import SnapshotTesting
 import XCTest
 @testable import MapLibreSwiftUI
 
-@MainActor
 final class MapViewCameraTests: XCTestCase {
     func testCenterCamera() {
         let camera = MapViewCamera.center(
