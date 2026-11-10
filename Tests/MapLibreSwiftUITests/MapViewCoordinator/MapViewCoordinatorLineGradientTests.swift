@@ -5,7 +5,7 @@ import XCTest
 @testable import MapLibreSwiftUI
 
 final class MapViewCoordinatorLineGradientTests: XCTestCase {
-    /// Customers may prepare stops in background tasks; protect the configuration's Sendable contract.
+    /// Users may prepare stops in background tasks; protect the configuration's Sendable contract.
     func testGradientConfigurationCanCrossActorBoundaries() async {
         let (stops, interpolation) = await Task.detached {
             ([LineStyleLayer.GradientStop(progress: 0, color: .blue),
@@ -64,7 +64,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         XCTAssertNil(expression)
     }
 
-    /// Customers need predictable colors for unordered or duplicate stops and a uniform color for one usable stop.
+    /// Users need predictable colors for unordered or duplicate stops and a uniform color for one usable stop.
     @MainActor
     func testGradientConfiguration() async throws {
         try await withLoadedMap(line: plainLine) { map, coordinator in
