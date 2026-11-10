@@ -3,15 +3,15 @@ import Mockable
 import XCTest
 @testable import MapLibreSwiftUI
 
+@MainActor
 final class MapViewGestureTests: XCTestCase {
     let maplibreMapView = MLNMapView()
 
-    @MainActor
     let mapView = MapView(styleURL: URL(string: "https://maplibre.org")!)
 
     // MARK: Gesture Processing
 
-    @MainActor func testTapGesture() {
+    func testTapGesture() {
         let gesture = MapGesture(method: .tap(numberOfTaps: 2), onChange: .context { _ in
             // Do nothing
         })
@@ -36,7 +36,7 @@ final class MapViewGestureTests: XCTestCase {
         XCTAssertEqual(result.coordinate.longitude, -15, accuracy: 1)
     }
 
-    @MainActor func testLongPressGesture() {
+    func testLongPressGesture() {
         let gesture = MapGesture(method: .longPress(minimumDuration: 1), onChange: .context { _ in
             // Do nothing
         })
@@ -61,7 +61,7 @@ final class MapViewGestureTests: XCTestCase {
         XCTAssertEqual(result.coordinate.longitude, -15, accuracy: 1)
     }
 
-    @MainActor func testSyncGesturesDoesNotRemoveUnmanagedRecognizers() {
+    func testSyncGesturesDoesNotRemoveUnmanagedRecognizers() {
         let coordinator = mapView.makeCoordinator()
 
         // Simulate an existing recognizer on the map (e.g. built-in pan recognizer).
