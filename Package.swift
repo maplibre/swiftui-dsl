@@ -14,7 +14,7 @@ let defaultTraits: Set<String> = if enableDeveloperTools {
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
-        .iOS(.v15),
+        .iOS("15.5"),
         .macOS(.v12),
     ],
     products: [
@@ -36,7 +36,7 @@ let package = Package(
         .trait(name: "MapLibreDeveloper"),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "7.0.0"),
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
