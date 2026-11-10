@@ -35,7 +35,7 @@ public extension View {
     /// tiles from its on-device cache when available, so this only fires
     /// for tiles that are not cached locally.
     ///
-    /// The callback is debounced to 3ms, a burst of simultaneously
+    /// The callback is debounced to 300ms, a burst of simultaneously
     /// failing tiles within the window produces a single notification
     /// rather than many.
     ///
