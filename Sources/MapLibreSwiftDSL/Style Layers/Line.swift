@@ -47,8 +47,9 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
 
     /// A color at a position along a gradient line.
     public struct GradientStop: Sendable {
-        /// Progress along the line, from 0 (start) to 1 (end), inclusive.
-        /// Positions outside this range are ignored when applying the gradient.
+        /// Position in line-progress coordinates, where 0 is the start and 1 is the end.
+        /// Finite positions outside this interval are also supported.
+        /// Non-finite positions are ignored when applying the gradient.
         public let progress: Double
 
         /// The color at this stop. Linear interpolation blends neighboring
@@ -63,10 +64,12 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
 
     /// Applies a color gradient along the line.
     ///
-    /// Stops define colors at positions between `0` (start) and `1` (end).
+    /// Stops define colors in line-progress coordinates, where `0` is the start
+    /// and `1` is the end. Like MapLibre Native, finite positions outside `0...1`
+    /// are supported and can affect the colors within the visible line.
     /// Stops may be provided in any order. If multiple stops share the same
-    /// position, the last supplied stop takes precedence. Stops with positions
-    /// outside `0...1` or non-finite values are ignored.
+    /// position, the last supplied stop takes precedence. Stops with non-finite
+    /// positions are ignored.
     ///
     /// If only one valid stop remains, its color is applied to the entire line.
     /// If no valid stops remain, the existing gradient is cleared.
@@ -88,7 +91,7 @@ public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
     public func lineGradient(stops: [GradientStop], interpolation: GradientInterpolation = .linear) -> Self {
         var copy = self
         var validStops: [Double: UIColor] = [:]
-        for stop in stops where (0 ... 1).contains(stop.progress) {
+        for stop in stops where stop.progress.isFinite {
             validStops[stop.progress] = UIColor(stop.color)
         }
         guard let first = validStops.min(by: { $0.key < $1.key }) else {

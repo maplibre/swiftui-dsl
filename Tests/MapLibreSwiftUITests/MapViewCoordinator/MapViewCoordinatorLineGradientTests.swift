@@ -20,6 +20,47 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
     }
 
     @MainActor
+    func testLinearGradientPreservesFiniteStopsOutsideLineProgressRange() async throws {
+        let expression = try await gradientExpression(stops: [
+            .init(progress: -1, color: .blue),
+            .init(progress: 2, color: .red),
+        ])
+        let json = try XCTUnwrap(expression?.mgl_jsonExpressionObject as? NSArray)
+        XCTAssertEqual(json[0] as? String, "interpolate")
+        // Inspect Native's serialized stop positions independently of the DSL's expression helper.
+        let positions = try stride(from: 3, to: json.count, by: 2).map {
+            try XCTUnwrap(json[$0] as? NSNumber).doubleValue
+        }
+        XCTAssertEqual(positions, [-1, 2])
+    }
+
+    @MainActor
+    func testSteppedGradientPreservesFiniteStopsOutsideLineProgressRange() async throws {
+        let expression = try await gradientExpression(stops: [
+            .init(progress: -2, color: .green),
+            .init(progress: -1, color: .blue),
+            .init(progress: 2, color: .red),
+        ], interpolation: .step)
+        let json = try XCTUnwrap(expression?.mgl_jsonExpressionObject as? NSArray)
+        XCTAssertEqual(json[0] as? String, "step")
+        // The first color is the step expression's default; the remaining stops retain their positions.
+        let positions = try stride(from: 3, to: json.count, by: 2).map {
+            try XCTUnwrap(json[$0] as? NSNumber).doubleValue
+        }
+        XCTAssertEqual(positions, [-1, 2])
+    }
+
+    @MainActor
+    func testGradientWithOnlyNonfiniteStopsIsUnset() async throws {
+        let expression = try await gradientExpression(stops: [
+            .init(progress: .nan, color: .blue),
+            .init(progress: .infinity, color: .red),
+            .init(progress: -.infinity, color: .green),
+        ])
+        XCTAssertNil(expression)
+    }
+
+    @MainActor
     func testGradientUpdatesClearsAndSurvivesStyleReload() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -74,7 +115,8 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
             .init(progress: .nan, color: .green),
             .init(progress: .infinity, color: .green),
         ]
-        let typedColors = [0: UIColor(Color.blue), 0.5: UIColor(Color.purple), 1: UIColor(Color.red)]
+        let typedColors = [-1: UIColor(Color.green), 0: UIColor(Color.blue), 0.5: UIColor(Color.purple),
+                           1: UIColor(Color.red), 2: UIColor(Color.green)]
         let typedLinearExpression = interpolatingExpression(
             expression: .lineProgress,
             curveType: .linear,
@@ -83,8 +125,9 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         )
         let typedStepExpression = NSExpression(
             forMLNStepping: .lineProgressVariable,
-            from: NSExpression(forConstantValue: UIColor(Color.blue)),
-            stops: NSExpression(forConstantValue: [0.5: UIColor(Color.purple), 1: UIColor(Color.red)])
+            from: NSExpression(forConstantValue: UIColor(Color.green)),
+            stops: NSExpression(forConstantValue: [0: UIColor(Color.blue), 0.5: UIColor(Color.purple),
+                                                   1: UIColor(Color.red), 2: UIColor(Color.green)])
         )
         let typedCases: [(LineStyleLayer.GradientInterpolation, NSExpression)] = [
             (.linear, typedLinearExpression), (.step, typedStepExpression),
@@ -130,7 +173,7 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
 
         coordinator.parent = MapView(styleURL: styleURL) {
             plainLine.lineGradient(stops: [
-                .init(progress: -1, color: Color(uiColor: .blue)),
+                .init(progress: -.infinity, color: Color(uiColor: .blue)),
                 .init(progress: 0.5, color: Color(uiColor: .purple)),
             ], interpolation: .step)
         }
@@ -155,5 +198,38 @@ final class MapViewCoordinatorLineGradientTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(reloadedGradient?.mgl_jsonExpressionObject as? NSArray),
                        try XCTUnwrap(expression.mgl_jsonExpressionObject as? NSArray))
         XCTAssertNotNil(map.style?.source(withIdentifier: "line"))
+    }
+
+    @MainActor
+    private func gradientExpression(
+        stops: [LineStyleLayer.GradientStop],
+        interpolation: LineStyleLayer.GradientInterpolation = .linear
+    ) async throws -> NSExpression? {
+        // A local style exercises Native's actual setter without network or rendered snapshot dependencies.
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let styleURL = directory.appendingPathComponent("style.json")
+        try #"{"version":8,"sources":{},"layers":[]}"#.write(to: styleURL, atomically: true, encoding: .utf8)
+        let source = ShapeSource(identifier: "line", options: [.lineDistanceMetrics: true]) {
+            MLNPolylineFeature(coordinates: [
+                CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                CLLocationCoordinate2D(latitude: 1, longitude: 1),
+            ])
+        }
+        let view = MapView(styleURL: styleURL) {
+            LineStyleLayer(identifier: "line", source: source).lineGradient(stops: stops, interpolation: interpolation)
+        }
+        let coordinator = view.makeCoordinator()
+        let loaded = expectation(description: "Local gradient style loaded")
+        coordinator.onStyleLoaded = { _ in loaded.fulfill() }
+        let map = MLNMapView(frame: CGRect(x: 0, y: 0, width: 320, height: 240), styleURL: styleURL)
+        defer { map.delegate = nil }
+        coordinator.mapView = map
+        map.delegate = coordinator
+        coordinator.updateLayers(mapView: map)
+        await fulfillment(of: [loaded], timeout: 10)
+        let layer = try XCTUnwrap(coordinator.mapView?.style?.layer(withIdentifier: "line") as? MLNLineStyleLayer)
+        return layer.lineGradient
     }
 }
