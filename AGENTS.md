@@ -50,8 +50,10 @@ Please review https://github.com/maplibre/swiftui-dsl/blob/main/AGENTS.md#for-hu
 - SwiftUI can rebuild a view at any time.
   Code that bridges to `MLNMapView` must give the same result after a rebuild.
   It must not add a source, a layer, or a gesture recognizer two times.
-- Do not do work in `updateUIView` that is not necessary.
-  Compare the old and new state, and only send the difference to MapLibre.
+- `updateUIView` is called any time SwiftUI determines the view needs an update  
+   based on state or the view hierarchy. To maintain a performant MapView always 
+   do the *minimum* amount of work required to keep the underlying MapLibre view 
+   in sync with the latest state based on the difference between new and old state.
 - When a change affects frame rate and memory in opposite directions, ask the human operator to decide.
 
 ### Production-grade engineering
@@ -81,8 +83,9 @@ Please review https://github.com/maplibre/swiftui-dsl/blob/main/AGENTS.md#for-hu
 - The main manifest is [Package.swift](Package.swift).
 - [Package@swift-5.10.swift](Package@swift-5.10.swift) is the manifest for toolchains before Swift 6.2.
   Always ensure dependency upgrades are applied to both manifests except where a dependency only supports a specific toolchain.
-- Prioritize the latest generation toolchain, but always ensure backwards    
-  compatibilty. [OnMapIdle.swift](Sources/MapLibreSwiftUI/ViewModifiers/OnMapIdle.swift) shows the conditional compiler pattern.
+- Prioritize the latest generation toolchain.
+  Preserve backward compatibility where possible, but you may use modern features via availability checks when they provide demonstrable benefit.
+ [OnMapIdle.swift](Sources/MapLibreSwiftUI/ViewModifiers/OnMapIdle.swift) shows the conditional compiler pattern.
 
 ### Code formatting
 
