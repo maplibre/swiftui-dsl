@@ -221,9 +221,14 @@ MLNMapViewDelegate {
     @MainActor func applyCameraChangeFromStateUpdate(
         _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
-        animated: Bool = true
+        animated: Bool = true,
+        reframing: Bool = false
     ) {
-        guard camera != snapshotCamera else {
+        // A content inset change interrupts any camera animation, so finish it within the new inset.
+        // MapLibre reframes a camera that's already tracking.
+        let isReframing = reframing
+            && !(camera.state.isTrackingUserLocation && mapView.userTrackingMode != .none)
+        guard camera != snapshotCamera || isReframing else {
             // No action - camera has not changed.
             return
         }
