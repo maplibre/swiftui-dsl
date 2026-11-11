@@ -168,6 +168,13 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         }
     }
 
+    /// Cancels the pending camera update. SwiftUI calls this method when it removes the map view.
+    ///
+    /// - Parameter coordinator: The coordinator of the removed map view.
+    public static func dismantleUIViewController(_: T, coordinator: MapViewCoordinator<T>) {
+        coordinator.cancelCameraUpdate()
+    }
+
     /// Starts location and heading updates on a location manager that replaced another one.
     ///
     /// Setting `MLNMapView.locationManager` stops the old manager but does not start the new one.
