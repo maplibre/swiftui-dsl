@@ -77,6 +77,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         let controller = makeViewController()
         controller.mapView.delegate = context.coordinator
         context.coordinator.mapView = controller.mapView
+        (controller as? MLNMapViewController)?.onSizeChange = { [weak coordinator = context.coordinator] in
+            coordinator?.refitAfterResize()
+        }
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)

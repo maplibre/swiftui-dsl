@@ -403,6 +403,19 @@ MLNMapViewDelegate {
         }
     }
 
+    /// Fits a bounding box or showcase camera to the map's new size.
+    @MainActor func refitAfterResize() {
+        guard !parent.cameraDisabled, let mapView, mapView.frame.size != .zero, let camera = snapshotCamera else {
+            return
+        }
+        switch camera.state {
+        case .rect, .showcase:
+            applyCameraChangeFromStateUpdate(mapView, camera: camera, animated: mapView.style != nil, reframing: true)
+        case .centered, .trackingUserLocation, .trackingUserLocationWithHeading, .trackingUserLocationWithCourse:
+            break
+        }
+    }
+
     /// Apply a gesture based camera change. This behavior will only be triggered on the first gesture and will
     /// only be completed when the mapView becomes idle.
     ///
