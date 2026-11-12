@@ -28,8 +28,19 @@ public final class MLNMapViewController: UIViewController, MapViewHostViewContro
         view as! MLNMapView
     }
 
+    /// Called after layout changes the map's size.
+    var onSizeChange: (() -> Void)?
+    private var laidOutSize: CGSize = .zero
+
     override public func loadView() {
         view = MLNMapView(frame: .zero, styleURL: initialStyleURL)
         view.tag = activity.rawValue
+    }
+
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard view.bounds.size != laidOutSize else { return }
+        laidOutSize = view.bounds.size
+        onSizeChange?()
     }
 }

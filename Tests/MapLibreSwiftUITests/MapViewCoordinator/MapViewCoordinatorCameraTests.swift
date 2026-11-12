@@ -82,6 +82,52 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(0)
     }
 
+    @MainActor func testReframingReappliesUnchangedCamera() async throws {
+        let coordinate = CLLocationCoordinate2D(latitude: 45.0, longitude: -127.0)
+        let camera: MapViewCamera = .center(coordinate, zoom: 10)
+
+        given(maplibreMapView)
+            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
+            .willReturn()
+
+        try await simulateCameraUpdateAndWait {
+            self.coordinator.applyCameraChangeFromStateUpdate(
+                self.maplibreMapView, camera: camera, animated: false
+            )
+        }
+
+        try await simulateCameraUpdateAndWait {
+            self.coordinator.applyCameraChangeFromStateUpdate(
+                self.maplibreMapView, camera: camera, animated: false, reframing: true
+            )
+        }
+
+        verify(maplibreMapView)
+            .setCenter(.value(coordinate), zoomLevel: .value(10), direction: .value(0), animated: .value(false))
+            .called(2)
+    }
+
+    @MainActor func testReframingSkipsCameraAlreadyTracking() async throws {
+        let camera: MapViewCamera = .trackUserLocation()
+
+        given(maplibreMapView)
+            .userTrackingMode.willReturn(.follow)
+
+        try await simulateCameraUpdateAndWait {
+            self.coordinator.applyCameraChangeFromStateUpdate(
+                self.maplibreMapView, camera: camera, animated: false
+            )
+        }
+
+        coordinator.applyCameraChangeFromStateUpdate(
+            maplibreMapView, camera: camera, animated: false, reframing: true
+        )
+
+        verify(maplibreMapView)
+            .userTrackingMode(newValue: .value(.follow))
+            .setCalled(1)
+    }
+
     @MainActor func testCenterCameraUpdate() async throws {
         let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let newCamera: MapViewCamera = .center(coordinate, zoom: 13)
@@ -393,8 +439,9 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             return
         }
 
-        // Stage 2: Resume continuation and verify cameraUpdateTask completes.
+        // Stage 2: Resume continuation, as mapViewDidBecomeIdle does, and verify cameraUpdateTask completes.
         continuation.resume(returning: ())
+        coordinator.cameraUpdateContinuation = nil
 
         let taskCompletionExpectation = XCTestExpectation(
             description: "Stage 2: cameraUpdateTask completes after continuation resume"

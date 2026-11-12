@@ -134,6 +134,8 @@ Please review https://github.com/maplibre/swiftui-dsl/blob/main/AGENTS.md#for-hu
 - `MapLibreSwiftUI` contains `MapView`, the coordinator, the view modifiers, and the examples.
 - `MapLibreSwiftMacros` declares the macros, and `MapLibreSwiftMacrosImpl` implements them.
 - `InternalUtils` contains shared helpers and sample data that are not API.
+- `RegressionPreviews` contains previews that reproduce fixed bugs, for checking by eye.
+  No product vends it, so it is not part of the API.
 - Put imports at the top of the file. Do not import in a function.
 
 ## Testing practices

@@ -87,3 +87,14 @@ extension UIEdgeInsets: @retroactive Hashable {
         hasher.combine(bottom)
     }
 }
+
+extension CameraState {
+    var isTrackingUserLocation: Bool {
+        switch self {
+        case .trackingUserLocation, .trackingUserLocationWithHeading, .trackingUserLocationWithCourse:
+            true
+        case .centered, .rect, .showcase:
+            false
+        }
+    }
+}

@@ -77,6 +77,9 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         let controller = makeViewController()
         controller.mapView.delegate = context.coordinator
         context.coordinator.mapView = controller.mapView
+        (controller as? MLNMapViewController)?.onSizeChange = { [weak coordinator = context.coordinator] in
+            coordinator?.refitAfterResize()
+        }
 
         // Apply modifiers, suppressing camera update propagation (this messes with setting our initial camera as
         // content insets can trigger a change)
@@ -121,6 +124,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         // forwarded environment value, rather than the closure from creation.
         context.coordinator.onStyleLoaded = onMapStyleLoaded
 
+        let isContentInsetChanging = mapContentInset.map { $0 != uiViewController.mapView.contentInset } ?? false
         applyModifiers(uiViewController, runUnsafe: true)
 
         // `nil` here means "use MapLibre's built-in default manager", but
@@ -163,7 +167,8 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             context.coordinator.applyCameraChangeFromStateUpdate(
                 uiViewController.mapView,
                 camera: camera,
-                animated: isStyleLoaded
+                animated: isStyleLoaded,
+                reframing: isContentInsetChanging
             )
         }
     }
@@ -188,7 +193,11 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     @MainActor private func applyModifiers(_ mapViewController: T, runUnsafe: Bool) {
         if let mapContentInset {
             mapViewController.mapView.automaticallyAdjustsContentInset = false
-            mapViewController.mapView.contentInset = mapContentInset
+            mapViewController.mapView.setContentInset(
+                mapContentInset,
+                animated: mapViewController.mapView.style != nil,
+                completionHandler: nil
+            )
         }
 
         // Assume all controls are hidden by default (so that an empty list returns a map with no controls)
