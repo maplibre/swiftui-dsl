@@ -1,4 +1,5 @@
 import CoreLocation
+import Foundation
 import MapLibre
 import Mockable
 import SwiftUI
@@ -118,10 +119,10 @@ struct MapCameraAnimationTests {
         }
 
         func finishUpdate() async throws {
-            let clock = ContinuousClock()
-            let deadline = clock.now.advanced(by: .seconds(1))
-            while coordinator.cameraUpdateContinuation == nil, clock.now < deadline {
-                try await Task.sleep(for: .milliseconds(5))
+            // Keep the timeout monotonic without requiring iOS 16's Clock APIs.
+            let deadline = ProcessInfo.processInfo.systemUptime + 1
+            while coordinator.cameraUpdateContinuation == nil, ProcessInfo.processInfo.systemUptime < deadline {
+                try await Task.sleep(nanoseconds: 5_000_000)
             }
             let continuation = try #require(coordinator.cameraUpdateContinuation)
             let task = coordinator.cameraUpdateTask
