@@ -405,7 +405,9 @@ MLNMapViewDelegate {
 
     /// Fits a bounding box or showcase camera to the map's new size.
     @MainActor func refitAfterResize() {
-        guard !parent.cameraDisabled, let mapView, mapView.frame.size != .zero, let camera = snapshotCamera else {
+        guard !parent.cameraDisabled, let mapView, mapView.frame.size != .zero,
+              let camera = snapshotCamera, camera == parent.camera
+        else {
             return
         }
         switch camera.state {
