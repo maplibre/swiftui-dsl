@@ -453,11 +453,12 @@ MLNMapViewDelegate {
     /// Only ``MLNTileOperation/error`` is acted on, it indicates a tile
     /// request failed, typically due to no internet or a poor connection.
     ///
-    /// The callback is debounced to 3ms, a burst of simultaneously
+    /// The callback is debounced to 300ms, a burst of simultaneously
     /// failing tiles within the window produces a single notification
     /// rather than many.
-    @MainActor
-    public func mapView(
+    ///
+    /// MapLibre calls this off the main thread.
+    public nonisolated func mapView(
         _: MLNMapView,
         tileDidTriggerAction operation: MLNTileOperation,
         x _: Int,
@@ -468,8 +469,14 @@ MLNMapViewDelegate {
         sourceID _: String
     ) {
         guard operation == .error else { return }
+        Task { @MainActor in
+            self.debounceTileError()
+        }
+    }
+
+    private func debounceTileError() {
         tileErrorDebounceTask?.cancel()
-        tileErrorDebounceTask = Task { @MainActor in
+        tileErrorDebounceTask = Task {
             try? await Task.sleep(nanoseconds: 300_000_000)
             guard !Task.isCancelled else { return }
             onMapTileError?()
