@@ -25,6 +25,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
 
     @Binding var camera: MapViewCamera
     @Environment(\.mapUserAnnotationStyle) var annotationStyle
+    @Environment(\.mapUserLocationVisibility) var userLocationVisibility
     @Environment(\.mapControls) var controls
     @Environment(\.mapContentInset) var mapContentInset
     @Environment(\.mapClusterLayers) var clusteredLayers
@@ -88,6 +89,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
         controller.mapView.locationManager = locationManager
         controller.mapView.locationManager = controller.mapView.locationManager
         context.coordinator.isUsingDefaultLocationManager = locationManager == nil
+        context.coordinator.updateUserLocationVisibility(userLocationVisibility, on: controller.mapView)
 
         switch styleSource {
         case let .url(styleURL):
@@ -148,6 +150,8 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             context.coordinator.isUsingDefaultLocationManager = true
             startUpdatesOfSwappedLocationManager(uiViewController.mapView)
         }
+
+        context.coordinator.updateUserLocationVisibility(userLocationVisibility, on: uiViewController.mapView)
 
         // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)

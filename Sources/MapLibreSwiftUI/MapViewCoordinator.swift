@@ -57,6 +57,8 @@ MLNMapViewDelegate {
     var proxyUpdateMode: ProxyUpdateMode
     var managedGestureRecognizers: [UIGestureRecognizer] = []
     var isUsingDefaultLocationManager = true
+    private var lastUserLocationVisibility: Bool?
+    private var isUpdatingUserLocationVisibility = false
 
     /// Debounces rapid-fire tile error callbacks so the consumer receives one
     /// notification per burst rather than one per individual failing tile.
@@ -208,6 +210,16 @@ MLNMapViewDelegate {
                 }
             }
         }
+    }
+
+    func updateUserLocationVisibility(_ isVisible: Bool?, on mapView: MLNMapView) {
+        defer { lastUserLocationVisibility = isVisible }
+        guard let isVisible, isVisible != lastUserLocationVisibility else { return }
+
+        // Hiding can synchronously emit a tracking callback during a representable update.
+        isUpdatingUserLocationVisibility = true
+        defer { isUpdatingUserLocationVisibility = false }
+        mapView.showsUserLocation = isVisible
     }
 
     // MARK: - Camera
@@ -589,7 +601,13 @@ MLNMapViewDelegate {
 
     @MainActor
     public func mapView(_: MLNMapView, didChange mode: MLNUserTrackingMode, animated: Bool) {
-        onUserTrackingModeChange?(mode, animated)
+        if isUpdatingUserLocationVisibility {
+            Task { @MainActor [weak self] in
+                self?.onUserTrackingModeChange?(mode, animated)
+            }
+        } else {
+            onUserTrackingModeChange?(mode, animated)
+        }
     }
 
     // MARK: MapViewProxy
