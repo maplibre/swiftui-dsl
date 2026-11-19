@@ -3,7 +3,7 @@ import MapLibre
 import MapLibreSwiftDSL
 import SwiftUI
 
-/// A loop around New Zealand, from Cape Reinga down the east coast and back up the west coast.
+/// A closed loop of towns around New Zealand. The last coordinate repeats the first.
 private let newZealandLoop: [CLLocationCoordinate2D] = [
     CLLocationCoordinate2D(latitude: -34.43, longitude: 172.68), // Cape Reinga
     CLLocationCoordinate2D(latitude: -36.85, longitude: 174.76), // Auckland
@@ -109,10 +109,12 @@ struct StyleLayerUpdatesPreview: View {
     }
 }
 
-/// A closed path that returns the coordinate at a part of its length.
+/// A path that gives the coordinate at a part of its length, such as 0.25 for one quarter of the way.
+///
+/// The last coordinate must repeat the first. If it does not, the position jumps at the end of each lap.
 private struct LoopPath {
     private let coordinates: [CLLocationCoordinate2D]
-    /// The length of the path up to each coordinate, as a part of the full length.
+    /// The length of the path up to each coordinate, from 0 at the first to 1 at the last.
     private let positions: [Double]
 
     init(_ coordinates: [CLLocationCoordinate2D]) {
