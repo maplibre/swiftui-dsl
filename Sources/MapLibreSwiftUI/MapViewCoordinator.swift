@@ -240,6 +240,11 @@ MLNMapViewDelegate {
 
         cameraUpdateTask = Task { @MainActor in
             await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else {
+                    continuation.resume()
+                    return
+                }
+
                 // Clean up the continuation if it was already set.
                 cameraUpdateContinuation?.resume()
                 cameraUpdateContinuation = nil
@@ -417,6 +422,11 @@ MLNMapViewDelegate {
 
         cameraUpdateTask = Task { @MainActor in
             await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else {
+                    continuation.resume()
+                    return
+                }
+
                 // Store the continuation to be resumed in mapViewDidBecomeIdle
                 cameraUpdateContinuation = continuation
 
@@ -439,6 +449,17 @@ MLNMapViewDelegate {
                 )
             }
         }
+    }
+
+    /// Cancels the pending camera update and resumes its continuation.
+    ///
+    /// Call this when SwiftUI removes the map view. Until the map becomes idle, the pending task holds
+    /// the map view and the coordinator.
+    @MainActor func cancelCameraUpdate() {
+        cameraUpdateTask?.cancel()
+        cameraUpdateTask = nil
+        cameraUpdateContinuation?.resume()
+        cameraUpdateContinuation = nil
     }
 
     // MARK: - MLNMapViewDelegate

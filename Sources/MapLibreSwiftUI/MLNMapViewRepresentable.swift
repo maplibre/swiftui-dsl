@@ -10,7 +10,7 @@ import MapLibre
 #if MapLibreDeveloper
     @Mockable
 #endif
-/// A reprentation of the MLNMapView
+/// A representation of the MLNMapView.
 ///
 /// This is primarily used to abstract the MLNMapView for testing.
 public protocol MLNMapViewRepresentable: AnyObject {
