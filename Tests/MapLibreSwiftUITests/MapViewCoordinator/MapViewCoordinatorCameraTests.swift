@@ -374,6 +374,46 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(1)
     }
 
+    @MainActor func testCancelCameraUpdateResumesPendingContinuation() async throws {
+        given(maplibreMapView)
+            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
+            .willReturn()
+
+        coordinator.applyCameraChangeFromStateUpdate(
+            maplibreMapView,
+            camera: .center(CLLocationCoordinate2D(latitude: 45, longitude: -127), zoom: 10),
+            animated: false
+        )
+        let task = try XCTUnwrap(coordinator.cameraUpdateTask)
+
+        while coordinator.cameraUpdateContinuation == nil {
+            await Task.yield()
+        }
+
+        coordinator.cancelCameraUpdate()
+        await task.value
+
+        XCTAssertNil(coordinator.cameraUpdateTask)
+        XCTAssertNil(coordinator.cameraUpdateContinuation)
+    }
+
+    @MainActor func testCancelCameraUpdateBeforeTaskStartsCompletesTask() async throws {
+        coordinator.applyCameraChangeFromStateUpdate(
+            maplibreMapView,
+            camera: .center(CLLocationCoordinate2D(latitude: 45, longitude: -127), zoom: 10),
+            animated: false
+        )
+        let task = try XCTUnwrap(coordinator.cameraUpdateTask)
+
+        coordinator.cancelCameraUpdate()
+        await task.value
+
+        XCTAssertNil(coordinator.cameraUpdateContinuation)
+        verify(maplibreMapView)
+            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
+            .called(0)
+    }
+
     @MainActor
     private func simulateCameraUpdateAndWait(action: @escaping () -> Void) async throws {
         // Stage 1: Execute camera action and wait for continuation wiring.
