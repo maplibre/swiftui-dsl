@@ -2,6 +2,7 @@ import Foundation
 import MapLibre
 import SwiftUI
 
+@MainActor
 extension MapView {
     /// Runs on each gesture change event and filters the appropriate gesture behavior based on the
     /// user definition.
@@ -15,30 +16,30 @@ extension MapView {
     ///   - mapView: The MapView emitting the gesture. This is used to calculate the point and coordinate of the
     /// gesture.
     ///   - sender: The UIGestureRecognizer
-    @MainActor func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
+    func processGesture(_ mapView: MLNMapView, _ sender: UIGestureRecognizer) {
         guard let gesture = gestureManager.gestures.first(where: { $0.gestureRecognizer == sender }) else {
             assertionFailure("\(sender) is not a registered UIGestureRecongizer on the MapView")
             return
         }
 
-        if let clusteredLayers {
-            if let gestureRecognizer = sender as? UITapGestureRecognizer, gestureRecognizer.numberOfTouches == 1 {
-                let point = gestureRecognizer.location(in: sender.view)
-                for clusteredLayer in clusteredLayers {
-                    let features = mapView.visibleFeatures(
-                        at: point,
-                        styleLayerIdentifiers: [clusteredLayer.layerIdentifier]
-                    )
-                    if let cluster = features.first as? MLNPointFeatureCluster,
-                       let source = mapView.style?
+        if let clusteredLayers, let gestureRecognizer = sender as? UITapGestureRecognizer,
+           gestureRecognizer.numberOfTouches == 1
+        {
+            let point = gestureRecognizer.location(in: sender.view)
+            for clusteredLayer in clusteredLayers {
+                let features = mapView.visibleFeatures(
+                    at: point,
+                    styleLayerIdentifiers: [clusteredLayer.layerIdentifier]
+                )
+                if let cluster = features.first as? MLNPointFeatureCluster,
+                   let source = mapView.style?
                        .source(withIdentifier: clusteredLayer.sourceIdentifier) as? MLNShapeSource
-                    {
-                        let zoomLevel = source.zoomLevel(forExpanding: cluster)
+                {
+                    let zoomLevel = source.zoomLevel(forExpanding: cluster)
 
-                        if zoomLevel > 0 {
-                            mapView.setCenter(cluster.coordinate, zoomLevel: zoomLevel, animated: true)
-                            break // since we can only zoom on one thing, we can abort the for loop here
-                        }
+                    if zoomLevel > 0 {
+                        mapView.setCenter(cluster.coordinate, zoomLevel: zoomLevel, animated: true)
+                        break // since we can only zoom on one thing, we can abort the for loop here
                     }
                 }
             }
@@ -64,8 +65,8 @@ extension MapView {
     ///   - gesture: The gesture definition for this event.
     ///   - sender: The UIKit gesture emitting from the map view.
     /// - Returns: The calculated context from the sending UIKit gesture
-    @MainActor func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture,
-                                              sender: UIGestureRecognizing) -> MapGestureContext
+    func processContextFromGesture(_ mapView: MLNMapView, gesture: MapGesture,
+                                   sender: UIGestureRecognizing) -> MapGestureContext
     {
         // Build the context of the gesture's event.
         let point: CGPoint = switch gesture.method {

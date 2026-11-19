@@ -27,6 +27,7 @@ private struct MapViewUnsafeControllerViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Allows you to set properties of the underlying MLNMapView directly
     /// in cases where these have not been ported to DSL yet.
@@ -52,7 +53,6 @@ public extension View {
     ///     }
     /// ```
     ///
-    @MainActor
     func unsafeMapViewControllerModifier(_ apply: @escaping (any MapViewHostViewController) -> Void) -> some View {
         modifier(MapViewUnsafeControllerViewModifier(unsafeController: apply))
     }

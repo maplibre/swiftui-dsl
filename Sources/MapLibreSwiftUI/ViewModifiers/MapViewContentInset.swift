@@ -27,13 +27,13 @@ private struct MapViewContentInsetViewModifier: ViewModifier {
     }
 }
 
+@MainActor
 public extension View {
     /// Set the content inset in the map.
     ///
     /// This pads the things like the user location puck.
     ///
     /// - Parameter inset: The edge insets to pad the map content with.
-    @MainActor
     func mapContentInset(_ inset: UIEdgeInsets) -> some View {
         modifier(MapViewContentInsetViewModifier(mapContentInset: inset))
     }

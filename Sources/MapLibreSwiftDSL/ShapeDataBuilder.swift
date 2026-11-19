@@ -8,14 +8,16 @@ public protocol Source {
 
     func makeMGLSource() -> MLNSource
 
-    /// Changes a source in a style so that it shows this definition.
+    /// Updates the data of `source` in place, redrawing it on the map.
     ///
-    /// The default implementation returns `false`.
+    /// The map view calls this method on each SwiftUI update and when this definition equals `previous`.
+    /// The default implementation returns `false`, so the map view replaces the source and adds its layers
+    /// again on each update. Implement this method to change the source in place.
     ///
     /// - Parameters:
     ///   - source: The source in the style.
     ///   - previous: The definition that `source` shows.
-    /// - Returns: `false` if `source` cannot show this definition. The caller then replaces `source`.
+    /// - Returns: Whether the source reflects the latest data.
     func update(_ source: MLNSource, from previous: Source) -> Bool
 }
 
@@ -83,13 +85,18 @@ public struct ShapeSource: Source {
 
     public func update(_ source: MLNSource, from previous: Source) -> Bool {
         guard let source = source as? MLNShapeSource,
-              let previous = previous as? ShapeSource,
-              NSDictionary(dictionary: options ?? [:]).isEqual(to: previous.options ?? [:])
+              let previous = previous as? ShapeSource
         else {
             return false
         }
 
-        guard data != previous.data else {
+        guard NSDictionary(dictionary: options ?? [:]).isEqual(to: previous.options ?? [:]) else {
+            // Require the options to match, otherwise we assume it's a different source.
+            return false
+        }
+
+        if data == previous.data {
+            // Already up to date, exit.
             return true
         }
 
