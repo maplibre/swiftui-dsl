@@ -174,7 +174,7 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
     ///
     /// This is an optional SwiftUI Coordinator pattern function as seen in
     /// [dismantleuiviewcontroller(_:coordinator:)](https://developer.apple.com/documentation/swiftui/uiviewcontrollerrepresentable/dismantleuiviewcontroller(_:coordinator:)-30a1m)
-    /// 
+    ///
     /// - Parameter coordinator: The coordinator of the removed map view.
     public static func dismantleUIViewController(_: T, coordinator: MapViewCoordinator<T>) {
         coordinator.cancelCameraUpdate()
