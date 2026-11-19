@@ -7,12 +7,12 @@ import MapLibre
 
 // NOTE: We should eventually mark the entire protocol @MainActor, but Mockable generates some unsafe code at the moment
 
-/// A reprentation of the MLNMapView
-///
-/// This is primarily used to abstract the MLNMapView for testing.
 #if MapLibreDeveloper
     @Mockable
 #endif
+/// A representation of the MLNMapView.
+///
+/// This is primarily used to abstract the MLNMapView for testing.
 public protocol MLNMapViewRepresentable: AnyObject {
     @MainActor var userTrackingMode: MLNUserTrackingMode { get set }
     @MainActor func setUserTrackingMode(_ mode: MLNUserTrackingMode, animated: Bool, completionHandler: (() -> Void)?)
