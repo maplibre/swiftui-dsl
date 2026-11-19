@@ -7,7 +7,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<UIColor>("fillColor", supportsInterpolation: true)
 @MLNStyleProperty<UIColor>("fillOutlineColor", supportsInterpolation: true)
 @MLNStyleProperty<Float>("fillOpacity", supportsInterpolation: true)
-public struct FillStyleLayer: SourceBoundVectorStyleLayerDefinition {
+public struct FillStyleLayer: SourceBoundVectorStyleLayerDefinition, Equatable {
     public let identifier: String
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)

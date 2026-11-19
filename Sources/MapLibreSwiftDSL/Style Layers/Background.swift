@@ -5,7 +5,7 @@ import MapLibreSwiftMacros
 
 @MLNStyleProperty<UIColor>("backgroundColor", supportsInterpolation: true)
 @MLNStyleProperty<Float>("backgroundOpacity", supportsInterpolation: true)
-public struct BackgroundLayer: StyleLayer {
+public struct BackgroundLayer: StyleLayer, Equatable {
     public let identifier: String
     public var insertionPosition: LayerInsertionPosition = .below(.all)
     public var isVisible: Bool = true

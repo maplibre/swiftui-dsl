@@ -11,7 +11,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<Double>("circleOpacity", supportsInterpolation: true)
 @MLNStyleProperty<Double>("circleStrokeOpacity", supportsInterpolation: true)
 
-public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition {
+public struct CircleStyleLayer: SourceBoundVectorStyleLayerDefinition, Equatable {
     public let identifier: String
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)

@@ -11,7 +11,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<[Float]>("lineDashPattern")
 @MLNStyleProperty<Float>("lineWidth", supportsInterpolation: true)
 @MLNStyleProperty<Float>("lineBlur", supportsInterpolation: true)
-public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition {
+public struct LineStyleLayer: SourceBoundVectorStyleLayerDefinition, Equatable {
     public let identifier: String
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)
