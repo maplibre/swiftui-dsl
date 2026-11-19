@@ -1,8 +1,7 @@
 import Foundation
 import MapLibre
 
-@MainActor
-public enum CameraChangeReason: Hashable {
+public enum CameraChangeReason: Hashable, Sendable {
     case programmatic
     case resetNorth
     case gesturePan

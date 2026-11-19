@@ -12,7 +12,12 @@ import SwiftUI
 #endif
 
 @MainActor
-extension EnvironmentValues {
+public extension EnvironmentValues {
+    /// The style-loaded handler supplied by this view's parent.
+    ///
+    /// Wrapper views can read and forward it alongside their own handler when
+    /// installing an internal `onMapStyleLoaded` modifier. The modifier retains
+    /// its existing nearest-handler semantics.
     var onMapStyleLoaded: ((MLNStyle) -> Void)? {
         get { self[OnMapStyleLoadedKey.self] }
         set { self[OnMapStyleLoadedKey.self] = newValue }
