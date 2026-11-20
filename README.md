@@ -55,7 +55,7 @@ Changing the preference alone does not move the map, and initial positioning nev
 For tracking cameras, the flag controls the transition into tracking;
 subsequent user-location updates retain Native's behavior.
 
-Camera timing and curves are controlled by Native, independently of SwiftUI's
+Camera timing and curves are controlled by MapLibre, independently of SwiftUI's
 `withAnimation`, `.animation`, and transactions.
 Passing a SwiftUI spring does not create a spring camera animation.
 The [interactive camera preview](Sources/MapLibreSwiftUI/Examples/Camera.swift)
