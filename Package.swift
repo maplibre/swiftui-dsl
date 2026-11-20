@@ -82,6 +82,20 @@ let package = Package(
             swiftSettings: swift6Settings
         ),
 
+        // MARK: Regression previews
+
+        // Previews that reproduce fixed bugs, for checking by eye.
+        // No product vends this target, so apps that depend on the package never build it.
+        .target(
+            name: "RegressionPreviews",
+            dependencies: [
+                "MapLibreSwiftUI",
+                "MapLibreSwiftDSL",
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+            ],
+            swiftSettings: swift6Settings
+        ),
+
         // MARK: Macro
 
         .macro(

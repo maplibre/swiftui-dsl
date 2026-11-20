@@ -222,13 +222,18 @@ MLNMapViewDelegate {
     @MainActor func applyCameraChangeFromStateUpdate(
         _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
-        animated: Bool = true
+        animated: Bool = true,
+        reframing: Bool = false
     ) {
+        // A content inset change interrupts any camera animation, so finish it within the new inset.
+        // MapLibre reframes a camera that's already tracking.
+        let isReframing = reframing
+            && !(camera.state.isTrackingUserLocation && mapView.userTrackingMode != .none)
         let animated = animated && camera.animated
         // Animation is an update preference, not a new viewpoint to apply.
         let hasSameViewpoint = camera.state == snapshotCamera?.state
             && camera.lastReasonForChange == snapshotCamera?.lastReasonForChange
-        guard !hasSameViewpoint else {
+        guard !hasSameViewpoint || isReframing else {
             snapshotCamera = camera
             return
         }
@@ -405,6 +410,21 @@ MLNMapViewDelegate {
                     mapView.setCamera(camera, animated: animated)
                 }
             }
+        }
+    }
+
+    /// Fits a bounding box or showcase camera to the map's new size.
+    @MainActor func refitAfterResize() {
+        guard !parent.cameraDisabled, let mapView, mapView.frame.size != .zero,
+              let camera = snapshotCamera, camera == parent.camera
+        else {
+            return
+        }
+        switch camera.state {
+        case .rect, .showcase:
+            applyCameraChangeFromStateUpdate(mapView, camera: camera, animated: mapView.style != nil, reframing: true)
+        case .centered, .trackingUserLocation, .trackingUserLocationWithHeading, .trackingUserLocationWithCourse:
+            break
         }
     }
 
