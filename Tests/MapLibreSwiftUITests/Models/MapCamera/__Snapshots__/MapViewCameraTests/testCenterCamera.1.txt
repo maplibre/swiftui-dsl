@@ -9,3 +9,4 @@
       - pitchRange: CameraPitchRange.free
       - direction: 23.0
   - lastReasonForChange: Optional<CameraChangeReason>.none
+  - animated: true

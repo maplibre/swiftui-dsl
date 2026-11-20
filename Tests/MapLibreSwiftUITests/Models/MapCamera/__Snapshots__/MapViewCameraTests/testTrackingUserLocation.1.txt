@@ -10,3 +10,4 @@
       - direction: 0.0
   ▿ lastReasonForChange: Optional<CameraChangeReason>
     - some: CameraChangeReason.programmatic
+  - animated: true

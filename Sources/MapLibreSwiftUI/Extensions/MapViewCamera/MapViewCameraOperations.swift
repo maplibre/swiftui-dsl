@@ -220,7 +220,7 @@ public extension MapViewCamera {
             return
         }
 
-        self = .center(newCenter, zoom: zoom)
+        self = .center(newCenter, zoom: zoom, animated: animated)
         lastReasonForChange = .programmatic
     }
 }

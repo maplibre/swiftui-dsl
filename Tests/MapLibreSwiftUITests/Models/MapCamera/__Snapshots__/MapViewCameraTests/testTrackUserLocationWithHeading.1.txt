@@ -6,3 +6,4 @@
       - pitchRange: CameraPitchRange.free
   ▿ lastReasonForChange: Optional<CameraChangeReason>
     - some: CameraChangeReason.programmatic
+  - animated: true

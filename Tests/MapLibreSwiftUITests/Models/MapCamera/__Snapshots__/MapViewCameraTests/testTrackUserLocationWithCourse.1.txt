@@ -9,3 +9,4 @@
           - maximum: 34.0
   ▿ lastReasonForChange: Optional<CameraChangeReason>
     - some: CameraChangeReason.programmatic
+  - animated: true
