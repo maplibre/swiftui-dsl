@@ -24,7 +24,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
 
     /// Whether programmatic changes use MapLibre Native's standard camera animation.
     ///
-    /// Defaults to `true`. Set this to `false` to jump immediately to a new viewpoint.
+    /// Defaults to `true`. Set this to `false` to jump immediately to a new viewport.
     /// Initial positioning is always immediate. Changing only this preference does not move the map.
     /// For tracking cameras, this controls entry into tracking; subsequent location updates use Native's behavior.
     /// SwiftUI's `withAnimation`, `.animation`, and transactions do not control the camera's timing or curve.
