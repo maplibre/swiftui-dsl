@@ -110,7 +110,7 @@ public protocol SourceBoundStyleLayerDefinition: StyleLayerDefinition {
 }
 
 /// Based on MLNVectorStyleLayer
-public protocol SourceBoundVectorStyleLayerDefinition: SourceBoundStyleLayerDefinition, Equatable {
+public protocol SourceBoundVectorStyleLayerDefinition: SourceBoundStyleLayerDefinition {
     /**
      The style layer’s predicate.
 

@@ -1,8 +1,8 @@
 import MapLibre
-import XCTest
+import Testing
 @testable import MapLibreSwiftDSL
 
-final class ShapeSourceUpdateTests: XCTestCase {
+struct ShapeSourceUpdateTests {
     private let coordinates = [
         CLLocationCoordinate2D(latitude: 1, longitude: 2),
         CLLocationCoordinate2D(latitude: 3, longitude: 4),
@@ -62,103 +62,115 @@ final class ShapeSourceUpdateTests: XCTestCase {
         ]
     }
 
-    func testShapesWithTheSameCoordinatesAreEqual() {
+    @Test
+    func shapesWithTheSameCoordinatesAreEqual() {
         for ((name, shape), (_, copy)) in zip(shapes(coordinates), shapes(coordinates)) {
-            XCTAssertEqual(ShapeData.shapes([shape]), .shapes([copy]), name)
+            #expect(ShapeData.shapes([shape]) == .shapes([copy]), "\(name)")
         }
     }
 
-    func testShapesWithOtherCoordinatesAreNotEqual() {
+    @Test
+    func shapesWithOtherCoordinatesAreNotEqual() {
         for ((name, shape), (_, other)) in zip(shapes(coordinates), shapes(otherCoordinates)) {
-            XCTAssertNotEqual(ShapeData.shapes([shape]), .shapes([other]), name)
+            #expect(ShapeData.shapes([shape]) != .shapes([other]), "\(name)")
         }
     }
 
-    func testFeaturesWithTheSameCoordinatesAreEqual() {
+    @Test
+    func featuresWithTheSameCoordinatesAreEqual() {
         for ((name, feature), (_, copy)) in zip(features(coordinates), features(coordinates)) {
-            XCTAssertEqual(ShapeData.features([feature]), .features([copy]), name)
+            #expect(ShapeData.features([feature]) == .features([copy]), "\(name)")
         }
     }
 
-    func testFeaturesWithOtherCoordinatesAreNotEqual() {
+    @Test
+    func featuresWithOtherCoordinatesAreNotEqual() {
         for ((name, feature), (_, other)) in zip(features(coordinates), features(otherCoordinates)) {
-            XCTAssertNotEqual(ShapeData.features([feature]), .features([other]), name)
+            #expect(ShapeData.features([feature]) != .features([other]), "\(name)")
         }
     }
 
-    func testFeaturesWithOtherAttributesAreNotEqual() {
+    @Test
+    func featuresWithOtherAttributesAreNotEqual() {
         let feature = pointFeature(coordinates[0], attributes: ["index": 1])
         let other = pointFeature(coordinates[0], attributes: ["index": 2])
 
-        XCTAssertNotEqual(ShapeData.features([feature]), .features([other]))
+        #expect(ShapeData.features([feature]) != .features([other]))
     }
 
-    func testFeaturesWithOtherIdentifiersAreNotEqual() {
+    @Test
+    func featuresWithOtherIdentifiersAreNotEqual() {
         let feature = pointFeature(coordinates[0])
         feature.identifier = "first"
         let other = pointFeature(coordinates[0])
         other.identifier = "second"
 
-        XCTAssertNotEqual(ShapeData.features([feature]), .features([other]))
+        #expect(ShapeData.features([feature]) != .features([other]))
     }
 
-    func testUpdateWithTheSameContentKeepsTheShape() throws {
+    @Test
+    func updateWithTheSameContentKeepsTheShape() throws {
         let previous = ShapeSource(identifier: "source") { MLNPolyline(coordinates: coordinates) }
-        let source = try XCTUnwrap(previous.makeMGLSource() as? MLNShapeSource)
+        let source = try #require(previous.makeMGLSource() as? MLNShapeSource)
         let shape = source.shape
         let definition = ShapeSource(identifier: "source") { MLNPolyline(coordinates: coordinates) }
 
-        XCTAssertTrue(definition.update(source, from: previous))
-        XCTAssertTrue(source.shape === shape)
+        #expect(definition.update(source, from: previous))
+        #expect(source.shape === shape)
     }
 
-    func testUpdateWithOtherShapesChangesTheShape() throws {
+    @Test
+    func updateWithOtherShapesChangesTheShape() throws {
         let previous = ShapeSource(identifier: "source") { MLNPolyline(coordinates: coordinates) }
-        let source = try XCTUnwrap(previous.makeMGLSource() as? MLNShapeSource)
+        let source = try #require(previous.makeMGLSource() as? MLNShapeSource)
         let definition = ShapeSource(identifier: "source") { MLNPolyline(coordinates: otherCoordinates) }
 
-        XCTAssertTrue(definition.update(source, from: previous))
+        #expect(definition.update(source, from: previous))
 
-        let expected = try XCTUnwrap(definition.makeMGLSource() as? MLNShapeSource)
-        XCTAssertEqual(source.shape, expected.shape)
+        let expected = try #require(definition.makeMGLSource() as? MLNShapeSource)
+        #expect(source.shape == expected.shape)
     }
 
-    func testUpdateWithOtherFeaturesChangesTheShape() throws {
+    @Test
+    func updateWithOtherFeaturesChangesTheShape() throws {
         let previous = ShapeSource(identifier: "source") { pointFeature(coordinates[0]) }
-        let source = try XCTUnwrap(previous.makeMGLSource() as? MLNShapeSource)
+        let source = try #require(previous.makeMGLSource() as? MLNShapeSource)
         let definition = ShapeSource(identifier: "source") { pointFeature(coordinates[1]) }
 
-        XCTAssertTrue(definition.update(source, from: previous))
+        #expect(definition.update(source, from: previous))
 
-        let expected = try XCTUnwrap(definition.makeMGLSource() as? MLNShapeSource)
-        XCTAssertEqual(source.shape, expected.shape)
+        let expected = try #require(definition.makeMGLSource() as? MLNShapeSource)
+        #expect(source.shape == expected.shape)
     }
 
-    func testUpdateWithOtherOptionsAsksForANewSource() throws {
+    @Test
+    func updateWithOtherOptionsAsksForANewSource() throws {
         let previous = ShapeSource(identifier: "source", options: [.clustered: true]) {
             MLNPolyline(coordinates: coordinates)
         }
-        let source = try XCTUnwrap(previous.makeMGLSource() as? MLNShapeSource)
+        let source = try #require(previous.makeMGLSource() as? MLNShapeSource)
         let definition = ShapeSource(identifier: "source", options: [.clustered: false]) {
             MLNPolyline(coordinates: coordinates)
         }
 
-        XCTAssertFalse(definition.update(source, from: previous))
+        #expect(!(definition.update(source, from: previous)))
     }
 
-    func testUpdateWithTheSameOptionsKeepsTheSource() throws {
+    @Test
+    func updateWithTheSameOptionsKeepsTheSource() throws {
         let previous = ShapeSource(identifier: "source", options: [.clustered: true]) {
             MLNPolyline(coordinates: coordinates)
         }
-        let source = try XCTUnwrap(previous.makeMGLSource() as? MLNShapeSource)
+        let source = try #require(previous.makeMGLSource() as? MLNShapeSource)
         let definition = ShapeSource(identifier: "source", options: [.clustered: true]) {
             MLNPolyline(coordinates: coordinates)
         }
 
-        XCTAssertTrue(definition.update(source, from: previous))
+        #expect(definition.update(source, from: previous))
     }
 
-    func testASourceWithoutAnUpdateAsksForANewSource() {
+    @Test
+    func aSourceWithoutAnUpdateAsksForANewSource() {
         struct CustomSource: Source {
             let identifier = "source"
 
@@ -167,6 +179,6 @@ final class ShapeSourceUpdateTests: XCTestCase {
             }
         }
 
-        XCTAssertFalse(CustomSource().update(CustomSource().makeMGLSource(), from: CustomSource()))
+        #expect(!(CustomSource().update(CustomSource().makeMGLSource(), from: CustomSource())))
     }
 }

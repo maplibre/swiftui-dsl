@@ -41,8 +41,6 @@ struct StyleLayerUpdatesPreview: View {
         zoom: 4.3
     )
 
-    private let path = LoopPath(newZealandLoop)
-
     var body: some View {
         MapView(styleURL: demoTilesURL, camera: $camera) {
             let route = ShapeSource(identifier: "route") {
@@ -97,7 +95,7 @@ struct StyleLayerUpdatesPreview: View {
         (0 ..< dotCount).map { index in
             // 0 at the head, 1 at the end of the tail.
             let fraction = dotCount > 1 ? Double(index) / Double(dotCount - 1) : 0
-            let feature = MLNPointFeature(coordinate: path.coordinate(at: head - fraction * tailLength))
+            let feature = MLNPointFeature(coordinate: coordinate(at: head - fraction * tailLength))
             feature.attributes = [
                 "color": UIColor(hue: fraction * 0.85, saturation: 1, brightness: 1, alpha: 1).hexString,
                 "radius": 10 - 7 * fraction,
@@ -107,39 +105,16 @@ struct StyleLayerUpdatesPreview: View {
             return feature
         }
     }
-}
 
-/// A path that gives the coordinate at a part of its length, such as 0.25 for one quarter of the way.
-///
-/// The last coordinate must repeat the first. If it does not, the position jumps at the end of each lap.
-private struct LoopPath {
-    private let coordinates: [CLLocationCoordinate2D]
-    /// The length of the path up to each coordinate, from 0 at the first to 1 at the last.
-    private let positions: [Double]
-
-    init(_ coordinates: [CLLocationCoordinate2D]) {
-        self.coordinates = coordinates
-        let lengths = zip(coordinates, coordinates.dropFirst()).map { start, end in
-            hypot(end.latitude - start.latitude, (end.longitude - start.longitude) * cos(start.latitude * .pi / 180))
-        }
-        let total = lengths.reduce(0, +)
-        positions = lengths.reduce(into: [0]) { positions, length in
-            positions.append(positions.last! + length / total)
-        }
-    }
-
-    /// Returns the coordinate at `position`, a part of the full length. The value wraps, so -0.1 is the same as 0.9.
-    func coordinate(at position: Double) -> CLLocationCoordinate2D {
-        let position = position - position.rounded(.down)
-        let end = positions.firstIndex { $0 >= position } ?? positions.count - 1
-        guard end > 0 else {
-            return coordinates[0]
-        }
-        let start = end - 1
-        let t = (position - positions[start]) / (positions[end] - positions[start])
+    private func coordinate(at progress: Double) -> CLLocationCoordinate2D {
+        let position = (progress - progress.rounded(.down)) * Double(newZealandLoop.count - 1)
+        let index = Int(position) % (newZealandLoop.count - 1)
+        let fraction = position - position.rounded(.down)
+        let start = newZealandLoop[index]
+        let end = newZealandLoop[index + 1]
         return CLLocationCoordinate2D(
-            latitude: coordinates[start].latitude + t * (coordinates[end].latitude - coordinates[start].latitude),
-            longitude: coordinates[start].longitude + t * (coordinates[end].longitude - coordinates[start].longitude)
+            latitude: start.latitude + fraction * (end.latitude - start.latitude),
+            longitude: start.longitude + fraction * (end.longitude - start.longitude)
         )
     }
 }

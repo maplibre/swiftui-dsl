@@ -1,5 +1,6 @@
 import MapLibre
 import MapLibreSwiftDSL
+import Testing
 @testable import MapLibreSwiftUI
 
 /// A map view that has finished loading a style with one symbol layer.
@@ -17,7 +18,7 @@ final class LoadedMap: NSObject, MLNMapViewDelegate {
 
     private let mapView: MLNMapView
     private let styleLayers = StyleLayerCoordinator()
-    private var continuation: CheckedContinuation<Void, Never>?
+    private var continuation: AsyncStream<Void>.Continuation?
 
     var style: MLNStyle {
         mapView.style!
@@ -42,12 +43,14 @@ final class LoadedMap: NSObject, MLNMapViewDelegate {
     static func load() async throws -> LoadedMap {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).json")
         try Data(styleJSON.utf8).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
 
         let map = LoadedMap(styleURL: url)
-        await withCheckedContinuation { continuation in
-            map.continuation = continuation
-            map.mapView.delegate = map
-        }
+        let loaded = AsyncStream.makeStream(of: Void.self)
+        map.continuation = loaded.continuation
+        map.mapView.delegate = map
+        var events = loaded.stream.makeAsyncIterator()
+        try #require(await events.next() != nil)
         return map
     }
 
@@ -57,7 +60,8 @@ final class LoadedMap: NSObject, MLNMapViewDelegate {
 
     nonisolated func mapView(_: MLNMapView, didFinishLoading _: MLNStyle) {
         MainActor.assumeIsolated {
-            continuation?.resume()
+            continuation?.yield(())
+            continuation?.finish()
             continuation = nil
         }
     }

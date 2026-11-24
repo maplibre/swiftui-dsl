@@ -1,10 +1,11 @@
 import MapLibre
 import MapLibreSwiftDSL
-import XCTest
+import Testing
 @testable import MapLibreSwiftUI
 
 @MainActor
-final class StyleLayerCoordinatorTests: XCTestCase {
+@Suite(.timeLimit(.minutes(1)))
+struct StyleLayerCoordinatorTests {
     private let first = CLLocationCoordinate2D(latitude: 1, longitude: 2)
     private let second = CLLocationCoordinate2D(latitude: 3, longitude: 4)
 
@@ -16,7 +17,8 @@ final class StyleLayerCoordinatorTests: XCTestCase {
         }
     }
 
-    func testUnchangedLayersAndSourcesStayInTheStyle() async throws {
+    @Test
+    func unchangedLayersAndSourcesStayInTheStyle() async throws {
         let map = try await LoadedMap.load()
         let content = { [self] in [
             CircleStyleLayer(identifier: "first", source: shapeSource(at: first)).color(.red),
@@ -24,29 +26,31 @@ final class StyleLayerCoordinatorTests: XCTestCase {
         ] as [StyleLayerDefinition] }
         map.update(content())
         let layers = map.userLayers
-        let source = try XCTUnwrap(map.style.source(withIdentifier: "source"))
+        let source = try #require(map.style.source(withIdentifier: "source"))
 
         map.update(content())
 
-        XCTAssertTrue(map.userLayers.elementsEqual(layers, by: ===))
-        XCTAssertTrue(map.style.source(withIdentifier: "source") === source)
+        #expect(map.userLayers.elementsEqual(layers, by: ===))
+        #expect(map.style.source(withIdentifier: "source") === source)
     }
 
-    func testChangedShapeUpdatesTheSourceAndKeepsTheLayers() async throws {
+    @Test
+    func changedShapeUpdatesTheSourceAndKeepsTheLayers() async throws {
         let map = try await LoadedMap.load()
         map.update([CircleStyleLayer(identifier: "layer", source: shapeSource(at: first))])
         let layers = map.userLayers
-        let source = try XCTUnwrap(map.style.source(withIdentifier: "source") as? MLNShapeSource)
+        let source = try #require(map.style.source(withIdentifier: "source") as? MLNShapeSource)
 
         map.update([CircleStyleLayer(identifier: "layer", source: shapeSource(at: second))])
 
-        XCTAssertTrue(map.userLayers.elementsEqual(layers, by: ===))
-        XCTAssertTrue(map.style.source(withIdentifier: "source") === source)
-        let shape = try XCTUnwrap(source.shape as? MLNShapeCollectionFeature)
-        XCTAssertEqual(shape.shapes.first?.coordinate.latitude, second.latitude)
+        #expect(map.userLayers.elementsEqual(layers, by: ===))
+        #expect(map.style.source(withIdentifier: "source") === source)
+        let shape = try #require(source.shape as? MLNShapeCollectionFeature)
+        #expect(shape.shapes.first?.coordinate.latitude == second.latitude)
     }
 
-    func testChangedLayerKeepsTheLayersBeforeItAndTheOrder() async throws {
+    @Test
+    func changedLayerKeepsTheLayersBeforeItAndTheOrder() async throws {
         let map = try await LoadedMap.load()
         let source = shapeSource(at: first)
         func content(_ color: UIColor) -> [StyleLayerDefinition] {
@@ -58,29 +62,31 @@ final class StyleLayerCoordinatorTests: XCTestCase {
         }
         map.update(content(.red))
         let layers = map.userLayers
-        let styleSource = try XCTUnwrap(map.style.source(withIdentifier: "source"))
+        let styleSource = try #require(map.style.source(withIdentifier: "source"))
 
         map.update(content(.blue))
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["a", "b", "c"])
-        XCTAssertTrue(map.userLayers[0] === layers[0])
-        XCTAssertFalse(map.userLayers[1] === layers[1])
-        XCTAssertTrue(map.style.source(withIdentifier: "source") === styleSource)
+        #expect(map.userLayerIdentifiers == ["a", "b", "c"])
+        #expect(map.userLayers[0] === layers[0])
+        #expect(!(map.userLayers[1] === layers[1]))
+        #expect(map.style.source(withIdentifier: "source") === styleSource)
     }
 
-    func testRemovedLayerRemovesItsSource() async throws {
+    @Test
+    func removedLayerRemovesItsSource() async throws {
         let map = try await LoadedMap.load()
         let kept = CircleStyleLayer(identifier: "kept", source: shapeSource("kept-source", at: first))
         map.update([kept, CircleStyleLayer(identifier: "removed", source: shapeSource("removed-source", at: first))])
 
         map.update([kept])
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["kept"])
-        XCTAssertNil(map.style.source(withIdentifier: "removed-source"))
-        XCTAssertNotNil(map.style.source(withIdentifier: "kept-source"))
+        #expect(map.userLayerIdentifiers == ["kept"])
+        #expect(map.style.source(withIdentifier: "removed-source") == nil)
+        #expect(map.style.source(withIdentifier: "kept-source") != nil)
     }
 
-    func testRemovedLayerKeepsASourceThatAnotherLayerUses() async throws {
+    @Test
+    func removedLayerKeepsASourceThatAnotherLayerUses() async throws {
         let map = try await LoadedMap.load()
         let source = shapeSource(at: first)
         let kept = CircleStyleLayer(identifier: "kept", source: source)
@@ -88,11 +94,12 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update([kept])
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["kept"])
-        XCTAssertNotNil(map.style.source(withIdentifier: "source"))
+        #expect(map.userLayerIdentifiers == ["kept"])
+        #expect(map.style.source(withIdentifier: "source") != nil)
     }
 
-    func testAddedLayerGoesAboveTheOtherLayers() async throws {
+    @Test
+    func addedLayerGoesAboveTheOtherLayers() async throws {
         let map = try await LoadedMap.load()
         let kept = CircleStyleLayer(identifier: "kept", source: shapeSource(at: first))
         map.update([kept])
@@ -100,11 +107,12 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update([kept, CircleStyleLayer(identifier: "added", source: shapeSource("added-source", at: first))])
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["kept", "added"])
-        XCTAssertTrue(map.userLayers[0] === layers[0])
+        #expect(map.userLayerIdentifiers == ["kept", "added"])
+        #expect(map.userLayers[0] === layers[0])
     }
 
-    func testLayerInsertedBeforeOthersKeepsTheOrder() async throws {
+    @Test
+    func layerInsertedBeforeOthersKeepsTheOrder() async throws {
         let map = try await LoadedMap.load()
         let source = shapeSource(at: first)
         let a = CircleStyleLayer(identifier: "a", source: source)
@@ -113,10 +121,11 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update([a, CircleStyleLayer(identifier: "b", source: source), c])
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["a", "b", "c"])
+        #expect(map.userLayerIdentifiers == ["a", "b", "c"])
     }
 
-    func testSourceThatCannotUpdateIsReplacedWithItsLayers() async throws {
+    @Test
+    func sourceThatCannotUpdateIsReplacedWithItsLayers() async throws {
         let map = try await LoadedMap.load()
         let source = CountingSource()
         let content: [StyleLayerDefinition] = [
@@ -128,12 +137,13 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update(content)
 
-        XCTAssertEqual(source.counter.count, 2)
-        XCTAssertEqual(map.userLayerIdentifiers, ["first", "second"])
-        XCTAssertFalse(map.userLayers[0] === layers[0])
+        #expect(source.counter.count == 2)
+        #expect(map.userLayerIdentifiers == ["first", "second"])
+        #expect(!(map.userLayers[0] === layers[0]))
     }
 
-    func testLayersThatShareASourceMakeItOnce() async throws {
+    @Test
+    func layersThatShareASourceMakeItOnce() async throws {
         let map = try await LoadedMap.load()
         let source = CountingSource()
 
@@ -142,10 +152,11 @@ final class StyleLayerCoordinatorTests: XCTestCase {
             CircleStyleLayer(identifier: "second", source: source),
         ])
 
-        XCTAssertEqual(source.counter.count, 1)
+        #expect(source.counter.count == 1)
     }
 
-    func testDuplicateLayerIsIgnored() async throws {
+    @Test
+    func duplicateLayerIsIgnored() async throws {
         let map = try await LoadedMap.load()
         let source = shapeSource(at: first)
         let content: [StyleLayerDefinition] = [
@@ -157,13 +168,14 @@ final class StyleLayerCoordinatorTests: XCTestCase {
         let layers = map.userLayers
         map.update(content)
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["layer"])
-        XCTAssertTrue(map.userLayers.elementsEqual(layers, by: ===))
-        let layer = try XCTUnwrap(layers.first as? MLNCircleStyleLayer)
-        XCTAssertEqual(layer.circleRadius, NSExpression(forConstantValue: 1))
+        #expect(map.userLayerIdentifiers == ["layer"])
+        #expect(map.userLayers.elementsEqual(layers, by: ===))
+        let layer = try #require(layers.first as? MLNCircleStyleLayer)
+        #expect(layer.circleRadius == NSExpression(forConstantValue: 1))
     }
 
-    func testLayerThatIsNotEquatableIsAddedAgain() async throws {
+    @Test
+    func layerThatIsNotEquatableIsAddedAgain() async throws {
         let map = try await LoadedMap.load()
         let content: [StyleLayerDefinition] = [CustomLayer(identifier: "custom")]
         map.update(content)
@@ -171,22 +183,24 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update(content)
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["custom"])
-        XCTAssertFalse(map.userLayers[0] === layers[0])
+        #expect(map.userLayerIdentifiers == ["custom"])
+        #expect(!(map.userLayers[0] === layers[0]))
     }
 
-    func testLayerThatLeftTheStyleIsAddedAgain() async throws {
+    @Test
+    func layerThatLeftTheStyleIsAddedAgain() async throws {
         let map = try await LoadedMap.load()
         let content: [StyleLayerDefinition] = [CircleStyleLayer(identifier: "layer", source: shapeSource(at: first))]
         map.update(content)
 
-        try map.style.removeLayer(XCTUnwrap(map.style.layer(withIdentifier: "layer")))
+        try map.style.removeLayer(#require(map.style.layer(withIdentifier: "layer")))
         map.update(content)
 
-        XCTAssertEqual(map.userLayerIdentifiers, ["layer"])
+        #expect(map.userLayerIdentifiers == ["layer"])
     }
 
-    func testLayerBelowSymbolsGoesBelowTheSymbolsOfTheStyle() async throws {
+    @Test
+    func layerBelowSymbolsGoesBelowTheSymbolsOfTheStyle() async throws {
         let map = try await LoadedMap.load()
         let source = shapeSource(at: first)
         func content(_ color: UIColor) -> [StyleLayerDefinition] {
@@ -200,11 +214,54 @@ final class StyleLayerCoordinatorTests: XCTestCase {
 
         map.update(content(.blue))
 
-        XCTAssertEqual(map.styleLayerIdentifiers, order)
-        XCTAssertEqual(order, ["symbol", "circle", "style-symbol"])
+        #expect(map.styleLayerIdentifiers == order)
+        #expect(order == ["symbol", "circle", "style-symbol"])
     }
 
-    func testEachMapKeepsItsOwnLayers() async throws {
+    @Test
+    func nativeLayerPropertiesFollowDefinitionUpdates() async throws {
+        let map = try await LoadedMap.load()
+        let source = shapeSource(at: first)
+        let configurations: [(visible: Bool, minimumZoom: Float, maximumZoom: Float)] = [
+            (false, 3, 12),
+            (true, 5, 18),
+        ]
+        for configuration in configurations {
+            map.update([
+                CircleStyleLayer(identifier: "layer", source: source)
+                    .visible(configuration.visible)
+                    .minimumZoomLevel(configuration.minimumZoom)
+                    .maximumZoomLevel(configuration.maximumZoom),
+            ])
+            let layer = try #require(map.style.layer(withIdentifier: "layer"))
+            #expect(layer.isVisible == configuration.visible)
+            #expect(layer.minimumZoomLevel == configuration.minimumZoom)
+            #expect(layer.maximumZoomLevel == configuration.maximumZoom)
+        }
+    }
+
+    @Test
+    func replacedSourceUpdatesLayersThatAlsoUseTheRawSource() async throws {
+        let map = try await LoadedMap.load()
+        let source = ShapeSource(identifier: "shared", options: [.clustered: false]) { MLNPointFeature() }
+        let managed = CircleStyleLayer(identifier: "managed", source: source)
+        map.update([managed])
+        let original = try #require(map.style.source(withIdentifier: "shared"))
+        let raw = CircleStyleLayer(identifier: "raw", source: original)
+        map.update([raw, managed])
+        let replacement = ShapeSource(identifier: "shared", options: [.clustered: true]) { MLNPointFeature() }
+
+        map.update([raw, CircleStyleLayer(identifier: "managed", source: replacement)])
+
+        #expect(map.userLayerIdentifiers == ["raw", "managed"])
+        let updatedSource = try #require(map.style.source(withIdentifier: "shared"))
+        withKnownIssue("A retained layer uses the raw source and prevents replacement of the shared DSL source.") {
+            #expect(updatedSource !== original)
+        }
+    }
+
+    @Test
+    func eachMapKeepsItsOwnLayers() async throws {
         let firstMap = try await LoadedMap.load()
         let secondMap = try await LoadedMap.load()
         let content: [StyleLayerDefinition] = [
@@ -213,15 +270,15 @@ final class StyleLayerCoordinatorTests: XCTestCase {
         firstMap.update(content)
         secondMap.update(content)
         let layers = firstMap.userLayers
-        let source = try XCTUnwrap(firstMap.style.source(withIdentifier: "source") as? MLNShapeSource)
+        let source = try #require(firstMap.style.source(withIdentifier: "source") as? MLNShapeSource)
         let shape = source.shape
 
         secondMap.update([CircleStyleLayer(identifier: "layer", source: shapeSource(at: second)).color(.red)])
         firstMap.update(content)
 
-        XCTAssertTrue(firstMap.userLayers.elementsEqual(layers, by: ===))
-        XCTAssertTrue(firstMap.style.source(withIdentifier: "source") === source)
-        XCTAssertTrue(source.shape === shape)
+        #expect(firstMap.userLayers.elementsEqual(layers, by: ===))
+        #expect(firstMap.style.source(withIdentifier: "source") === source)
+        #expect(source.shape === shape)
     }
 }
 

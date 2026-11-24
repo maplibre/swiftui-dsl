@@ -1,15 +1,16 @@
 import MapLibre
 import MapLibreSwiftDSL
 import Mockable
-import XCTest
+import Testing
 @testable import MapLibreSwiftUI
 
 @MainActor
-final class MapViewCoordinatorLayerTests: XCTestCase {
-    private var styleLayers: MockStyleLayerCoordinating!
-    private var coordinator: MapViewCoordinator<MLNMapViewController>!
+@Suite(.timeLimit(.minutes(1)))
+struct MapViewCoordinatorLayerTests {
+    private let styleLayers: MockStyleLayerCoordinating
+    private let coordinator: MapViewCoordinator<MLNMapViewController>
 
-    override func setUp() async throws {
+    init() {
         styleLayers = MockStyleLayerCoordinating()
         given(styleLayers).update(.any, in: .any).willReturn()
         given(styleLayers).addAll(.any, to: .any).willReturn()
@@ -26,7 +27,8 @@ final class MapViewCoordinatorLayerTests: XCTestCase {
         )
     }
 
-    func testUpdateLayersGivesTheLayersOfTheMapViewAndTheStyle() {
+    @Test
+    func updateLayersGivesTheLayersOfTheMapViewAndTheStyle() {
         let mapView = MLNMapView()
 
         coordinator.updateLayers(mapView: mapView)
@@ -37,7 +39,8 @@ final class MapViewCoordinatorLayerTests: XCTestCase {
         verify(styleLayers).addAll(.any, to: .any).called(0)
     }
 
-    func testStyleLoadAddsAllTheLayersOfTheMapView() async throws {
+    @Test
+    func styleLoadAddsAllTheLayersOfTheMapView() async throws {
         let map = try await LoadedMap.load()
 
         coordinator.mapView(MLNMapView(), didFinishLoading: map.style)

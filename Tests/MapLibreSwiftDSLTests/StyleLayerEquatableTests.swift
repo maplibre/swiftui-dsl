@@ -1,13 +1,14 @@
 import MapLibre
-import XCTest
+import Testing
 @testable import MapLibreSwiftDSL
 
-final class StyleLayerEquatableTests: XCTestCase {
+struct StyleLayerEquatableTests {
     private let source = ShapeSource(identifier: "source") {
         MLNPointFeature()
     }
 
-    func testLayersWithTheSamePropertiesAreEqual() {
+    @Test
+    func layersWithTheSamePropertiesAreEqual() {
         func line() -> LineStyleLayer {
             LineStyleLayer(identifier: "line", source: source)
                 .lineColor(.red)
@@ -18,94 +19,98 @@ final class StyleLayerEquatableTests: XCTestCase {
                 .renderBelow(.symbols)
         }
 
-        XCTAssertEqual(line(), line())
+        #expect(line() == line())
     }
 
-    func testLayersWithAnotherStylePropertyAreNotEqual() {
+    @Test
+    func layersWithAnotherStylePropertyAreNotEqual() {
         let line = LineStyleLayer(identifier: "line", source: source)
 
-        XCTAssertNotEqual(line.lineColor(.red), line.lineColor(.blue))
-        XCTAssertNotEqual(line.lineWidth(1), line.lineWidth(2))
+        #expect(line.lineColor(.red) != line.lineColor(.blue))
+        #expect(line.lineWidth(1) != line.lineWidth(2))
     }
 
-    func testLayersWithAnotherCommonPropertyAreNotEqual() {
+    @Test
+    func layersWithAnotherCommonPropertyAreNotEqual() {
         let line = LineStyleLayer(identifier: "line", source: source)
 
-        XCTAssertNotEqual(line, line.visible(false))
-        XCTAssertNotEqual(line, line.minimumZoomLevel(4))
-        XCTAssertNotEqual(line, line.maximumZoomLevel(4))
-        XCTAssertNotEqual(line, line.renderBelow(.symbols))
-        XCTAssertNotEqual(line, line.predicate(NSPredicate(format: "index == 1")))
+        #expect(line != line.visible(false))
+        #expect(line != line.minimumZoomLevel(4))
+        #expect(line != line.maximumZoomLevel(4))
+        #expect(line != line.renderBelow(.symbols))
+        #expect(line != line.predicate(NSPredicate(format: "index == 1")))
     }
 
-    func testLayersWithAnotherSourceAreNotEqual() {
+    @Test
+    func layersWithAnotherSourceAreNotEqual() {
         let other = ShapeSource(identifier: "other") {
             MLNPointFeature()
         }
 
-        XCTAssertNotEqual(
-            LineStyleLayer(identifier: "line", source: source),
-            LineStyleLayer(identifier: "line", source: other)
-        )
+        #expect(LineStyleLayer(identifier: "line", source: source) != LineStyleLayer(identifier: "line", source: other))
     }
 
-    func testLayersWithTheSameSourceObjectAreEqual() {
+    @Test
+    func layersWithTheSameSourceObjectAreEqual() {
         let source = MLNSource(identifier: "source")
 
-        XCTAssertEqual(
-            LineStyleLayer(identifier: "line", source: source),
-            LineStyleLayer(identifier: "line", source: source)
-        )
+        #expect(LineStyleLayer(identifier: "line", source: source) == LineStyleLayer(
+            identifier: "line",
+            source: source
+        ))
     }
 
-    func testLayersWithAnotherSourceObjectAreNotEqual() {
-        XCTAssertNotEqual(
-            LineStyleLayer(identifier: "line", source: MLNSource(identifier: "source")),
-            LineStyleLayer(identifier: "line", source: MLNSource(identifier: "source"))
-        )
+    @Test
+    func layersWithAnotherSourceObjectAreNotEqual() {
+        #expect(LineStyleLayer(identifier: "line", source: MLNSource(identifier: "source")) != LineStyleLayer(
+            identifier: "line",
+            source: MLNSource(identifier: "source")
+        ))
     }
 
-    func testSourceContentIsNotPartOfLayerEquality() {
+    @Test
+    func sourceContentIsNotPartOfLayerEquality() {
         let other = ShapeSource(identifier: "source") {
             MLNPolylineFeature()
         }
 
-        XCTAssertEqual(
-            LineStyleLayer(identifier: "line", source: source),
-            LineStyleLayer(identifier: "line", source: other)
-        )
+        #expect(LineStyleLayer(identifier: "line", source: source) == LineStyleLayer(identifier: "line", source: other))
     }
 
-    func testSymbolLayersWithTheSameImageAreEqual() throws {
+    @Test
+    func symbolLayersWithTheSameImageAreEqual() throws {
         let symbol = SymbolStyleLayer(identifier: "symbol", source: source)
-        let image = try XCTUnwrap(UIImage(systemName: "mappin"))
-        let copy = try XCTUnwrap(UIImage(systemName: "mappin"))
+        let image = try #require(UIImage(systemName: "mappin"))
+        let copy = try #require(UIImage(systemName: "mappin"))
 
-        XCTAssertEqual(symbol.iconImage(image), symbol.iconImage(image))
-        XCTAssertEqual(symbol.iconImage(image), symbol.iconImage(copy))
+        #expect(symbol.iconImage(image) == symbol.iconImage(image))
+        #expect(symbol.iconImage(image) == symbol.iconImage(copy))
     }
 
-    func testSymbolLayersWithAnotherImageAreNotEqual() throws {
+    @Test
+    func symbolLayersWithAnotherImageAreNotEqual() throws {
         let symbol = SymbolStyleLayer(identifier: "symbol", source: source)
-        let image = try XCTUnwrap(UIImage(systemName: "mappin"))
-        let other = try XCTUnwrap(UIImage(systemName: "star"))
+        let image = try #require(UIImage(systemName: "mappin"))
+        let other = try #require(UIImage(systemName: "star"))
 
-        XCTAssertNotEqual(symbol.iconImage(image), symbol.iconImage(other))
+        #expect(symbol.iconImage(image) != symbol.iconImage(other))
     }
 
-    func testSymbolLayersWithAnotherTextAreNotEqual() {
+    @Test
+    func symbolLayersWithAnotherTextAreNotEqual() {
         let symbol = SymbolStyleLayer(identifier: "symbol", source: source)
 
-        XCTAssertNotEqual(symbol.text("one"), symbol.text("two"))
+        #expect(symbol.text("one") != symbol.text("two"))
     }
 
-    func testCircleFillAndBackgroundLayersCompareTheirProperties() {
+    @Test
+    func circleFillAndBackgroundLayersCompareTheirProperties() {
         let circle = CircleStyleLayer(identifier: "circle", source: source)
         let fill = FillStyleLayer(identifier: "fill", source: source)
         let background = BackgroundLayer(identifier: "background")
 
-        XCTAssertNotEqual(circle.radius(1), circle.radius(2))
-        XCTAssertNotEqual(fill.fillColor(.red), fill.fillColor(.blue))
-        XCTAssertNotEqual(background.backgroundColor(.red), background.backgroundColor(.blue))
+        #expect(circle.radius(1) != circle.radius(2))
+        #expect(fill.fillColor(.red) != fill.fillColor(.blue))
+        #expect(background.backgroundColor(.red) != background.backgroundColor(.blue))
     }
 }
