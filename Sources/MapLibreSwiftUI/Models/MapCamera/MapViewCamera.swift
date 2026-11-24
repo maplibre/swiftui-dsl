@@ -57,7 +57,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     ///   - zoom: The zoom level.
     ///   - pitch: Set the camera pitch method.
     ///   - direction: The course. Default is 0 (North).
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The constructed MapViewCamera.
     public static func center(_ coordinate: CLLocationCoordinate2D,
                               zoom: Double,
@@ -88,7 +88,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike
     /// pitch.
     ///   - pitch: Set the camera pitch method.
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocation(zoom: Double = Defaults.zoom,
                                          pitch: Double = Defaults.pitch,
@@ -112,7 +112,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike
     /// pitch.
     ///   - pitch: Set the camera pitch method.
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithHeading(
         zoom: Double = Defaults.zoom,
@@ -134,7 +134,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     ///   - zoom: Set the desired zoom. This is a one time event and the user can manipulate their zoom after unlike
     /// pitch.
     ///   - pitch: Set the camera pitch method.
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The MapViewCamera representing the scenario
     public static func trackUserLocationWithCourse(
         zoom: Double = Defaults.zoom,
@@ -153,7 +153,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     /// - Parameters:
     ///   - box: Set the desired bounding box. This is a one time event and the user can manipulate by moving the map.
     ///   - edgePadding: Set the edge insets that should be applied before positioning the map.
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The MapViewCamera representing the scenario
     public static func boundingBox(
         _ box: MLNCoordinateBounds,
@@ -170,7 +170,7 @@ public struct MapViewCamera: Hashable, Equatable, Sendable, CustomStringConverti
     /// - Parameters:
     ///   - shapeCollection: The shapes that should be visible.
     ///   - edgePadding: The edge insets that should be applied before fitting the camera.
-    ///   - animated: Whether changes use Native's standard camera animation. Defaults to `true`.
+    ///   - animated: Animate this and subsequent camera state changes. Defaults to `true`.
     /// - Returns: The MapViewCamera representing the scenario.
     public static func showcase(
         shapeCollection: MLNShapeCollection,
