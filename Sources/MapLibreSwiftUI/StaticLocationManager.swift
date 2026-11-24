@@ -13,7 +13,6 @@ import MapLibre
 /// While this class is required to implement authorization status per the underlying protocol,
 /// it does not ever actually check whether you have access to Core Location services.
 public final class StaticLocationManager: NSObject, @unchecked Sendable {
-    /// The object that gets location updates. `MLNMapView` sets this property. The manager holds it weakly.
     public weak var delegate: (any MLNLocationManagerDelegate)?
 
     public var authorizationStatus: CLAuthorizationStatus = .authorizedAlways {
