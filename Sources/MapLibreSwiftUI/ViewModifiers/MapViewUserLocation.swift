@@ -20,15 +20,9 @@ private struct MapUserLocationVisibilityViewModifier: ViewModifier {
 }
 
 public extension View {
-    /// Sets whether the map displays the user's location, without choosing a camera mode.
+    /// Set the visibility of the user location marker without enabling a tracking mode.
     ///
-    /// The value is applied after the location manager is installed and when the requested visibility changes.
-    /// Unchanged updates leave Native's location-error handling intact.
-    /// Hiding stops native tracking; showing the location does not restore tracking.
-    /// A subsequent follow-camera request can show the location, following MapLibre Native's behavior.
-    /// Omitting or removing the modifier leaves the current native settings unchanged.
-    ///
-    /// - Parameter isVisible: Whether to display the user's location.
+    /// - Parameter isVisible: Whether to display the user's location marker.
     /// - Returns: The modified view hierarchy.
     func mapUserLocationVisible(_ isVisible: Bool) -> some View {
         modifier(MapUserLocationVisibilityViewModifier(isVisible: isVisible))
