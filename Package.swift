@@ -11,10 +11,16 @@ let defaultTraits: Set<String> = if enableDeveloperTools {
     []
 }
 
+let swift6Settings: [SwiftSetting] = [
+    .defaultIsolation(nil),
+    .enableUpcomingFeature("InferIsolatedConformances"),
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+]
+
 let package = Package(
     name: "MapLibreSwiftUI",
     platforms: [
-        .iOS(.v15),
+        .iOS("15.5"),
         .macOS(.v12),
     ],
     products: [
@@ -36,7 +42,7 @@ let package = Package(
         .trait(name: "MapLibreDeveloper"),
     ],
     dependencies: [
-        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "6.21.2"),
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution.git", from: "7.0.0"),
         // Macros
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0" ..< "603.0.0"),
         // Testing
@@ -55,9 +61,8 @@ let package = Package(
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
                 .product(name: "Mockable", package: "Mockable", condition: .when(traits: ["MapLibreDeveloper"])),
             ],
-            swiftSettings: [
+            swiftSettings: swift6Settings + [
                 .define("MOCKING", .when(configuration: .debug)),
-                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .target(
@@ -67,18 +72,28 @@ let package = Package(
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
                 "MapLibreSwiftMacros",
             ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
-            ]
+            swiftSettings: swift6Settings
         ),
         .target(
             name: "InternalUtils",
             dependencies: [
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
             ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
-            ]
+            swiftSettings: swift6Settings
+        ),
+
+        // MARK: Regression previews
+
+        // Previews that reproduce fixed bugs, for checking by eye.
+        // No product vends this target, so apps that depend on the package never build it.
+        .target(
+            name: "RegressionPreviews",
+            dependencies: [
+                "MapLibreSwiftUI",
+                "MapLibreSwiftDSL",
+                .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
+            ],
+            swiftSettings: swift6Settings
         ),
 
         // MARK: Macro
@@ -88,11 +103,16 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ]
+            ],
+            swiftSettings: swift6Settings
         ),
 
         // Library that exposes a macro as part of its API, which is used in client programs.
-        .target(name: "MapLibreSwiftMacros", dependencies: ["MapLibreSwiftMacrosImpl"]),
+        .target(
+            name: "MapLibreSwiftMacros",
+            dependencies: ["MapLibreSwiftMacrosImpl"],
+            swiftSettings: swift6Settings
+        ),
 
         // MARK: Tests
 
@@ -104,13 +124,15 @@ let package = Package(
                 .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Mockable", package: "Mockable"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            swiftSettings: swift6Settings
         ),
         .testTarget(
             name: "MapLibreSwiftDSLTests",
             dependencies: [
                 "MapLibreSwiftDSL",
-            ]
+            ],
+            swiftSettings: swift6Settings
         ),
 
         // MARK: Macro Tests
@@ -121,8 +143,9 @@ let package = Package(
                 "MapLibreSwiftMacrosImpl",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
                 .product(name: "MacroTesting", package: "swift-macro-testing"),
-            ]
+            ],
+            swiftSettings: swift6Settings
         ),
     ],
-    swiftLanguageModes: [.v5] // TODO: we need to enable v6
+    swiftLanguageModes: [.v6]
 )

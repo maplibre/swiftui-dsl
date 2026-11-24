@@ -27,9 +27,29 @@ public struct MapViewProxy {
         mapView.zoomLevel
     }
 
+    /// The map camera's pitch in degrees. Reading it does not change the camera.
+    public var pitch: Double {
+        Double(mapView.camera.pitch)
+    }
+
     /// The current compass direction of the MapView
     public var direction: CLLocationDirection {
         mapView.direction
+    }
+
+    /// The map's current user tracking mode. Reading this value does not start
+    /// location updates or change the camera.
+    ///
+    /// Custom controls can observe tracking without accessing the native map:
+    ///
+    /// ```swift
+    /// MapView(styleURL: styleURL)
+    ///     .onMapViewProxyUpdate { proxy in
+    ///         trackingMode = proxy.userTrackingMode
+    ///     }
+    /// ```
+    public var userTrackingMode: MLNUserTrackingMode {
+        mapView.userTrackingMode
     }
 
     /// The visible coordinate bounds of the MapView
@@ -60,6 +80,16 @@ public struct MapViewProxy {
     /// - Returns: The CGPoint representation of the coordinate
     public func convert(_ coordinate: CLLocationCoordinate2D, toPointTo: UIView?) -> CGPoint {
         mapView.convert(coordinate, toPointTo: toPointTo)
+    }
+
+    /// Convert a screen point to a geographic coordinate without changing the map.
+    ///
+    /// - Parameters:
+    ///   - point: The point in the supplied view's coordinate space.
+    ///   - view: The view containing the point, or nil for the map view itself.
+    /// - Returns: The geographic coordinate under that point.
+    public func convert(_ point: CGPoint, toCoordinateFrom view: UIView? = nil) -> CLLocationCoordinate2D {
+        mapView.convert(point, toCoordinateFrom: view)
     }
 
     /// Query rendered features at a screen point.
@@ -105,6 +135,7 @@ public extension MapViewProxy {
     func asMapViewCamera() -> MapViewCamera {
         .center(centerCoordinate,
                 zoom: zoomLevel,
+                pitch: pitch,
                 direction: direction)
     }
 }

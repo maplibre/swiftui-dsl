@@ -10,9 +10,11 @@ public protocol Source {
 
     /// Updates the data of `source` in place, redrawing it on the map.
     ///
-    /// The map view calls this method on each SwiftUI update and when this definition equals `previous`.
-    /// The default implementation returns `false`, so the map view replaces the source and adds its layers
-    /// again on each update. Implement this method to change the source in place.
+    /// The map view calls this method on each SwiftUI update.
+    /// If your source and its data have not changed, return `true` to keep it.
+    /// If you update the data in your source, return `true` to keep it.
+    /// If you cannot update the existing source, return `false` to replace it and add its layers again.
+    /// The default implementation returns `false`, which often requires more rendering work.
     ///
     /// - Parameters:
     ///   - source: The source in the style.

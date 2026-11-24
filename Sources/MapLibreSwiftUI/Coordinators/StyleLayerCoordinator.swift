@@ -125,8 +125,18 @@ final class StyleLayerCoordinator: StyleLayerCoordinating {
         in style: MLNStyle,
         replacedSources: Set<String>
     ) -> Int {
-        zip(previousLayers, layers).prefix { previous, layer in
-            guard layer.isEqual(to: previous), style.layer(withIdentifier: layer.identifier) != nil else {
+        func definitionsMatch<Layer: Equatable>(_ previous: Layer, _ current: StyleLayerDefinition) -> Bool {
+            guard let current = current as? Layer else {
+                return false
+            }
+            return previous == current
+        }
+
+        return zip(previousLayers, layers).prefix { previous, layer in
+            guard let previous = previous as? any Equatable,
+                  definitionsMatch(previous, layer),
+                  style.layer(withIdentifier: layer.identifier) != nil
+            else {
                 return false
             }
             guard let source = layer.managedSource else {

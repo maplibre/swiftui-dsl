@@ -26,6 +26,8 @@ struct MapViewCameraOperationTests {
     }
 
     init() {
+        // Camera snapshots now read the native pitch as well as center/zoom/bearing.
+        given(maplibreMapView).camera.willReturn(MLNMapCamera())
         given(maplibreMapView)
             .centerCoordinate
             .willReturn(testCoordinate)

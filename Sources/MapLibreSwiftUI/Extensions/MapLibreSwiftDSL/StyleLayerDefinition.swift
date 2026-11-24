@@ -12,14 +12,6 @@ extension StyleLayerDefinition {
         return source
     }
 
-    /// Returns `false` if the layer type is not `Equatable`.
-    func isEqual(to other: StyleLayerDefinition) -> Bool {
-        guard let layer = self as? any Equatable else {
-            return false
-        }
-        return layer.isEqual(toAny: other)
-    }
-
     /// Makes the MapLibre layer, with the visibility and zoom levels of this definition.
     ///
     /// This adds the source of the layer to `style` if it is not there.
@@ -33,11 +25,5 @@ extension StyleLayerDefinition {
             styleLayer.maximumZoomLevel = maximumZoomLevel
         }
         return styleLayer
-    }
-}
-
-private extension Equatable {
-    func isEqual(toAny other: Any) -> Bool {
-        self == other as? Self
     }
 }

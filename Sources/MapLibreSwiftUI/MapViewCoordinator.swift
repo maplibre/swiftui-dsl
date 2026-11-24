@@ -132,9 +132,14 @@ MLNMapViewDelegate {
     @MainActor func applyCameraChangeFromStateUpdate(
         _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
-        animated: Bool = true
+        animated: Bool = true,
+        reframing: Bool = false
     ) {
-        guard camera != snapshotCamera else {
+        // A content inset change interrupts any camera animation, so finish it within the new inset.
+        // MapLibre reframes a camera that's already tracking.
+        let isReframing = reframing
+            && !(camera.state.isTrackingUserLocation && mapView.userTrackingMode != .none)
+        guard camera != snapshotCamera || isReframing else {
             // No action - camera has not changed.
             return
         }
@@ -146,6 +151,11 @@ MLNMapViewDelegate {
 
         cameraUpdateTask = Task { @MainActor in
             await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else {
+                    continuation.resume()
+                    return
+                }
+
                 // Clean up the continuation if it was already set.
                 cameraUpdateContinuation?.resume()
                 cameraUpdateContinuation = nil
@@ -309,6 +319,21 @@ MLNMapViewDelegate {
         }
     }
 
+    /// Fits a bounding box or showcase camera to the map's new size.
+    @MainActor func refitAfterResize() {
+        guard !parent.cameraDisabled, let mapView, mapView.frame.size != .zero,
+              let camera = snapshotCamera, camera == parent.camera
+        else {
+            return
+        }
+        switch camera.state {
+        case .rect, .showcase:
+            applyCameraChangeFromStateUpdate(mapView, camera: camera, animated: mapView.style != nil, reframing: true)
+        case .centered, .trackingUserLocation, .trackingUserLocationWithHeading, .trackingUserLocationWithCourse:
+            break
+        }
+    }
+
     /// Apply a gesture based camera change. This behavior will only be triggered on the first gesture and will
     /// only be completed when the mapView becomes idle.
     ///
@@ -323,6 +348,11 @@ MLNMapViewDelegate {
 
         cameraUpdateTask = Task { @MainActor in
             await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else {
+                    continuation.resume()
+                    return
+                }
+
                 // Store the continuation to be resumed in mapViewDidBecomeIdle
                 cameraUpdateContinuation = continuation
 
@@ -346,6 +376,17 @@ MLNMapViewDelegate {
         }
     }
 
+    /// Cancels the pending camera update and resumes its continuation.
+    ///
+    /// Call this when SwiftUI removes the map view. Until the map becomes idle, the pending task holds
+    /// the map view and the coordinator.
+    @MainActor func cancelCameraUpdate() {
+        cameraUpdateTask?.cancel()
+        cameraUpdateTask = nil
+        cameraUpdateContinuation?.resume()
+        cameraUpdateContinuation = nil
+    }
+
     // MARK: - MLNMapViewDelegate
 
     @MainActor
@@ -364,11 +405,12 @@ MLNMapViewDelegate {
     /// Only ``MLNTileOperation/error`` is acted on, it indicates a tile
     /// request failed, typically due to no internet or a poor connection.
     ///
-    /// The callback is debounced to 3ms, a burst of simultaneously
+    /// The callback is debounced to 300ms, a burst of simultaneously
     /// failing tiles within the window produces a single notification
     /// rather than many.
-    @MainActor
-    public func mapView(
+    ///
+    /// MapLibre calls this off the main thread.
+    public nonisolated func mapView(
         _: MLNMapView,
         tileDidTriggerAction operation: MLNTileOperation,
         x _: Int,
@@ -379,8 +421,14 @@ MLNMapViewDelegate {
         sourceID _: String
     ) {
         guard operation == .error else { return }
+        Task { @MainActor in
+            self.debounceTileError()
+        }
+    }
+
+    private func debounceTileError() {
         tileErrorDebounceTask?.cancel()
-        tileErrorDebounceTask = Task { @MainActor in
+        tileErrorDebounceTask = Task {
             try? await Task.sleep(nanoseconds: 300_000_000)
             guard !Task.isCancelled else { return }
             onMapTileError?()

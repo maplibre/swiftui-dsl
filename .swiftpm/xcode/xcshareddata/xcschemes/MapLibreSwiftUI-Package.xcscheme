@@ -42,6 +42,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RegressionPreviews"
+               BuildableName = "RegressionPreviews"
+               BlueprintName = "RegressionPreviews"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "MapLibreSwiftDSLTests"
                BuildableName = "MapLibreSwiftDSLTests"
                BlueprintName = "MapLibreSwiftDSLTests"
