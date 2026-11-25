@@ -118,16 +118,16 @@ struct ResizeVsFitPreview: View {
     var onReady: ((@escaping @MainActor () async -> Void) -> Void)?
     var onCompletion: ((String, Bool) -> Void)?
 
-    @State private var camera = MapViewCamera.center(switzerland, zoom: 6)
+    @State private var camera = MapViewCamera.center(CLLocationCoordinate2D(latitude: 49.81, longitude: 6.13), zoom: 9)
     @State private var isMapShrunk = true
     @State private var isMeasuring = false
     @State private var outcome: ViewportOutcome?
     @State private var isInitialFitRequested = false
     @State private var didReportReady = false
 
-    private static let italy = MLNCoordinateBounds(
-        sw: CLLocationCoordinate2D(latitude: 36.6, longitude: 6.6),
-        ne: CLLocationCoordinate2D(latitude: 47.1, longitude: 18.5)
+    private static let luxembourg = MLNCoordinateBounds(
+        sw: CLLocationCoordinate2D(latitude: 49.44, longitude: 5.73),
+        ne: CLLocationCoordinate2D(latitude: 50.18, longitude: 6.53)
     )
     private static let margin: CGFloat = 20
 
@@ -146,11 +146,11 @@ struct ResizeVsFitPreview: View {
                     .onMapIdle { proxy in
                         Task { @MainActor in
                             if isMeasuring, !isMapShrunk, proxy.mapViewSize.height > 250 {
-                                let result = measureItalyFill(proxy)
+                                let result = measureLuxembourgFill(proxy)
                                 outcome = result
                                 isMeasuring = false
                                 onCompletion?(result.actual, result.isExpected)
-                            } else if isInitialFitRequested, !didReportReady, measureItalyFill(proxy).isExpected {
+                            } else if isInitialFitRequested, !didReportReady, measureLuxembourgFill(proxy).isExpected {
                                 didReportReady = true
                                 onReady? { grow() }
                             }
@@ -189,10 +189,10 @@ struct ResizeVsFitPreview: View {
                 VStack(spacing: 16) {
                     ViewportExpectationPanel(
                         description: """
-                        The map is shrunk, with Italy fit to its content area (dashed). \
+                        The map is shrunk, with Luxembourg fit to its content area (dashed). \
                         "Grow" will grow the map to full height.
                         """,
-                        expected: "Italy fills 100%",
+                        expected: "Luxembourg fills 100%",
                         outcome: outcome,
                         isMeasuring: isMeasuring
                     )
@@ -213,7 +213,7 @@ struct ResizeVsFitPreview: View {
         }
         .task {
             try? await Task.sleep(nanoseconds: 500_000_000)
-            camera = .boundingBox(Self.italy, edgePadding: .zero)
+            camera = .boundingBox(Self.luxembourg, edgePadding: .zero)
             isInitialFitRequested = true
         }
     }
@@ -223,17 +223,17 @@ struct ResizeVsFitPreview: View {
         isMapShrunk = false
     }
 
-    /// How much of the content area Italy spans in its limiting dimension.
-    private func measureItalyFill(_ proxy: MapViewProxy) -> ViewportOutcome {
-        let southWest = proxy.convert(Self.italy.sw, toPointTo: nil)
-        let northEast = proxy.convert(Self.italy.ne, toPointTo: nil)
+    /// How much of the content area Luxembourg spans in its limiting dimension.
+    private func measureLuxembourgFill(_ proxy: MapViewProxy) -> ViewportOutcome {
+        let southWest = proxy.convert(Self.luxembourg.sw, toPointTo: nil)
+        let northEast = proxy.convert(Self.luxembourg.ne, toPointTo: nil)
         let inset = proxy.contentInset
         let fill = max(
             abs(northEast.x - southWest.x) / (proxy.mapViewSize.width - inset.left - inset.right),
             abs(northEast.y - southWest.y) / (proxy.mapViewSize.height - inset.top - inset.bottom)
         )
         return ViewportOutcome(
-            actual: String(format: "Italy fills %.0f%%", fill * 100),
+            actual: String(format: "Luxembourg fills %.0f%%", fill * 100),
             isExpected: abs(fill - 1) < 0.05
         )
     }
