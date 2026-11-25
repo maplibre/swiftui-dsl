@@ -13,7 +13,7 @@ import MapLibre
 /// While this class is required to implement authorization status per the underlying protocol,
 /// it does not ever actually check whether you have access to Core Location services.
 public final class StaticLocationManager: NSObject, @unchecked Sendable {
-    public var delegate: (any MLNLocationManagerDelegate)?
+    public weak var delegate: (any MLNLocationManagerDelegate)?
 
     public var authorizationStatus: CLAuthorizationStatus = .authorizedAlways {
         didSet {
@@ -56,8 +56,9 @@ extension StaticLocationManager: MLNLocationManager {
         // follow the user's location. This leads to some REALLY (unbearably) bad artifacts. We should find a better
         // solution for this at some point. This is the reason for the @unchecked Sendable conformance by the way (so
         // that we don't get a warning about using non-sendable self; it should be safe though).
-        DispatchQueue.main.async {
-            self.delegate?.locationManager(self, didUpdate: [self.lastLocation])
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            delegate?.locationManager(self, didUpdate: [lastLocation])
         }
     }
 
