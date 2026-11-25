@@ -1,4 +1,4 @@
-name: Snapshot tests
+name: Test
 
 on:
   push:
@@ -8,11 +8,15 @@ on:
 
 jobs:
   snapshots:
-    name: Snapshots on iOS 26.2
     runs-on: macos-26
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-snapshots-ios26
       cancel-in-progress: true
+    strategy:
+      matrix:
+        destination: ["platform=iOS Simulator,name=iPhone 17,OS=26.2"]
+    name: Snapshots on ${{ matrix.destination }}
+
     steps:
       - name: Install tools
         run: brew update && brew upgrade xcbeautify
@@ -28,4 +32,11 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
 
       - name: Test image snapshots in the host app
-        run: xcodebuild -project SnapshotTests/SnapshotHost.xcodeproj -scheme SnapshotHost test -skipMacroValidation -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' | xcbeautify && exit "${PIPESTATUS[0]}"
+        run: xcodebuild -project SnapshotTests/SnapshotHost.xcodeproj -scheme SnapshotHost test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath '${{ runner.temp }}/SnapshotHost.xcresult' | xcbeautify && exit "${PIPESTATUS[0]}"
+
+      - name: Upload snapshot test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: snapshot-test-results-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/SnapshotHost.xcresult

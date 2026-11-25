@@ -22,15 +22,20 @@ func assertView(
         .compactMap { $0 as? UIWindowScene }
         .flatMap(\.windows)
         .first(where: \.isKeyWindow)
+
+    // Get the key window from the hosting App
     let window = try #require(hostWindow)
+
     var rendered = false
     var idle = false
-    let controller = UIHostingController(rootView: content()
-        .environment(\.colorScheme, colorScheme)
-        .transaction { $0.disablesAnimations = true }
-        .onMapStyleLoaded { $0.performsPlacementTransitions = false }
-        .onMapDidFinishRendering { _, fullyRendered in rendered = fullyRendered }
-        .onMapIdle { _ in idle = true })
+    let controller = UIHostingController(
+        rootView: content()
+            .environment(\.colorScheme, colorScheme)
+            .transaction { $0.disablesAnimations = true }
+            .onMapStyleLoaded { $0.performsPlacementTransitions = false }
+            .onMapDidFinishRendering { _, fullyRendered in rendered = fullyRendered }
+            .onMapIdle { _ in idle = true }
+    )
     controller.overrideUserInterfaceStyle = colorScheme == .dark ? .dark : .light
     window.rootViewController = controller
     defer { window.rootViewController = nil }
