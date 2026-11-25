@@ -58,10 +58,30 @@ func assertView(
             controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
         let data = try #require(image.pngData())
-        Attachment.record(data, named: "\(testName)-\(name ?? "1").png")
+        let attachmentName = "\(testName)-\(name ?? "1")"
+        Attachment.record(data, named: "\(attachmentName)-actual.png")
+        var snapshotting = Snapshotting<UIImage, UIImage>.image(precision: 0.9999, perceptualPrecision: 0.98)
+        let diffing = snapshotting.diffing
+        snapshotting.diffing.diff = { reference, actual in
+            guard let failure = diffing.diff(reference, actual) else { return nil }
+            Attachment.record(diffing.toData(reference), named: "\(attachmentName)-reference.png")
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = max(reference.scale, actual.scale)
+            format.opaque = true
+            let size = CGSize(
+                width: max(reference.size.width, actual.size.width),
+                height: max(reference.size.height, actual.size.height)
+            )
+            let difference = UIGraphicsImageRenderer(size: size, format: format).image { _ in
+                actual.draw(at: .zero)
+                reference.draw(at: .zero, blendMode: .difference, alpha: 1)
+            }
+            Attachment.record(diffing.toData(difference), named: "\(attachmentName)-diff.png")
+            return failure
+        }
         assertSnapshot(
             of: image,
-            as: .image(precision: 0.9999, perceptualPrecision: 0.98),
+            as: snapshotting,
             named: name ?? "1",
             record: record,
             fileID: fileID,
