@@ -32,11 +32,13 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
 
       - name: Test image snapshots in the host app
-        run: xcodebuild -project SnapshotTests/SnapshotHost.xcodeproj -scheme SnapshotHost test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath '${{ runner.temp }}/SnapshotHost.xcresult' | xcbeautify && exit "${PIPESTATUS[0]}"
+        run: |
+          mkdir -p '${{ runner.temp }}/snapshot-test-results'
+          xcodebuild -project SnapshotTests/SnapshotHost.xcodeproj -scheme SnapshotHost test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath '${{ runner.temp }}/snapshot-test-results/SnapshotHost.xcresult' | xcbeautify && exit "${PIPESTATUS[0]}"
 
       - name: Upload snapshot test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: snapshot-test-results-${{ strategy.job-index }}
-          path: ${{ runner.temp }}/SnapshotHost.xcresult
+          path: ${{ runner.temp }}/snapshot-test-results/

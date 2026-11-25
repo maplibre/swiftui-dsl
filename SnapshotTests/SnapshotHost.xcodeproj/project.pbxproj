@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1556C70F5B9323E3C5438E52 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = B3AC94E0D13FFABEB1571684 /* SnapshotTesting */; };
-		1601D391E5613EC9A36F31AC /* CameraPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C0EEE1AFF9884FEE3BDC9F /* CameraPreviewTests.swift */; };
+		1601D391E5613EC9A36F31AC /* CameraTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C0EEE1AFF9884FEE3BDC9F /* CameraTests.swift */; };
 		1F1E52C14695DA11AA35E448 /* MapLibreSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A97256FD0997A535F57FADC6 /* MapLibreSwiftUI */; };
 		30BAEB594A9B7FFE53B12112 /* Viewport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6884CFC1D79A41FB7EA76A /* Viewport.swift */; };
 		6250BE652A54EC3E846FD67D /* MapLibreSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7B6C546BDF9BC635D556751B /* MapLibreSwiftUI */; };
-		7D1DC978BD0C81FC41C43A07 /* LayerPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D37CAC2F5D27D062EF7E5A /* LayerPreviewTests.swift */; };
+		7D1DC978BD0C81FC41C43A07 /* LayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D37CAC2F5D27D062EF7E5A /* LayerTests.swift */; };
 		A545DEADE3CDCB7FF4206E8A /* MapLibreSwiftDSL in Frameworks */ = {isa = PBXBuildFile; productRef = 45B621F59925DD2E6CE4FA2D /* MapLibreSwiftDSL */; };
 		CD7EA8F48E615E06A25B1A46 /* ViewportSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA18E0F2125809B6B1A49141 /* ViewportSnapshotTests.swift */; };
 		D5198A7C8E657482D8191F7E /* SnapshotHostApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA763B11D3F2F734D2C67787 /* SnapshotHostApp.swift */; };
@@ -44,10 +44,10 @@
 		259099AB0E8F3CFAB5731773 /* AssertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertView.swift; sourceTree = "<group>"; };
 		74731E4AF10940CC32A9DBB8 /* MapLibreSnapshotTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MapLibreSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FD69F25F4534CF2FC881DA1 /* SnapshotHost.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SnapshotHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A0C0EEE1AFF9884FEE3BDC9F /* CameraPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewTests.swift; sourceTree = "<group>"; };
+		A0C0EEE1AFF9884FEE3BDC9F /* CameraTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraTests.swift; sourceTree = "<group>"; };
 		AA763B11D3F2F734D2C67787 /* SnapshotHostApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHostApp.swift; sourceTree = "<group>"; };
 		B12C7B9CA58BC92194C7DF57 /* swiftui-dsl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "swiftui-dsl"; path = ..; sourceTree = SOURCE_ROOT; };
-		B8D37CAC2F5D27D062EF7E5A /* LayerPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerPreviewTests.swift; sourceTree = "<group>"; };
+		B8D37CAC2F5D27D062EF7E5A /* LayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerTests.swift; sourceTree = "<group>"; };
 		BB6884CFC1D79A41FB7EA76A /* Viewport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Viewport.swift; sourceTree = "<group>"; };
 		DA18E0F2125809B6B1A49141 /* ViewportSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewportSnapshotTests.swift; sourceTree = "<group>"; };
 		367824B7FBC647709F449B3D /* RoseTintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoseTintTests.swift; sourceTree = "<group>"; };
@@ -119,29 +119,28 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
-		5868F83F768B594EB1B5D9C9 /* Examples */ = {
+		5868F83F768B594EB1B5D9C9 /* Layers */ = {
 			isa = PBXGroup;
 			children = (
+				B8D37CAC2F5D27D062EF7E5A /* LayerTests.swift */,
+				367824B7FBC647709F449B3D /* RoseTintTests.swift */,
 				D271D0327BD646288597E718 /* LinearGradientTests.swift */,
 				1B79014FA4D2481299F5CAC1 /* SteppedGradientTests.swift */,
+				F12E46F32DB04A2E82F9194E /* DataDrivenRotationTests.swift */,
 				CF5DB8053D13411FB3E76907 /* ClusteredCirclesTests.swift */,
 				1E5F1DF8C2C244039381BFCD /* CirclesWithSymbolsTests.swift */,
-				F12E46F32DB04A2E82F9194E /* DataDrivenRotationTests.swift */,
-				B1E8E2A12DBB4138A5BFBC58 /* RotatedSymbolTests.swift */,
 				BEC9C17E7BF843869FA863EC /* SimpleSymbolTests.swift */,
-				367824B7FBC647709F449B3D /* RoseTintTests.swift */,
-				A0C0EEE1AFF9884FEE3BDC9F /* CameraPreviewTests.swift */,
-				B8D37CAC2F5D27D062EF7E5A /* LayerPreviewTests.swift */,
-				0774D8D63A6BDA8972EDB99C /* MapControlsTests.swift */,
+				B1E8E2A12DBB4138A5BFBC58 /* RotatedSymbolTests.swift */,
 			);
-			path = Examples;
+			path = Layers;
 			sourceTree = "<group>";
 		};
 		81049B0C64D7439F1E93413B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				5868F83F768B594EB1B5D9C9 /* Examples */,
-				A32596DEB50374D1BADFDD56 /* Regressions */,
+				5868F83F768B594EB1B5D9C9 /* Layers */,
+				A32596DEB50374D1BADFDD56 /* Camera */,
+				F8A107A8536B4C04A911841A /* Controls */,
 				9B63414B8649A8DAC4B06546 /* Support */,
 			);
 			path = Tests;
@@ -165,12 +164,21 @@
 			path = Support;
 			sourceTree = "<group>";
 		};
-		A32596DEB50374D1BADFDD56 /* Regressions */ = {
+		A32596DEB50374D1BADFDD56 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				A0C0EEE1AFF9884FEE3BDC9F /* CameraTests.swift */,
 				DA18E0F2125809B6B1A49141 /* ViewportSnapshotTests.swift */,
 			);
-			path = Regressions;
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		F8A107A8536B4C04A911841A /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				0774D8D63A6BDA8972EDB99C /* MapControlsTests.swift */,
+			);
+			path = Controls;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,8 +275,8 @@
 				DF777C11E9CB4415B9679C18 /* SimpleSymbolTests.swift in Sources */,
 				959EE1DF2AD34CEDA548CA18 /* RoseTintTests.swift in Sources */,
 				EBC7D0C788C7091AE98010EB /* AssertView.swift in Sources */,
-				1601D391E5613EC9A36F31AC /* CameraPreviewTests.swift in Sources */,
-				7D1DC978BD0C81FC41C43A07 /* LayerPreviewTests.swift in Sources */,
+				1601D391E5613EC9A36F31AC /* CameraTests.swift in Sources */,
+				7D1DC978BD0C81FC41C43A07 /* LayerTests.swift in Sources */,
 				E6940D8FC31A3F6E8926B31B /* MapControlsTests.swift in Sources */,
 				30BAEB594A9B7FFE53B12112 /* Viewport.swift in Sources */,
 				CD7EA8F48E615E06A25B1A46 /* ViewportSnapshotTests.swift in Sources */,

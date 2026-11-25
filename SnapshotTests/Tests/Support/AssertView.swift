@@ -1,3 +1,4 @@
+import Foundation
 import MapLibreSwiftUI
 import SnapshotTesting
 import SwiftUI
@@ -56,14 +57,18 @@ func assertView(
         let image = UIGraphicsImageRenderer(bounds: controller.view.bounds, format: .init(for: traits)).image { _ in
             controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
-        assertSnapshot(of: image,
-                       as: .image(precision: 0.9999, perceptualPrecision: 0.98),
-                       named: name,
-                       record: record,
-                       fileID: fileID,
-                       file: file,
-                       testName: testName,
-                       line: line)
+        let data = try #require(image.pngData())
+        Attachment.record(data, named: "\(testName)-\(name ?? "1").png")
+        assertSnapshot(
+            of: image,
+            as: .image(precision: 0.9999, perceptualPrecision: 0.98),
+            named: name ?? "1",
+            record: record,
+            fileID: fileID,
+            file: file,
+            testName: testName,
+            line: line
+        )
     }
 
     let prefix = name.map { "\($0)-" } ?? ""

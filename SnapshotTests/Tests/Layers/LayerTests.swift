@@ -2,7 +2,7 @@ import Testing
 @testable import MapLibreSwiftUI
 
 @MainActor
-struct LayerPreviewTests {
+struct LayerTests {
     @Test
     func fill() async throws {
         try await assertView {
