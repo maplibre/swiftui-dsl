@@ -27,6 +27,7 @@
 		01D2A92BB4844EF5A043204E /* SteppedGradientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B79014FA4D2481299F5CAC1 /* SteppedGradientTests.swift */; };
 		1D3A86E19E3540F1BC3DE4FE /* LinearGradientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D271D0327BD646288597E718 /* LinearGradientTests.swift */; };
 		F6F5257834B945388C7A3948 /* PreviewSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78DA6CCBE414A20A4B2BE73 /* PreviewSymbol.swift */; };
+		EDC6FB52A3974C6E9C6C4101 /* SymbolFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6FB52A3974C6E9C6C4102 /* SymbolFixtures.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		1B79014FA4D2481299F5CAC1 /* SteppedGradientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteppedGradientTests.swift; sourceTree = "<group>"; };
 		D271D0327BD646288597E718 /* LinearGradientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearGradientTests.swift; sourceTree = "<group>"; };
 		C78DA6CCBE414A20A4B2BE73 /* PreviewSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSymbol.swift; sourceTree = "<group>"; };
+		EDC6FB52A3974C6E9C6C4102 /* SymbolFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolFixtures.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				C78DA6CCBE414A20A4B2BE73 /* PreviewSymbol.swift */,
+				EDC6FB52A3974C6E9C6C4102 /* SymbolFixtures.swift */,
 				259099AB0E8F3CFAB5731773 /* AssertView.swift */,
 			);
 			path = Support;
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6F5257834B945388C7A3948 /* PreviewSymbol.swift in Sources */,
+				EDC6FB52A3974C6E9C6C4101 /* SymbolFixtures.swift in Sources */,
 				1D3A86E19E3540F1BC3DE4FE /* LinearGradientTests.swift in Sources */,
 				01D2A92BB4844EF5A043204E /* SteppedGradientTests.swift in Sources */,
 				6DE772F2F70148488740A199 /* ClusteredCirclesTests.swift in Sources */,

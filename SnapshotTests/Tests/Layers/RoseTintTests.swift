@@ -1,4 +1,3 @@
-import CoreLocation
 import MapLibreSwiftDSL
 import SwiftUI
 import Testing
@@ -9,7 +8,7 @@ struct RoseTintTests {
     @Test
     func snapshot() async throws {
         try await assertView {
-            MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
+            MapView(styleURL: demoTilesURL, camera: .constant(.center(switzerland, zoom: 6))) {
                 BackgroundLayer(identifier: "rose-colored-glasses")
                     .backgroundColor(.systemPink.withAlphaComponent(0.3))
                     .renderAbove(.all)

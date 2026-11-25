@@ -8,9 +8,11 @@ import Testing
 struct SimpleSymbolTests {
     @Test
     func snapshot() async throws {
+        let japan = CLLocationCoordinate2D(latitude: 35.68, longitude: 139.76)
+        let source = symbolTestSource(around: japan)
         try await assertView {
-            MapView(styleURL: demoTilesURL, camera: .constant(.center(CLLocationCoordinate2D(), zoom: 0.0))) {
-                SymbolStyleLayer(identifier: "simple-symbols", source: pointSource)
+            MapView(styleURL: demoTilesURL, camera: .constant(.center(japan, zoom: 12))) {
+                SymbolStyleLayer(identifier: "simple-symbols", source: source)
                     .iconImage(previewSymbol(named: "mappin"))
             }
             .ignoresSafeArea(.all)
