@@ -5,54 +5,52 @@ import Testing
 
 @MainActor
 struct BoundingBoxCameraApplicationTests {
-    @Test(arguments: [false, true])
-    func boundingBoxForwardsTheNativeArguments(animated: Bool) {
-        let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
-        let bounds = MLNCoordinateBounds(sw: .init(latitude: 40, longitude: 10), ne: .init(latitude: 50, longitude: 20))
+    let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
+    let bounds = MLNCoordinateBounds.arrange()
+
+    @Test("A bounding box forwards its bounds, padding, and animation to MapLibre", arguments: [false, true])
+    func forwardBounds(animated: Bool) {
+        let bounds = MLNCoordinateBounds.arrange(
+            sw: .init(latitude: 40, longitude: 10),
+            ne: .init(latitude: 50, longitude: 20)
+        )
         let padding = UIEdgeInsets(top: 10, left: 20, bottom: 30, right: 40)
 
-        applyCameraConfiguration(.boundingBox(bounds, edgePadding: padding), to: map, animated: animated)
+        map.apply(camera: .boundingBox(bounds, edgePadding: padding), animated: animated)
 
         verify(map).setVisibleCoordinateBounds(
             .value(bounds), edgePadding: .value(padding), animated: .value(animated), completionHandler: .any
         ).called(1)
     }
 
-    @Test func boundingBoxDoesNotInstallANativeCompletion() {
-        let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
-        let bounds = MLNCoordinateBounds(sw: .init(), ne: .init())
+    @Test("A bounding box does not install a native completion handler")
+    func omitCompletion() {
         var hasNoCompletion = false
         given(map).setVisibleCoordinateBounds(.any, edgePadding: .any, animated: .any, completionHandler: .any)
             .willProduce { _, _, _, completion in hasNoCompletion = completion == nil }
 
-        applyCameraConfiguration(.boundingBox(bounds), to: map, animated: false)
+        map.apply(camera: .boundingBox(bounds), animated: false)
 
         #expect(hasNoCompletion)
     }
 
-    @Test func boundingBoxResetsTheMinimumPitch() {
-        let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
-        let bounds = MLNCoordinateBounds(sw: .init(), ne: .init())
-
-        applyCameraConfiguration(.boundingBox(bounds), to: map, animated: false)
+    @Test("A bounding box resets the minimum pitch to zero")
+    func resetMinimumPitch() {
+        map.apply(camera: .boundingBox(bounds), animated: false)
 
         verify(map).minimumPitch(newValue: .value(0)).setCalled(1)
     }
 
-    @Test func boundingBoxResetsTheMaximumPitch() {
-        let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
-        let bounds = MLNCoordinateBounds(sw: .init(), ne: .init())
-
-        applyCameraConfiguration(.boundingBox(bounds), to: map, animated: false)
+    @Test("A bounding box resets the maximum pitch to zero")
+    func resetMaximumPitch() {
+        map.apply(camera: .boundingBox(bounds), animated: false)
 
         verify(map).maximumPitch(newValue: .value(0)).setCalled(1)
     }
 
-    @Test func boundingBoxResetsTheDirection() {
-        let map = MockMLNMapViewRepresentable(policy: .relaxedVoid)
-        let bounds = MLNCoordinateBounds(sw: .init(), ne: .init())
-
-        applyCameraConfiguration(.boundingBox(bounds), to: map, animated: false)
+    @Test("A bounding box resets the direction to zero")
+    func resetDirection() {
+        map.apply(camera: .boundingBox(bounds), animated: false)
 
         verify(map).direction(newValue: .value(0)).setCalled(1)
     }

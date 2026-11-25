@@ -252,7 +252,7 @@ MLNMapViewDelegate {
                 // Store the continuation to be resumed in mapViewDidBecomeIdle
                 cameraUpdateContinuation = continuation
 
-                applyCameraConfiguration(camera, to: mapView, animated: animated)
+                mapView.apply(camera: camera, animated: animated)
             }
         }
     }
