@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  unit-tests:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: macos-26
     concurrency:
@@ -17,13 +17,12 @@ jobs:
       matrix:
         scheme: [MapLibreSwiftUI-Package]
         destination: [
-            # TODO: Add more destinations (snapshot testing is the problem)
             "platform=iOS Simulator,name=iPhone 17,OS=26.2",
             # 'platform=watchOS Simulator,name=Apple Watch Ultra 2 (49mm)',
             # "platform=iOS Simulator,name=iPad (10th generation),OS=16.4",
             # "platform=iOS Simulator,name=iPhone 15,OS=17.2",
           ]
-    name: Test ${{ matrix.destination }}
+    name: Unit tests on ${{ matrix.destination }}
 
     steps:
       - name: Install tools
@@ -43,4 +42,4 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
 
       - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-        run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+        run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit "${PIPESTATUS[0]}"

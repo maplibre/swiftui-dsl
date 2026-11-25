@@ -7,6 +7,11 @@ struct PolylineMapView: View {
     let styleURL: URL
     let waypoints: [CLLocationCoordinate2D]
 
+    init(styleURL: URL, waypoints: [CLLocationCoordinate2D] = samplePedestrianWaypoints) {
+        self.styleURL = styleURL
+        self.waypoints = waypoints
+    }
+
     var body: some View {
         MapView(styleURL: styleURL,
                 camera: .constant(.center(waypoints.first!, zoom: 14)))

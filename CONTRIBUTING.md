@@ -1,6 +1,7 @@
 # Contributor Guide
 
-This project is a standard Swift package.
+The libraries and package tests use Swift Package Manager.
+Image snapshot tests use a separate iOS host app in [SnapshotTests](SnapshotTests/README.md).
 
 ## Environment setup
 
@@ -69,6 +70,9 @@ You can run the test suite from Xcode using the standard process:
 Product menu > Test, or Cmd + U.
 If you're having trouble getting a test option / there are no tests,
 make sure that the `MapLibreSwiftUI-Package` target is active.
+
+This scheme runs unit tests and text snapshot tests.
+To run view based snapshot tests, open `SnapshotTests/SnapshotHost.xcodeproj` and select the `SnapshotHost` scheme.
 
 Most of the unit tests are pretty straightforward, but you may notice a few things besides the vanilla testing tools.
 We employ snapshot tests liberally to record the state of objects after some operations.
