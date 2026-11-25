@@ -44,6 +44,7 @@ let package = Package(
         // Testing
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.1.1"),
         .package(url: "https://github.com/Kolos65/Mockable.git", from: "0.5.1"),
+        .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "1.7.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.7"),
         // Macro Testing
         .package(url: "https://github.com/pointfreeco/swift-macro-testing", .upToNextMinor(from: "0.6.4")),
@@ -120,6 +121,7 @@ let package = Package(
                 .product(name: "MapLibre", package: "maplibre-gl-native-distribution"),
                 .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Mockable", package: "Mockable"),
+                .product(name: "IssueReportingTestSupport", package: "xctest-dynamic-overlay"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ]
         ),
