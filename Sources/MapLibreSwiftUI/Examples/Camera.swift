@@ -4,6 +4,7 @@ import MapLibreSwiftDSL
 import SwiftUI
 
 struct CameraDirectManipulationPreview: View {
+    @Environment(\.onMapStyleLoaded) private var parentStyleLoaded
     @State private var camera = MapViewCamera.center(switzerland, zoom: 4)
 
     let styleURL: URL
@@ -12,7 +13,8 @@ struct CameraDirectManipulationPreview: View {
 
     var body: some View {
         MapView(styleURL: styleURL, camera: $camera)
-            .onMapStyleLoaded { _ in
+            .onMapStyleLoaded { style in
+                parentStyleLoaded?(style)
                 print("Style Loaded")
                 onStyleLoaded?()
             }
