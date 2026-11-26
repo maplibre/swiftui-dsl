@@ -218,7 +218,8 @@ MLNMapViewDelegate {
     /// - Parameters:
     ///   - mapView: The MapView that the state is being updated for.
     ///   - camera: The new camera state
-    ///   - animated: Whether the camera change should be animated. Defaults to `true`.
+    ///   - animated: Whether animation is permitted. Initial positioning passes `false`.
+    ///     The camera's own `animated` preference must also be `true` to animate.
     @MainActor func applyCameraChangeFromStateUpdate(
         _ mapView: MLNMapViewRepresentable,
         camera: MapViewCamera,
@@ -229,8 +230,12 @@ MLNMapViewDelegate {
         // MapLibre reframes a camera that's already tracking.
         let isReframing = reframing
             && !(camera.state.isTrackingUserLocation && mapView.userTrackingMode != .none)
-        guard camera != snapshotCamera || isReframing else {
-            // No action - camera has not changed.
+        let animated = animated && camera.animated
+        // Animation is an update preference, not a new viewpoint to apply.
+        let hasSameViewpoint = camera.state == snapshotCamera?.state
+            && camera.lastReasonForChange == snapshotCamera?.lastReasonForChange
+        guard !hasSameViewpoint || isReframing else {
+            snapshotCamera = camera
             return
         }
 
@@ -309,7 +314,8 @@ MLNMapViewDelegate {
                     pitch: mapView.camera.pitch,
                     pitchRange: pitchRange,
                     direction: mapView.direction,
-                    reason: reason
+                    reason: reason,
+                    animated: parent.camera.animated
                 )
             }
         }

@@ -39,6 +39,28 @@ Any breaking API changes will be reflected in release notes.
 This revision uses MapLibre Native 7 and requires iOS 15.5 or later.
 Applications supporting iOS 15.0–15.4 can continue using version 0.26.1.
 
+## Native camera animation
+
+Camera updates use MapLibre Native's standard animation by default.
+Set `animated: false` to jump immediately, for example when switching between distant cities:
+
+```swift
+camera = .center(newYork, zoom: 12, animated: false)
+camera = .center(paris, zoom: 12, animated: true)
+```
+
+The same option is available for bounds, showcase, and tracking cameras.
+You can also change `camera.animated` before editing its position, zoom, or pitch.
+Changing the preference alone does not move the map, and initial positioning never animates.
+For tracking cameras, the flag controls the transition into tracking;
+subsequent user-location updates retain Native's behavior.
+
+Camera timing and curves are controlled by MapLibre, independently of SwiftUI's
+`withAnimation`, `.animation`, and transactions.
+Passing a SwiftUI spring does not create a spring camera animation.
+The [interactive camera preview](Sources/MapLibreSwiftUI/Examples/Camera.swift)
+demonstrates immediate and animated moves between Austria and Portugal.
+
 ## Quick start
 
 ### In a normal Xcode project
