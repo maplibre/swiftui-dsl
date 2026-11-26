@@ -9,12 +9,14 @@ private let switzerland = CLLocationCoordinate2D(latitude: 47.03041, longitude: 
 /// Changes the camera while the content inset changes, as an app showing and hiding a panel over the map does.
 struct CameraVsInsetPreview: View {
     let styleURL: URL
+    var onReady: ((@escaping @MainActor () async -> Void) -> Void)?
+    var onCompletion: ((String, Bool) -> Void)?
 
     @State private var camera = MapViewCamera.center(zurich, zoom: 8, pitch: 60)
     @State private var contentInset = largeInset
-    @State private var proxy: MapViewProxy?
     @State private var isMeasuring = false
     @State private var outcome: ViewportOutcome?
+    @State private var didReportReady = false
 
     private static let zurich = CLLocationCoordinate2D(latitude: 47.3769, longitude: 8.5417)
     private static let largeInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
@@ -46,7 +48,22 @@ struct CameraVsInsetPreview: View {
             Self.graticule
         }
         .mapContentInset(contentInset)
-        .onMapViewProxyUpdate { proxy = $0 }
+        .onMapIdle { proxy in
+            Task { @MainActor in
+                if isMeasuring, contentInset == Self.smallInset, proxy.contentInset == Self.smallInset {
+                    let result = ViewportOutcome(
+                        actual: String(format: "%.0f° pitch, zoom %.1f", proxy.pitch, proxy.zoomLevel),
+                        isExpected: abs(proxy.pitch) < 1 && abs(proxy.zoomLevel - 6) < 0.1
+                    )
+                    outcome = result
+                    isMeasuring = false
+                    onCompletion?(result.actual, result.isExpected)
+                } else if !didReportReady {
+                    didReportReady = true
+                    onReady?(proceed)
+                }
+            }
+        }
         .overlay(alignment: .top) {
             Text("Content inset ↓")
                 .foregroundColor(.white)
@@ -87,14 +104,6 @@ struct CameraVsInsetPreview: View {
         camera = .center(switzerland, zoom: 6)
         try? await Task.sleep(nanoseconds: 150_000_000)
         contentInset = Self.smallInset
-        try? await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-        if let proxy {
-            outcome = ViewportOutcome(
-                actual: String(format: "%.0f° pitch, zoom %.1f", proxy.pitch, proxy.zoomLevel),
-                isExpected: abs(proxy.pitch) < 1 && abs(proxy.zoomLevel - 6) < 0.1
-            )
-        }
-        isMeasuring = false
     }
 }
 
@@ -106,16 +115,19 @@ struct CameraVsInsetPreview: View {
 /// Grows the map after fitting a bounding box camera to it.
 struct ResizeVsFitPreview: View {
     let styleURL: URL
+    var onReady: ((@escaping @MainActor () async -> Void) -> Void)?
+    var onCompletion: ((String, Bool) -> Void)?
 
-    @State private var camera = MapViewCamera.center(switzerland, zoom: 6)
+    @State private var camera = MapViewCamera.center(CLLocationCoordinate2D(latitude: 49.81, longitude: 6.13), zoom: 9)
     @State private var isMapShrunk = true
-    @State private var proxy: MapViewProxy?
     @State private var isMeasuring = false
     @State private var outcome: ViewportOutcome?
+    @State private var isInitialFitRequested = false
+    @State private var didReportReady = false
 
-    private static let italy = MLNCoordinateBounds(
-        sw: CLLocationCoordinate2D(latitude: 36.6, longitude: 6.6),
-        ne: CLLocationCoordinate2D(latitude: 47.1, longitude: 18.5)
+    private static let luxembourg = MLNCoordinateBounds(
+        sw: CLLocationCoordinate2D(latitude: 49.44, longitude: 5.73),
+        ne: CLLocationCoordinate2D(latitude: 50.18, longitude: 6.53)
     )
     private static let margin: CGFloat = 20
 
@@ -131,7 +143,19 @@ struct ResizeVsFitPreview: View {
             VStack(spacing: 8) {
                 MapView(styleURL: styleURL, camera: $camera)
                     .mapContentInset(contentInset)
-                    .onMapViewProxyUpdate { proxy = $0 }
+                    .onMapIdle { proxy in
+                        Task { @MainActor in
+                            if isMeasuring, !isMapShrunk, proxy.mapViewSize.height > 250 {
+                                let result = measureLuxembourgFill(proxy)
+                                outcome = result
+                                isMeasuring = false
+                                onCompletion?(result.actual, result.isExpected)
+                            } else if isInitialFitRequested, !didReportReady, measureLuxembourgFill(proxy).isExpected {
+                                didReportReady = true
+                                onReady? { grow() }
+                            }
+                        }
+                    }
                     .overlay {
                         Rectangle()
                             .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
@@ -165,16 +189,16 @@ struct ResizeVsFitPreview: View {
                 VStack(spacing: 16) {
                     ViewportExpectationPanel(
                         description: """
-                        The map is shrunk, with Italy fit to its content area (dashed). \
+                        The map is shrunk, with Luxembourg fit to its content area (dashed). \
                         "Grow" will grow the map to full height.
                         """,
-                        expected: "Italy fills 100%",
+                        expected: "Luxembourg fills 100%",
                         outcome: outcome,
                         isMeasuring: isMeasuring
                     )
 
                     Button {
-                        Task { await grow() }
+                        grow()
                     } label: {
                         Label("Grow", systemImage: "arrow.down")
                     }
@@ -189,31 +213,27 @@ struct ResizeVsFitPreview: View {
         }
         .task {
             try? await Task.sleep(nanoseconds: 500_000_000)
-            camera = .boundingBox(Self.italy, edgePadding: .zero)
+            camera = .boundingBox(Self.luxembourg, edgePadding: .zero)
+            isInitialFitRequested = true
         }
     }
 
-    private func grow() async {
+    private func grow() {
         isMeasuring = true
         isMapShrunk = false
-        try? await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-        if let proxy {
-            outcome = measureItalyFill(proxy)
-        }
-        isMeasuring = false
     }
 
-    /// How much of the content area Italy spans in its limiting dimension.
-    private func measureItalyFill(_ proxy: MapViewProxy) -> ViewportOutcome {
-        let southWest = proxy.convert(Self.italy.sw, toPointTo: nil)
-        let northEast = proxy.convert(Self.italy.ne, toPointTo: nil)
+    /// How much of the content area Luxembourg spans in its limiting dimension.
+    private func measureLuxembourgFill(_ proxy: MapViewProxy) -> ViewportOutcome {
+        let southWest = proxy.convert(Self.luxembourg.sw, toPointTo: nil)
+        let northEast = proxy.convert(Self.luxembourg.ne, toPointTo: nil)
         let inset = proxy.contentInset
         let fill = max(
             abs(northEast.x - southWest.x) / (proxy.mapViewSize.width - inset.left - inset.right),
             abs(northEast.y - southWest.y) / (proxy.mapViewSize.height - inset.top - inset.bottom)
         )
         return ViewportOutcome(
-            actual: String(format: "Italy fills %.0f%%", fill * 100),
+            actual: String(format: "Luxembourg fills %.0f%%", fill * 100),
             isExpected: abs(fill - 1) < 0.05
         )
     }
