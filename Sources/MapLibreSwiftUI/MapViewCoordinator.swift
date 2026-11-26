@@ -52,6 +52,7 @@ MLNMapViewDelegate {
     var onMapIdle: ((MapViewProxy) -> Void)?
     var onMapDidFinishRendering: ((MapViewProxy, Bool) -> Void)?
     var onMapTileError: (() -> Void)?
+    var onMapTileEvent: (@MainActor (MapTileEvent) -> Void)?
     var onGesture: (MLNMapView, UIGestureRecognizer) -> Void
     var onViewProxyChanged: (MapViewProxy) -> Void
     var proxyUpdateMode: ProxyUpdateMode
@@ -340,14 +341,9 @@ MLNMapViewDelegate {
 
     /// Called by MapLibre for every tile lifecycle event.
     ///
-    /// Only ``MLNTileOperation/error`` is acted on, it indicates a tile
-    /// request failed, typically due to no internet or a poor connection.
+    /// Delivers every event on the main actor, then debounces error notifications to 300ms.
     ///
-    /// The callback is debounced to 300ms, a burst of simultaneously
-    /// failing tiles within the window produces a single notification
-    /// rather than many.
-    ///
-    /// MapLibre calls this off the main thread.
+    /// MapLibre does not guarantee thread safety for this delegate callback.
     public nonisolated func mapView(
         _: MLNMapView,
         tileDidTriggerAction operation: MLNTileOperation,
@@ -356,10 +352,12 @@ MLNMapViewDelegate {
         z _: Int,
         wrap _: Int,
         overscaledZ _: Int,
-        sourceID _: String
+        sourceID: String
     ) {
-        guard operation == .error else { return }
+        let event = MapTileEvent(operation: operation, sourceID: sourceID)
         Task { @MainActor in
+            self.onMapTileEvent?(event)
+            guard operation == .error else { return }
             self.debounceTileError()
         }
     }
