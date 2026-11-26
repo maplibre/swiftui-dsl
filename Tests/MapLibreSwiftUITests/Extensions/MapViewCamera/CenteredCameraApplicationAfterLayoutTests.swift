@@ -46,11 +46,14 @@ struct CenteredCameraApplicationAfterLayoutTests {
         #expect(nativeCamera.altitude == MLNAltitudeForZoomLevel(14, 30, coordinate.latitude, frame.size))
     }
 
-    @Test("After layout, a centered camera forwards the animation flag to MapLibre")
-    func forwardAnimation() {
-        map.apply(camera: .default(), animated: true)
+    @Test(
+        "After layout, a centered camera forwards the animation flag to MapLibre",
+        arguments: [true, false]
+    )
+    func forwardAnimation(animated: Bool) {
+        map.apply(camera: .default(), animated: animated)
 
-        verify(map).setCamera(.value(nativeCamera), animated: .value(true)).called(1)
+        verify(map).setCamera(.value(nativeCamera), animated: .value(animated)).called(1)
     }
 
     @Test("After layout, a centered camera applies pitch bounds before it sets the native camera")
