@@ -1,8 +1,14 @@
 import SwiftUI
 
-private struct OnMapTileEventKey: EnvironmentKey {
-    static let defaultValue: (@MainActor (MapTileEvent) -> Void)? = nil
-}
+#if swift(>=6.2)
+    private struct OnMapTileEventKey: @MainActor EnvironmentKey {
+        @MainActor static let defaultValue: (@MainActor (MapTileEvent) -> Void)? = nil
+    }
+#else
+    private struct OnMapTileEventKey: EnvironmentKey {
+        nonisolated(unsafe) static let defaultValue: (@MainActor (MapTileEvent) -> Void)? = nil
+    }
+#endif
 
 @MainActor
 extension EnvironmentValues {
