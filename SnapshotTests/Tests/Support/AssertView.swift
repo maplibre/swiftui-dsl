@@ -56,7 +56,7 @@ func assertView(
     }
 
     func renderImage() -> UIImage {
-        let traits = UITraitCollection(traitsFrom: [controller.traitCollection, UITraitCollection(displayGamut: .SRGB)])
+        let traits = controller.traitCollection.modifyingTraits { $0.displayGamut = .SRGB }
         return UIGraphicsImageRenderer(bounds: controller.view.bounds, format: .init(for: traits)).image { _ in
             controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
