@@ -31,7 +31,7 @@ import MapLibreSwiftMacros
 @MLNStyleProperty<String>("symbolPlacement", supportsInterpolation: false)
 @MLNStyleProperty<Double>("symbolSpacing", supportsInterpolation: true)
 
-public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition {
+public struct SymbolStyleLayer: SourceBoundVectorStyleLayerDefinition, Equatable {
     public let identifier: String
     public let sourceLayerIdentifier: String?
     public var insertionPosition: LayerInsertionPosition = .above(.all)

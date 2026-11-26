@@ -48,6 +48,22 @@ public extension StyleLayerSource {
     }
 }
 
+extension StyleLayerSource: Equatable {
+    /// Returns whether two values refer to the same source.
+    ///
+    /// This does not compare the content of a ``Source``. Use ``Source/update(_:from:)`` for the content.
+    public static func == (lhs: StyleLayerSource, rhs: StyleLayerSource) -> Bool {
+        switch (lhs, rhs) {
+        case let (.source(lhs), .source(rhs)):
+            lhs.identifier == rhs.identifier
+        case let (.mglSource(lhs), .mglSource(rhs)):
+            lhs === rhs
+        default:
+            false
+        }
+    }
+}
+
 /// A description of layer in a MapLibre style.
 ///
 /// If you think this looks very similar to ``MLNStyleLayer``, you're spot on. While the final result objects
@@ -120,17 +136,12 @@ public extension SourceBoundVectorStyleLayerDefinition {
 
 extension SourceBoundStyleLayerDefinition {
     func addSource(to style: MLNStyle) -> MLNSource {
-        let tmpSource: MLNSource
-
         switch source {
         case let .source(s):
-            let source = s.makeMGLSource()
-            tmpSource = source
+            style.source(withIdentifier: s.identifier) ?? addSourceIfNecessary(s.makeMGLSource(), to: style)
         case let .mglSource(s):
-            tmpSource = s
+            addSourceIfNecessary(s, to: style)
         }
-
-        return addSourceIfNecessary(tmpSource, to: style)
     }
 }
 

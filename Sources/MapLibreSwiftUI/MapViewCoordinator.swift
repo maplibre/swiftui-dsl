@@ -35,9 +35,9 @@ MLNMapViewDelegate {
 
     // Storage of variables as they were previously; these are snapshot
     // every update cycle so we can avoid unnecessary updates
-    private var snapshotUserLayers: [StyleLayerDefinition] = []
     private var snapshotCamera: MapViewCamera?
     private var snapshotStyleSource: MapStyleSource?
+    private let styleLayers: StyleLayerCoordinating
 
     /// An asyncronous task that applies the camera update and awaits the map to reach idle state.
     var cameraUpdateTask: Task<Void, Never>?
@@ -67,9 +67,11 @@ MLNMapViewDelegate {
         parent: MapView<T>,
         onGesture: @escaping (MLNMapView, UIGestureRecognizer) -> Void,
         onViewProxyChanged: @escaping (MapViewProxy) -> Void,
-        proxyUpdateMode: ProxyUpdateMode
+        proxyUpdateMode: ProxyUpdateMode,
+        styleLayers: StyleLayerCoordinating = StyleLayerCoordinator()
     ) {
         self.parent = parent
+        self.styleLayers = styleLayers
         self.onGesture = onGesture
         self.onViewProxyChanged = onViewProxyChanged
         self.proxyUpdateMode = proxyUpdateMode
@@ -115,100 +117,9 @@ MLNMapViewDelegate {
         snapshotStyleSource = source
     }
 
+    /// Makes the style of `mapView` show the layers of ``parent``.
     @MainActor func updateLayers(mapView: MLNMapView) {
-        // TODO: Figure out how to selectively update layers when only specific props changed. New function in addition to makeMLNStyleLayer?
-
-        // TODO: Extract this out into a separate function or three...
-        // Try to reuse DSL-defined sources if possible (they are the same type)!
-        if let style = mapView.style {
-            var sourcesToRemove = Set<String>()
-            for layer in snapshotUserLayers {
-                if let oldLayer = style.layer(withIdentifier: layer.identifier) {
-                    style.removeLayer(oldLayer)
-                }
-
-                if let specWithSource = layer as? SourceBoundStyleLayerDefinition {
-                    switch specWithSource.source {
-                    case .mglSource:
-                        // Do Nothing
-                        // DISCUSS: The idea is to exclude "unmanaged" sources and only manage the ones specified via the DSL and attached to a layer.
-                        // This is a really hackish design and I don't particularly like it.
-                        continue
-                    case .source:
-                        // Mark sources for removal after all user layers have been removed.
-                        // Sources specified in this way should be used by a layer already in the style.
-                        sourcesToRemove.insert(specWithSource.source.identifier)
-                    }
-                }
-            }
-
-            // Remove sources that were added by layers specified in the DSL
-            for sourceID in sourcesToRemove {
-                if let source = style.source(withIdentifier: sourceID) {
-                    style.removeSource(source)
-                } else {
-                    print("That's funny... couldn't find identifier \(sourceID)")
-                }
-            }
-        }
-
-        // Snapshot the new user-defined layers
-        snapshotUserLayers = parent.userLayers
-
-        // If the style is loaded, add the new layers to it.
-        // Otherwise, this will get invoked automatically by the style didFinishLoading callback
-        if let style = mapView.style {
-            addLayers(to: style)
-        }
-    }
-
-    func addLayers(to mglStyle: MLNStyle) {
-        let firstSymbolLayer = mglStyle.layers.first { layer in
-            layer is MLNSymbolStyleLayer
-        }
-
-        for layerSpec in parent.userLayers {
-            // DISCUSS: What preventions should we try to put in place against the user accidentally adding the same layer twice?
-            let newLayer = layerSpec.makeStyleLayer(style: mglStyle).makeMLNStyleLayer()
-
-            // Unconditionally transfer the common properties
-            newLayer.isVisible = layerSpec.isVisible
-
-            if let minZoom = layerSpec.minimumZoomLevel {
-                newLayer.minimumZoomLevel = minZoom
-            }
-
-            if let maxZoom = layerSpec.maximumZoomLevel {
-                newLayer.maximumZoomLevel = maxZoom
-            }
-
-            switch layerSpec.insertionPosition {
-            case let .above(.layer(layerId: id)):
-                if let layer = mglStyle.layer(withIdentifier: id) {
-                    mglStyle.insertLayer(newLayer, above: layer)
-                } else {
-                    NSLog("Failed to find layer with ID \(id). Adding layer on top.")
-                    mglStyle.addLayer(newLayer)
-                }
-            case .above(.all):
-                mglStyle.addLayer(newLayer)
-            case let .below(.layer(layerId: id)):
-                if let layer = mglStyle.layer(withIdentifier: id) {
-                    mglStyle.insertLayer(newLayer, below: layer)
-                } else {
-                    NSLog("Failed to find layer with ID \(id). Adding layer on top.")
-                    mglStyle.addLayer(newLayer)
-                }
-            case .below(.all):
-                mglStyle.insertLayer(newLayer, at: 0)
-            case .below(.symbols):
-                if let firstSymbolLayer {
-                    mglStyle.insertLayer(newLayer, below: firstSymbolLayer)
-                } else {
-                    mglStyle.addLayer(newLayer)
-                }
-            }
-        }
+        styleLayers.update(parent.userLayers, in: mapView.style)
     }
 
     // MARK: - Camera
@@ -481,7 +392,7 @@ MLNMapViewDelegate {
 
     @MainActor
     public func mapView(_ mapView: MLNMapView, didFinishLoading mglStyle: MLNStyle) {
-        addLayers(to: mglStyle)
+        styleLayers.addAll(parent.userLayers, to: mglStyle)
         let viewProxy = MapViewProxy(
             mapView: mapView,
             lastReasonForChange: nil

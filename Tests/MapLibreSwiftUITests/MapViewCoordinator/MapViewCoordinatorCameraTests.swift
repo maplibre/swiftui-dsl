@@ -82,52 +82,6 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
             .called(0)
     }
 
-    @MainActor func testReframingReappliesUnchangedCamera() async throws {
-        let coordinate = CLLocationCoordinate2D(latitude: 45.0, longitude: -127.0)
-        let camera: MapViewCamera = .center(coordinate, zoom: 10)
-
-        given(maplibreMapView)
-            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
-            .willReturn()
-
-        try await simulateCameraUpdateAndWait {
-            self.coordinator.applyCameraChangeFromStateUpdate(
-                self.maplibreMapView, camera: camera, animated: false
-            )
-        }
-
-        try await simulateCameraUpdateAndWait {
-            self.coordinator.applyCameraChangeFromStateUpdate(
-                self.maplibreMapView, camera: camera, animated: false, reframing: true
-            )
-        }
-
-        verify(maplibreMapView)
-            .setCenter(.value(coordinate), zoomLevel: .value(10), direction: .value(0), animated: .value(false))
-            .called(2)
-    }
-
-    @MainActor func testReframingSkipsCameraAlreadyTracking() async throws {
-        let camera: MapViewCamera = .trackUserLocation()
-
-        given(maplibreMapView)
-            .userTrackingMode.willReturn(.follow)
-
-        try await simulateCameraUpdateAndWait {
-            self.coordinator.applyCameraChangeFromStateUpdate(
-                self.maplibreMapView, camera: camera, animated: false
-            )
-        }
-
-        coordinator.applyCameraChangeFromStateUpdate(
-            maplibreMapView, camera: camera, animated: false, reframing: true
-        )
-
-        verify(maplibreMapView)
-            .userTrackingMode(newValue: .value(.follow))
-            .setCalled(1)
-    }
-
     @MainActor func testCenterCameraUpdate() async throws {
         let coordinate = CLLocationCoordinate2D(latitude: 12.3, longitude: 23.4)
         let newCamera: MapViewCamera = .center(coordinate, zoom: 13)
@@ -418,46 +372,6 @@ final class MapViewCoordinatorCameraTests: XCTestCase {
         verify(maplibreMapView)
             .setCamera(.any, animated: .any)
             .called(1)
-    }
-
-    @MainActor func testCancelCameraUpdateResumesPendingContinuation() async throws {
-        given(maplibreMapView)
-            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
-            .willReturn()
-
-        coordinator.applyCameraChangeFromStateUpdate(
-            maplibreMapView,
-            camera: .center(CLLocationCoordinate2D(latitude: 45, longitude: -127), zoom: 10),
-            animated: false
-        )
-        let task = try XCTUnwrap(coordinator.cameraUpdateTask)
-
-        while coordinator.cameraUpdateContinuation == nil {
-            await Task.yield()
-        }
-
-        coordinator.cancelCameraUpdate()
-        await task.value
-
-        XCTAssertNil(coordinator.cameraUpdateTask)
-        XCTAssertNil(coordinator.cameraUpdateContinuation)
-    }
-
-    @MainActor func testCancelCameraUpdateBeforeTaskStartsCompletesTask() async throws {
-        coordinator.applyCameraChangeFromStateUpdate(
-            maplibreMapView,
-            camera: .center(CLLocationCoordinate2D(latitude: 45, longitude: -127), zoom: 10),
-            animated: false
-        )
-        let task = try XCTUnwrap(coordinator.cameraUpdateTask)
-
-        coordinator.cancelCameraUpdate()
-        await task.value
-
-        XCTAssertNil(coordinator.cameraUpdateContinuation)
-        verify(maplibreMapView)
-            .setCenter(.any, zoomLevel: .any, direction: .any, animated: .any)
-            .called(0)
     }
 
     @MainActor

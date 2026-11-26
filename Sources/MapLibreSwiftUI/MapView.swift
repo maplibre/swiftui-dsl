@@ -151,7 +151,6 @@ public struct MapView<T: MapViewHostViewController>: UIViewControllerRepresentab
             startUpdatesOfSwappedLocationManager(uiViewController.mapView)
         }
 
-        // FIXME: This should be a more selective update
         context.coordinator.updateStyleSource(styleSource, mapView: uiViewController.mapView)
         context.coordinator.updateLayers(mapView: uiViewController.mapView)
         context.coordinator.restoreGestures(
