@@ -50,7 +50,7 @@ struct ShowcaseCameraApplicationTests {
         verify(map).maximumPitch(newValue: .value(0)).setCalled(1)
     }
 
-    @Test("A showcase resets the direction to zero")
+    @Test("A showcase resets the direction to zero (north up)")
     func resetDirection() {
         map.apply(camera: .showcase(shapeCollection: shape), animated: false)
 
