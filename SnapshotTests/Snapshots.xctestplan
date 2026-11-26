@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "id": "DD666C32-74C0-45CB-A599-C0132EA4DF78",
+      "name": "Snapshots",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:SnapshotHost.xcodeproj",
+        "identifier": "A977DEAB48CAF322904DA566",
+        "name": "MapLibreSnapshotTests"
+      }
+    }
+  ],
+  "version": 1
+}

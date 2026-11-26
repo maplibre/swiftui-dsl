@@ -156,11 +156,13 @@ Please review https://github.com/maplibre/swiftui-dsl/blob/main/AGENTS.md#for-hu
 
 ### Test organization
 
-- Tests go in `Tests/<TargetName>Tests`, in a folder tree that matches `Sources`.
+- Unit tests go in `Tests/<TargetName>Tests`, in a folder tree that matches `Sources`.
 - New tests use Swift Testing (`import Testing`, `@Test`).
   Many tests still use XCTest. Do not convert them, unless that is the task.
-- Snapshot images go in `__Snapshots__` folders next to the test file.
-  Use `assertView` from [XCTestAssertView.swift](Tests/MapLibreSwiftUITests/Support/XCTestAssertView.swift) for view snapshots.
+- Snapshot tests go in `SnapshotTests/Tests` and must be generated with the
+simulator used in `.github/workflows/test-snapshots.yml`. 
+- Use `assertView` from [AssertView.swift](SnapshotTests/Tests/Support/AssertView.swift) for view snapshots.
+  Await each assertion so that MapLibre can finish rendering before capture.
 - To record a new snapshot, delete the old image or pass `record: true`.
   Then run the tests again.
   Never commit `record: true`.
