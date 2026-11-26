@@ -1,7 +1,7 @@
 # Contributor Guide
 
 The libraries and package tests use Swift Package Manager.
-Image snapshot tests use a separate iOS host app in [SnapshotTests](SnapshotTests/README.md).
+To run image snapshot tests use the separate iOS host app at [SnapshotTests/SnapshotHost.xcodeproj](SnapshotTests/SnapshotHost.xcodeproj).
 
 ## Environment setup
 
