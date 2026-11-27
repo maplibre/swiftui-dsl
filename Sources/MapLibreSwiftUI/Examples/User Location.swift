@@ -14,6 +14,29 @@ private let locationManager = StaticLocationManager(initialLocation: CLLocation(
     timestamp: Date()
 ))
 
+#Preview("User location visibility") {
+    UserLocationVisibilityPreview()
+}
+
+private struct UserLocationVisibilityPreview: View {
+    @State private var isVisible = true
+
+    var body: some View {
+        VStack {
+            MapView(
+                styleURL: demoTilesURL,
+                camera: .constant(.center(switzerland, zoom: 4)),
+                locationManager: locationManager
+            )
+            .mapUserLocationVisible(isVisible)
+            Toggle("Show user location", isOn: $isVisible)
+            Text("Toggle the marker off and on. The map should stay at the same position without following.")
+                .font(.caption)
+        }
+        .padding()
+    }
+}
+
 #Preview("Track user location") {
     MapView(
         styleURL: demoTilesURL,

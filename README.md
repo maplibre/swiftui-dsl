@@ -62,6 +62,18 @@ Then, for each target add either the DSL (for just the DSL) or both (for the Swi
     .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
 ```
 
+### Displaying the user location
+
+```swift
+MapView(styleURL: styleURL, camera: $camera, locationManager: locationManager)
+    .mapUserLocationVisible(true)
+```
+
+This shows the marker without starting camera tracking.
+While the camera tracks the user's location, tracking determines the marker's visibility.
+To hide the marker, switch to a non-tracking camera and set the visibility to `false`.
+See the [user-location visibility preview](Sources/MapLibreSwiftUI/Examples/User%20Location.swift) for an interactive example.
+
 ### Simple example: polyline rendering
 
 Then, you can use it in a SwiftUI view body like this:
