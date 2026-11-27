@@ -70,7 +70,8 @@ MapView(styleURL: styleURL, camera: $camera, locationManager: locationManager)
 ```
 
 This shows the marker without starting camera tracking.
-Hiding it stops native tracking; showing it again does not restore tracking.
+While the camera tracks the user's location, tracking determines the marker's visibility.
+To hide the marker, switch to a non-tracking camera and set the visibility to `false`.
 See the [user-location visibility preview](Sources/MapLibreSwiftUI/Examples/User%20Location.swift) for an interactive example.
 
 ### Simple example: polyline rendering

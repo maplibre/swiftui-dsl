@@ -22,6 +22,9 @@ private struct MapUserLocationVisibilityViewModifier: ViewModifier {
 public extension View {
     /// Set the visibility of the user location marker without enabling a tracking mode.
     ///
+    /// A tracking camera keeps control of the marker's visibility. To stop following and hide the marker,
+    /// switch to a non-tracking camera and set `isVisible` to `false`.
+    ///
     /// - Parameter isVisible: Whether to display the user's location marker.
     /// - Returns: The modified view hierarchy.
     func mapUserLocationVisible(_ isVisible: Bool) -> some View {

@@ -214,13 +214,17 @@ MLNMapViewDelegate {
     }
 
     func updateUserLocationVisibility(_ isVisible: Bool?, on mapView: MLNMapView) {
-        defer { lastUserLocationVisibility = isVisible }
-        guard let isVisible, isVisible != lastUserLocationVisibility else { return }
+        let isTracking = parent.cameraDisabled ? mapView.userTrackingMode != .none : parent.camera.state
+            .isTrackingUserLocation
+        // Use the incoming camera so a single update can end tracking and hide the annotation.
+        let visibility = isTracking && isVisible == false ? nil : isVisible
+        defer { lastUserLocationVisibility = visibility }
+        guard let visibility, visibility != lastUserLocationVisibility else { return }
 
         // Hiding can synchronously emit a tracking callback during a representable update.
         isUpdatingUserLocationVisibility = true
         defer { isUpdatingUserLocationVisibility = false }
-        mapView.showsUserLocation = isVisible
+        mapView.showsUserLocation = visibility
     }
 
     // MARK: - Camera
